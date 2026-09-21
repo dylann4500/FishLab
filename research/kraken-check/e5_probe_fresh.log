@@ -1,0 +1,6 @@
+deal 10/60  onTurn=1113 curOnly=46 dealtOnly=17
+deal 20/60  onTurn=2142 curOnly=86 dealtOnly=26
+deal 30/60  onTurn=3221 curOnly=126 dealtOnly=34
+deal 40/60  onTurn=4283 curOnly=168 dealtOnly=51
+deal 50/60  onTurn=5348 curOnly=199 dealtOnly=65
+deal 60/60  onTurn=6403 curOnly=238 dealtOnly=91

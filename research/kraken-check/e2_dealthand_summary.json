@@ -1,0 +1,49 @@
+{
+ "variant": "dealthand",
+ "games": 2000,
+ "margin": -0.703,
+ "ci95": [
+  -0.8283625096758042,
+  -0.5776374903241958
+ ],
+ "kv_sets": 8297,
+ "dylan_sets": 9703,
+ "kv_set_share": 0.46094444444444443,
+ "kv_win_pct": 39.5,
+ "ties": 0,
+ "ask_hit_kv": [
+  0.5255899078371136,
+  91794
+ ],
+ "ask_hit_dy": [
+  0.5490904935539834,
+  96261
+ ],
+ "decl_ok_kv": [
+  0.972992700729927,
+  8220
+ ],
+ "decl_ok_dy": [
+  0.9694274028629857,
+  9780
+ ],
+ "forced_kv": [
+  1752,
+  1608
+ ],
+ "forced_dy": [
+  1451,
+  1362
+ ],
+ "own_err_kv": 14,
+ "own_err_dy": 84,
+ "alloc_err_kv": 208,
+ "alloc_err_dy": 215,
+ "fallbacks": 0,
+ "off_team_owners": 0,
+ "unfinished": 0,
+ "sec_per_game": 0.78685,
+ "extra": {
+  "hand_mismatch": 0
+ }
+}

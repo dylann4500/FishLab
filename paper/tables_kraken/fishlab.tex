@@ -1,0 +1,20 @@
+\begin{tabularx}{\linewidth}{Q{0.95}Q{1.0}Q{1.45}N{0.75}N{0.8}N{1.15}N{0.9}}
+\toprule
+A & B & rules & games & A wins & sets A$-$B per game & decl.\ acc.\ A\,/\,B (\%) \\
+\midrule
+KRAKEN & SESTINA & FishLab default & \kcEDefaultGames{} & \kcEDefaultWin{}\% & \ci{$\kcEDefaultMargin{}$}{\kcEDefaultMarginLo{},\,\kcEDefaultMarginHi{}} & \kcEDefaultDeclA{}\,/\,\kcEDefaultDeclB{} \\
+KRAKEN & SESTINA & declare on turn only & \kcENoootGames{} & \kcENoootWin{}\% & \ci{$\kcENoootMargin{}$}{\kcENoootMarginLo{},\,\kcENoootMarginHi{}} & \kcENoootDeclA{}\,/\,\kcENoootDeclB{} \\
+KRAKEN & SESTINA & on turn only, no cardless declaration & \kcENoootNcGames{} & \kcENoootNcWin{}\% & \ci{$\kcENoootNcMargin{}$}{\kcENoootNcMarginLo{},\,\kcENoootNcMarginHi{}} & \kcENoootNcDeclA{}\,/\,\kcENoootNcDeclB{} \\
+KRAKEN & SESTINA & legacy dialect & \kcELegacyGames{} & \kcELegacyWin{}\% & \ci{$\kcELegacyMargin{}$}{\kcELegacyMarginLo{},\,\kcELegacyMarginHi{}} & \kcELegacyDeclA{}\,/\,\kcELegacyDeclB{} \\
+\midrule
+KRAKEN & KRAKEN & FishLab default (control) & \kcEMirrorGames{} & \kcEMirrorWin{}\% & \ci{$\kcEMirrorMargin{}$}{\kcEMirrorMarginLo{},\,\kcEMirrorMarginHi{}} & \kcEMirrorDeclA{}\,/\,\kcEMirrorDeclB{} \\
+\midrule
+KRAKEN & FishBot v0.6 & FishLab default & \kcEVsVsixGames{} & \kcEVsVsixWin{}\% & \ci{$\kcEVsVsixMargin{}$}{\kcEVsVsixMarginLo{},\,\kcEVsVsixMarginHi{}} & \kcEVsVsixDeclA{}\,/\,\kcEVsVsixDeclB{} \\
+KRAKEN & F-cheap & FishLab default & \kcEVsFcheapGames{} & \kcEVsFcheapWin{}\% & \ci{$\kcEVsFcheapMargin{}$}{\kcEVsFcheapMarginLo{},\,\kcEVsFcheapMarginHi{}} & \kcEVsFcheapDeclA{}\,/\,\kcEVsFcheapDeclB{} \\
+KRAKEN & FishBot v0.5 & FishLab default & \kcEVsVfiveGames{} & \kcEVsVfiveWin{}\% & \ci{$\kcEVsVfiveMargin{}$}{\kcEVsVfiveMarginLo{},\,\kcEVsVfiveMarginHi{}} & \kcEVsVfiveDeclA{}\,/\,\kcEVsVfiveDeclB{} \\
+KRAKEN & FishBot v0.4 & FishLab default & \kcEVsVfourGames{} & \kcEVsVfourWin{}\% & \ci{$\kcEVsVfourMargin{}$}{\kcEVsVfourMarginLo{},\,\kcEVsVfourMarginHi{}} & \kcEVsVfourDeclA{}\,/\,\kcEVsVfourDeclB{} \\
+\midrule
+KV FishBot v0.6 & SESTINA & FishLab default & \kcEKvSixGames{} & \kcEKvSixWin{}\% & \ci{$\kcEKvSixMargin{}$}{\kcEKvSixMarginLo{},\,\kcEKvSixMarginHi{}} & \kcEKvSixDeclA{}\,/\,\kcEKvSixDeclB{} \\
+KV FishBot v0.6 & SESTINA & FishLab default, the KRAKEN cell's seeds & \kcEKvSixPairedGames{} & \kcEKvSixPairedWin{}\% & \ci{$\kcEKvSixPairedMargin{}$}{\kcEKvSixPairedMarginLo{},\,\kcEKvSixPairedMarginHi{}} & \kcEKvSixPairedDeclA{}\,/\,\kcEKvSixPairedDeclB{} \\
+\bottomrule
+\end{tabularx}

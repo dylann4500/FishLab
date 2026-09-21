@@ -1738,7 +1738,9 @@ function buildBots(){
   bots.forEach(b=>{
     const row=el('div','botrow');
     const who=el('div','who');
-    const line=el('div','nm',b.name+(b.version&&b.version!=='0'?' '+b.version:''));
+    // Not when the name already carries the version -- "FishAI v1.0 1.0".
+    const showVer=b.version&&b.version!=='0'&&b.name.indexOf(b.version)<0;
+    const line=el('div','nm',b.name+(showVer?' '+b.version:''));
     who.appendChild(line);
     const bits=[];
     if(b.author) bits.push('by '+b.author);
@@ -1942,7 +1944,8 @@ function renderSetup(){
       if(uploaded.length){
         const og=document.createElement('optgroup'); og.label='Uploaded bots';
         uploaded.forEach(b=>{
-          const o=el('option',null,b.name+(b.version&&b.version!=='0'?' '+b.version:''));
+          const o=el('option',null,
+            b.name+((b.version&&b.version!=='0'&&b.name.indexOf(b.version)<0)?' '+b.version:''));
           o.value=b.spec; og.appendChild(o);
         });
         s.appendChild(og);

@@ -1,0 +1,17 @@
+\begin{tabularx}{\linewidth}{Q{1.75}N{0.65}N{0.8}N{0.8}}
+\toprule
+ & native SESTINA & shim, current hand (rev.~2) & shim, hand as dealt \\
+\midrule
+declarations over these decisions & \kcPrNativeDecl{} & \kcPrCurDecl{} & \kcPrDealtDecl{} \\
+of which wrong & \kcPrNativeWrong{} (\kcPrNativeWrongPct{}\%) & \kcPrCurWrong{} (\kcPrCurWrongPct{}\%) & \kcPrDealtWrong{} (\kcPrDealtWrongPct{}\%) \\
+agrees with native on declare\,/\,not & --- & \kcPrCurAgree{} (\kcPrCurAgreePct{}\%) & \kcPrDealtAgree{} (\kcPrDealtAgreePct{}\%) \\
+declares when native does not & --- & \kcPrCurOnly{} & \kcPrDealtOnly{} \\
+\quad of which wrong & --- & \kcPrCurOnlyWrong{} & \kcPrDealtOnlyWrong{} \\
+\quad naming a half-suit an opponent holds & --- & \kcPrCurOnlyOwn{} & \kcPrDealtOnlyOwn{} \\
+declines when native declares & --- & \kcPrCurNativeOnly{} & \kcPrDealtNativeOnly{} \\
+both declare, different allocation & --- & \kcPrCurBothDiff{} & \kcPrDealtBothDiff{} \\
+same ask as native (of \kcPrAskCompared{}) & --- & \kcPrCurAsk{} (\kcPrCurAskPct{}\%) & \kcPrDealtAsk{} (\kcPrDealtAskPct{}\%) \\
+first decision of a game identical, agents rebuilt per game (of \kcPrFreshFirst{}) & --- & \kcPrFreshFirstCur{} & \kcPrFreshFirstDealt{} \\
+\quad agents reused across deals (of \kcPrFirst{}) & --- & \kcPrFirstCur{} & \kcPrFirstDealt{} \\
+\bottomrule
+\end{tabularx}

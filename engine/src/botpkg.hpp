@@ -330,6 +330,7 @@ struct Registry {
   std::string root;
   std::map<std::string, Installed> bots;
   bool scanned = false;
+  long long rootStamp = 0;      // mtime of the bots directory at the last scan
 
   void setRoot(const std::string& r) {
     std::lock_guard<std::mutex> lk(mu);
@@ -368,9 +369,19 @@ struct Registry {
     return true;
   }
 
+  // The directory's own mtime, which changes when a package is added or
+  // removed.  It is what lets a running `fish serve` notice a bot installed
+  // from the command line in another process, for one stat() per poll.
+  long long rootMtimeLocked() const {
+    struct stat st;
+    if (root.empty() || ::stat(root.c_str(), &st) != 0) return 0;
+    return (long long)st.st_mtime;
+  }
+
   void rescanLocked() {
     bots.clear();
     scanned = true;
+    rootStamp = rootMtimeLocked();
     if (root.empty()) return;
     DIR* d = ::opendir(root.c_str());
     if (!d) return;
@@ -389,7 +400,7 @@ struct Registry {
   }
   void ensureScanned() {
     std::lock_guard<std::mutex> lk(mu);
-    if (!scanned) rescanLocked();
+    if (!scanned || rootMtimeLocked() != rootStamp) rescanLocked();
   }
 
   bool get(const std::string& id, Installed& out) {

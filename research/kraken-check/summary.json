@@ -1,0 +1,411 @@
+{
+ "e1": {
+  "default": {
+   "blocks": 9,
+   "games": 5400,
+   "winA": 0.40296299999999996,
+   "winA_ci": [
+    0.3829947696081863,
+    0.42293123039181363
+   ],
+   "sets_margin_A": -0.6481488888888891,
+   "sets_margin_ci": [
+    -0.7398916539803168,
+    -0.5564061237974615
+   ],
+   "declA": 0.9860233651619323,
+   "declB": 0.9797299062990019,
+   "askA": 0.5376026957093428,
+   "askB": 0.5603724423149539,
+   "a": "kraken",
+   "b": "v07:r12=25,rtie=1,pool=-1,oppfloor=-1,force=1000000,askfloor=-1,stall=12,s1=1,det=12,cand=4,kappa=2.5,rbelief=indep,depth=12,maxq=26",
+   "flags": []
+  },
+  "nooot": {
+   "blocks": 10,
+   "games": 6000,
+   "winA": 0.3873334,
+   "winA_ci": [
+    0.37274077109005765,
+    0.40192602890994233
+   ],
+   "sets_margin_A": -0.7586639999999998,
+   "sets_margin_ci": [
+    -0.8415525354050811,
+    -0.6757754645949184
+   ],
+   "declA": 0.9809223262774047,
+   "declB": 0.9880539595423705,
+   "askA": 0.5170173246164148,
+   "askB": 0.5386086824602656,
+   "a": "kraken",
+   "b": "v07:r12=25,rtie=1,pool=-1,oppfloor=-1,force=1000000,askfloor=-1,stall=12,s1=1,det=12,cand=4,kappa=2.5,rbelief=indep,depth=12,maxq=26",
+   "flags": [
+    "--no-out-of-turn"
+   ]
+  },
+  "mirror_kraken": {
+   "blocks": 2,
+   "games": 1200,
+   "winA": 0.5,
+   "winA_ci": [
+    0.5,
+    0.5
+   ],
+   "sets_margin_A": 0.0,
+   "sets_margin_ci": [
+    0.0,
+    0.0
+   ],
+   "declA": 0.9873394200335132,
+   "declB": 0.9873394200335132,
+   "askA": 0.6003155763826388,
+   "askB": 0.6003155763826388,
+   "a": "kraken",
+   "b": "kraken",
+   "flags": []
+  },
+  "kv6_vs_v07": {
+   "blocks": 5,
+   "games": 3000,
+   "winA": 0.4233334,
+   "winA_ci": [
+    0.4029030332437514,
+    0.4437637667562487
+   ],
+   "sets_margin_A": -0.49533200000000016,
+   "sets_margin_ci": [
+    -0.6083095995710749,
+    -0.38235440042892543
+   ],
+   "declA": 0.9851436313897763,
+   "declB": 0.97855628100911,
+   "askA": 0.5392758885227152,
+   "askB": 0.5571288829073772,
+   "a": "kv6",
+   "b": "v07:r12=25,rtie=1,pool=-1,oppfloor=-1,force=1000000,askfloor=-1,stall=12,s1=1,det=12,cand=4,kappa=2.5,rbelief=indep,depth=12,maxq=26",
+   "flags": []
+  },
+  "kraken_vs_v06": {
+   "blocks": 5,
+   "games": 3000,
+   "winA": 0.44066679999999997,
+   "winA_ci": [
+    0.41299950199735597,
+    0.468334098002644
+   ],
+   "sets_margin_A": -0.4400000000000002,
+   "sets_margin_ci": [
+    -0.6497303468565739,
+    -0.2302696531434265
+   ],
+   "declA": 0.9836824235506393,
+   "declB": 0.9851339150502619,
+   "askA": 0.5564988139876647,
+   "askB": 0.5689807555473317,
+   "a": "kraken",
+   "b": "v06",
+   "flags": []
+  },
+  "nooot_nocardless": {
+   "blocks": 5,
+   "games": 3000,
+   "winA": 0.41200000000000003,
+   "winA_ci": [
+    0.39824386880174184,
+    0.4257561311982582
+   ],
+   "sets_margin_A": -0.6319959999999998,
+   "sets_margin_ci": [
+    -0.7002188381938707,
+    -0.5637731618061289
+   ],
+   "declA": 0.9804569585587158,
+   "declB": 0.9877014385797951,
+   "askA": 0.5220805865466367,
+   "askB": 0.5389921730569662,
+   "a": "kraken",
+   "b": "v07:r12=25,rtie=1,pool=-1,oppfloor=-1,force=1000000,askfloor=-1,stall=12,s1=1,det=12,cand=4,kappa=2.5,rbelief=indep,depth=12,maxq=26",
+   "flags": [
+    "--no-out-of-turn",
+    "--no-cardless-declare"
+   ]
+  },
+  "legacy": {
+   "blocks": 5,
+   "games": 3000,
+   "winA": 0.38866680000000003,
+   "winA_ci": [
+    0.37437645637488354,
+    0.40295714362511653
+   ],
+   "sets_margin_A": -0.7393319999999999,
+   "sets_margin_ci": [
+    -0.8885156394610951,
+    -0.5901483605389046
+   ],
+   "declA": 0.9786929396451813,
+   "declB": 0.9879256646663291,
+   "askA": 0.5139292514066811,
+   "askB": 0.535629340372619,
+   "a": "kraken",
+   "b": "v07:r12=25,rtie=1,pool=-1,oppfloor=-1,force=1000000,askfloor=-1,stall=12,s1=1,det=12,cand=4,kappa=2.5,rbelief=indep,depth=12,maxq=26",
+   "flags": [
+    "--legacy"
+   ]
+  },
+  "kraken_vs_fcheap": {
+   "blocks": 3,
+   "games": 1800,
+   "winA": 0.44111100000000003,
+   "winA_ci": [
+    0.38163499626309155,
+    0.5005870037369086
+   ],
+   "sets_margin_A": -0.5055600000000003,
+   "sets_margin_ci": [
+    -0.7950806562330373,
+    -0.21603934376696343
+   ],
+   "declA": 0.9802684594843463,
+   "declB": 0.9840301035697512,
+   "askA": 0.5557025547009425,
+   "askB": 0.5697719058965521,
+   "a": "kraken",
+   "b": "v06:s1=1,det=12,cand=4,kappa=2.5,rbelief=indep,depth=12,maxq=26",
+   "flags": []
+  },
+  "kraken_vs_v05": {
+   "blocks": 3,
+   "games": 1800,
+   "winA": 0.43388866666666664,
+   "winA_ci": [
+    0.40253711612045284,
+    0.46524021721288045
+   ],
+   "sets_margin_A": -0.4155599999999999,
+   "sets_margin_ci": [
+    -0.675101241779815,
+    -0.15601875822018474
+   ],
+   "declA": 0.985630166688439,
+   "declB": 0.9817689473065161,
+   "askA": 0.5690486189255716,
+   "askB": 0.5824169698947238,
+   "a": "kraken",
+   "b": "v05",
+   "flags": []
+  },
+  "kraken_vs_v04": {
+   "blocks": 3,
+   "games": 1800,
+   "winA": 0.4394446666666667,
+   "winA_ci": [
+    0.391454396364551,
+    0.48743493696878243
+   ],
+   "sets_margin_A": -0.4066666666666669,
+   "sets_margin_ci": [
+    -0.6127093704105051,
+    -0.20062396292282875
+   ],
+   "declA": 0.9803818778446246,
+   "declB": 0.9835208803793717,
+   "askA": 0.53112987782516,
+   "askB": 0.5448082397414181,
+   "a": "kraken",
+   "b": "v04",
+   "flags": []
+  },
+  "kv6_vs_v07_paired": {
+   "blocks": 5,
+   "games": 3000,
+   "winA": 0.3956668,
+   "winA_ci": [
+    0.3700064190534327,
+    0.4213271809465673
+   ],
+   "sets_margin_A": -0.6493359999999999,
+   "sets_margin_ci": [
+    -0.7843980542006297,
+    -0.5142739457993701
+   ],
+   "declA": 0.9836001151254364,
+   "declB": 0.9795592933499069,
+   "askA": 0.5355979305036004,
+   "askB": 0.5576958105579491,
+   "a": "kv6",
+   "b": "v07:r12=25,rtie=1,pool=-1,oppfloor=-1,force=1000000,askfloor=-1,stall=12,s1=1,det=12,cand=4,kappa=2.5,rbelief=indep,depth=12,maxq=26",
+   "flags": []
+  }
+ },
+ "e2": {
+  "rev2": {
+   "games": 2000,
+   "margin": 2.446,
+   "ci": [
+    2.327482863251547,
+    2.5645171367484534
+   ],
+   "kv_set_share": 0.6358888888888888,
+   "kv_win": 0.8165,
+   "sestina_decl_acc": 0.7802555750438487,
+   "sestina_voluntary_acc": 0.7781619129933737,
+   "sestina_forced_acc": 0.7942307692307692,
+   "sestina_forced_per_game": 0.52,
+   "kraken_decl_acc": 0.9674585745657815,
+   "kraken_ask_hit": 0.5162679471422719,
+   "sestina_ask_hit": 0.47977446455798534,
+   "own_err_per_game": 0.5915,
+   "alloc_err_per_game": 0.2855,
+   "paired_vs_rev2": null,
+   "fallbacks": 0,
+   "unfinished": 0,
+   "extra": {}
+  },
+  "dealthand": {
+   "games": 2000,
+   "margin": -0.703,
+   "ci": [
+    -0.8283625096758042,
+    -0.5776374903241958
+   ],
+   "kv_set_share": 0.46094444444444443,
+   "kv_win": 0.395,
+   "sestina_decl_acc": 0.9694274028629857,
+   "sestina_voluntary_acc": 0.9747868891823749,
+   "sestina_forced_acc": 0.9386629910406616,
+   "sestina_forced_per_game": 0.7255,
+   "kraken_decl_acc": 0.972992700729927,
+   "kraken_ask_hit": 0.5255899078371136,
+   "sestina_ask_hit": 0.5490904935539834,
+   "own_err_per_game": 0.042,
+   "alloc_err_per_game": 0.1075,
+   "paired_vs_rev2": [
+    -3.149,
+    -3.3065592611673136,
+    -2.9914407388326865,
+    2000
+   ],
+   "fallbacks": 0,
+   "unfinished": 0,
+   "extra": {
+    "hand_mismatch": 0
+   }
+  },
+  "ladder": {
+   "games": 2000,
+   "margin": 2.443,
+   "ci": [
+    2.3243640098035807,
+    2.5616359901964194
+   ],
+   "kv_set_share": 0.6357222222222222,
+   "kv_win": 0.8155,
+   "sestina_decl_acc": 0.7806314206965673,
+   "sestina_voluntary_acc": 0.7781619129933737,
+   "sestina_forced_acc": 0.7971153846153847,
+   "sestina_forced_per_game": 0.52,
+   "kraken_decl_acc": 0.9674585745657815,
+   "kraken_ask_hit": 0.5162679471422719,
+   "sestina_ask_hit": 0.47977446455798534,
+   "own_err_per_game": 0.5915,
+   "alloc_err_per_game": 0.284,
+   "paired_vs_rev2": [
+    -0.003,
+    -0.008185301965964868,
+    0.0021853019659648677,
+    2000
+   ],
+   "fallbacks": 0,
+   "unfinished": 0,
+   "extra": {
+    "ladder_calls": 1040,
+    "ladder_fallbacks": 0
+   }
+  },
+  "seedvary": {
+   "games": 2000,
+   "margin": 2.494,
+   "ci": [
+    2.373881260800184,
+    2.6141187391998164
+   ],
+   "kv_set_share": 0.6385555555555555,
+   "kv_win": 0.821,
+   "sestina_decl_acc": 0.7820350164932758,
+   "sestina_voluntary_acc": 0.7769554491365549,
+   "sestina_forced_acc": 0.8173562058526741,
+   "sestina_forced_per_game": 0.4955,
+   "kraken_decl_acc": 0.9661988535283653,
+   "kraken_ask_hit": 0.5173348809772991,
+   "sestina_ask_hit": 0.4777613351420233,
+   "own_err_per_game": 0.5785,
+   "alloc_err_per_game": 0.2805,
+   "paired_vs_rev2": [
+    0.048,
+    -0.06572276161813442,
+    0.16172276161813443,
+    2000
+   ],
+   "fallbacks": 0,
+   "unfinished": 0,
+   "extra": {}
+  },
+  "dealtseed": {
+   "games": 2000,
+   "margin": -0.653,
+   "ci": [
+    -0.7792469751802834,
+    -0.5267530248197166
+   ],
+   "kv_set_share": 0.4637222222222222,
+   "kv_win": 0.4005,
+   "sestina_decl_acc": 0.9661484966250767,
+   "sestina_voluntary_acc": 0.9725287907869482,
+   "sestina_forced_acc": 0.9292649098474342,
+   "sestina_forced_per_game": 0.721,
+   "kraken_decl_acc": 0.9749452687910484,
+   "kraken_ask_hit": 0.5267385491619747,
+   "sestina_ask_hit": 0.550229210313427,
+   "own_err_per_game": 0.0445,
+   "alloc_err_per_game": 0.121,
+   "paired_vs_rev2": [
+    -3.099,
+    -3.259868935616617,
+    -2.9381310643833833,
+    2000
+   ],
+   "fallbacks": 0,
+   "unfinished": 0,
+   "extra": {
+    "hand_mismatch": 0
+   }
+  },
+  "dealthand_big": {
+   "games": 8000,
+   "margin": -0.57025,
+   "ci": [
+    -0.6322454204922248,
+    -0.5082545795077753
+   ],
+   "kv_set_share": 0.46831944444444445,
+   "kv_win": 0.416625,
+   "sestina_decl_acc": 0.9649489322191273,
+   "sestina_voluntary_acc": 0.9702586467987159,
+   "sestina_forced_acc": 0.9344803614876608,
+   "sestina_forced_per_game": 0.71925,
+   "kraken_decl_acc": 0.9738774527506922,
+   "kraken_ask_hit": 0.5254697286012526,
+   "sestina_ask_hit": 0.5466232002456044,
+   "own_err_per_game": 0.046625,
+   "alloc_err_per_game": 0.12325,
+   "paired_vs_rev2": null,
+   "fallbacks": 0,
+   "unfinished": 0,
+   "extra": {
+    "hand_mismatch": 0
+   }
+  }
+ }
+}

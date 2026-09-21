@@ -1,0 +1,11 @@
+{
+ "requests": 645,
+ "ops": {
+  "cards": 1,
+  "decide": 167,
+  "offturn": 477
+ },
+ "error_replies": 0,
+ "longest_history": 95,
+ "hand_size_matches_count": true
+}

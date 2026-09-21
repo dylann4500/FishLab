@@ -1,0 +1,688 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage[section]{placeins}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage[font=small,labelfont=bf,skip=6pt,singlelinecheck=false]{caption}
+\captionsetup[table]{position=above,skip=6pt}
+\captionsetup[figure]{position=below,skip=8pt}
+
+\definecolor{fishgreen}{HTML}{0B5D46}
+\definecolor{fishlight}{HTML}{EAF4EF}
+\definecolor{fishgray}{HTML}{4B5954}
+\hypersetup{colorlinks=true, linkcolor=fishgreen, citecolor=fishgreen, urlcolor=fishgreen,
+            pdftitle={Bridge, Not Edge: An Independent Re-measurement of KRAKEN v1.1 against SESTINA v1.0},
+            pdfauthor={Dylan Nguyen}}
+\setlist{topsep=.4\baselineskip,partopsep=0pt,itemsep=2pt,parsep=0pt,leftmargin=*}
+\setlist[description]{style=unboxed,leftmargin=0pt,labelsep=0.5em,topsep=\medskipamount,itemsep=\medskipamount,parsep=0pt}
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{0pt plus 1pt}
+\setlength{\emergencystretch}{3em}
+\widowpenalty=10000 \clubpenalty=10000 \displaywidowpenalty=10000 \brokenpenalty=10000
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\setlength{\heavyrulewidth}{0.08em}
+\setlength{\lightrulewidth}{0.05em}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\newcolumntype{Q}[1]{>{\hsize=#1\hsize\raggedright\arraybackslash}X}
+\newcolumntype{N}[1]{>{\hsize=#1\hsize\raggedleft\arraybackslash}X}
+\newcommand{\ci}[2]{#1\newline{\scriptsize $[#2]$}}
+\setcounter{topnumber}{3} \setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.92} \renewcommand{\textfraction}{0.08} \renewcommand{\floatpagefraction}{0.72}
+\pagestyle{fancy} \fancyhf{} \lhead{\small KRAKEN v1.1 against SESTINA v1.0} \cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.2pt}
+\lstset{basicstyle=\ttfamily\small, breaklines=true, columns=fullflexible, keepspaces=true,
+        frame=none, xleftmargin=1.2em, aboveskip=0.6\baselineskip, belowskip=0.6\baselineskip, showstringspaces=false}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\flag}[1]{\texttt{-{}-#1}}
+\newcommand{\sestina}{\mbox{SESTINA v1.0}}
+\newcommand{\kraken}{\mbox{KRAKEN}}
+\newcommand{\pct}{\%}
+
+\input{kraken_check_numbers}
+
+\title{\textbf{Bridge, Not Edge:\\ An Independent Re-measurement of\\ KRAKEN v1.1 against SESTINA v1.0}}
+\author{Dylan Nguyen}
+\date{2 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+The KRAKEN v1.1 paper reports that its engine beats \sestina{} by $\kcMegaMargin$ sets per game,
+taking \kcMegaSetShare\pct{} of decided sets and \kcMegaWin\pct{} of games over \kcMegaN{} games,
+measured in its own arbiter through a process bridge into \sestina{}'s engine. We re-measure the
+pairing in both engines. Inside FishLab's arbiter, with KRAKEN hosted exactly as its integration guide
+requires, KRAKEN loses under each of the four rule dialects tested: $\kcEDefaultMargin$~$[\kcEDefaultMarginLo, \kcEDefaultMarginHi]$ sets per game under FishLab's rules and
+$\kcENoootMargin$ under its own declare-on-turn rule, over \kcESestinaGames{} games. Inside KV's own
+arbiter, with their bridge as published, the paper's figure reproduces on fresh deals
+($\kcVRevTwoMargin$). The discrepancy is one defect in that bridge: it resets \sestina{} with the hand
+it holds \emph{now} where the engine expects the hand it was \emph{dealt}, which corrupts every
+legality certificate the belief rebuilds in a half-suit that seat has since gained or lost a card in.
+Passing the dealt hand and replaying the identical deals moves the result by $\kcVDealtPaired$~$[\kcVDealtPairedLo, \kcVDealtPairedHi]$ sets per game; KRAKEN then loses in their arbiter too
+($\kcVDealtBigMargin$ on \kcVDealtBigGames{} further games), \sestina{}'s declaration accuracy returns
+to its native level, and the two arbiters agree under the matched dialect. A decision-level probe shows
+the defect on single decisions. The paper's forced-endgame repair and its per-decision seed schedule
+are priced and are immaterial. KRAKEN also loses to every earlier release of FishLab's FishBot lineage
+from v0.4 upward. Nothing here bears on KRAKEN's internal results; the cross-engine claim, and what the
+paper builds on it, does not survive.
+\end{abstract}
+
+\section{Introduction}
+
+Two engines for six-player Canadian Fish were written independently in 2026: FishLab, whose
+current agent is \sestina{} (developed as FishBot v0.7; \cite{sestina}), and the Python engine of
+KV (Kausthubh Veldanda), whose current agent is KRAKEN (v1.0 in code, v1.1 in the paper;
+\cite{kraken}; the deployed configuration is the same). In August the two projects
+built bridges so that each bot could play inside the other's arbiter, and the KRAKEN paper reports the
+result of its exhibition as its cross-engine headline: over \kcMegaN{} games under its rules, KRAKEN
+beat \sestina{} by $\kcMegaMargin$ sets per game, won \kcMegaWin\pct{} of games, and declared
+half-suits correctly \kcMegaDeclKV\pct{} of the time against \sestina{}'s \kcMegaDeclS\pct{}. The paper
+builds a mechanism story on those rows --- \kcPaperDeclShare\pct{} of the margin is attributed to
+``knowing when a half-suit is finished'' --- and its package README extends the claim to FishLab's own
+dialect, giving \kcReadmeBoth{} sets per game when both sides may declare off-turn.
+
+The size of the claim is what makes it worth checking. \sestina{}'s own evaluation resolves edges of a
+few percentage points against its predecessors; an opponent taking four games in five would be a
+different order of strength from anything either lineage has produced. The paper is careful about what
+the number is: cross-engine strength against one opponent, not a global ranking. But a cross-engine
+number is a statement about the bridge as well as the engines, as the paper itself says, and the bridge
+is the one component neither project had tested from the other side.
+
+This report does that. It uses four instruments, in the order a sceptic would reach for them:
+\begin{enumerate}
+\item the same match inside FishLab's arbiter, with KRAKEN played through FishLab's bridge to it
+      (Section~\ref{sec:fishlab});
+\item a replication inside KV's own arbiter, with their engine, their rules and their bridge, on fresh
+      deals (Section~\ref{sec:kv});
+\item one-line variants of their bridge, each changing exactly one thing, replayed on identical deals so
+      the difference is paired (Section~\ref{sec:variants});
+\item a probe that feeds every native \sestina{} decision through KV's own shim and compares the two
+      answers decision by decision (Section~\ref{sec:probe}).
+\end{enumerate}
+Section~\ref{sec:defect} locates the defect in the two code bases and explains why every check the
+paper ran passed anyway. Section~\ref{sec:discussion} states what is refuted, what stands, what was
+not tested, and what a cross-engine measurement should require of its bridge. Every measurement in this
+document is a macro generated from an artifact in \code{research/kraken-check/} by
+\code{make\_numbers.py}; the few figures quoted from the KRAKEN paper are transcribed in the same
+file under a comment naming their source.
+
+\begin{table}[!ht]
+\caption{The claim against the measurements. Left: the paper's headline, from its own results file.
+Middle: the same pairing in FishLab's arbiter under FishLab's rules. Right: the same pairing in KV's
+arbiter after the one-line repair of Section~\ref{sec:defect}, on fresh deals.}
+\label{tab:claims}
+\small
+\input{tables_kraken/claims}
+\end{table}
+
+\section{The engines, the rules, and the bridges}
+\label{sec:setup}
+
+\subsection{Two arbiters, two dialects}
+
+The game, in one paragraph. Fifty-four cards form nine \emph{half-suits} of six; six seats in two
+teams of alternating seats are dealt nine cards each. On turn a player \emph{asks} an opponent for a
+named card: it is legal only if the asker holds another card of that half-suit and not the card
+itself; a hit transfers the card and keeps the turn, a miss passes the turn to the opponent asked. A
+team scores a half-suit by \emph{declaring} it: naming which of its own three seats holds each of the
+six cards. Every action is public, so the whole hidden state is the deal, and an engine's belief is a
+posterior over deals under the constraints the public record implies: a hit pins a card, a miss
+excludes a seat, and every ask certifies that the asker held another card of that half-suit at that
+moment (a \emph{legality certificate} in what follows). The \emph{arbiter} is the program that runs
+the game and scores it; a \emph{bridge} is the code that lets one project's bot play inside the
+other's arbiter; a \emph{dialect} is one project's set of choices on the rules the game leaves open.
+
+Both engines implement this game with the no-bluff ask rule and the award rule for misdeclarations: a
+declaration that is wrong in any way --- a card with an opponent (an \emph{ownership} error) or all
+six within the team but the split misstated (an \emph{allocation} error) --- scores the half-suit for
+the other team. (KV's engine scored a right-team, wrong-split declaration as a void until its v0.6; the
+paper re-measured everything under the award rule, and every result here uses it.) They differ in four
+places that matter to what follows.
+\begin{description}
+\item[Out-of-turn declaration.] FishLab's default rule lets any seat declare at any moment, and the
+      engine polls every seat before every move. KV's baseline lets a seat declare only on its own
+      turn (\code{claims\_any\_time = False}). FishLab exposes the latter as \flag{no-out-of-turn}.
+\item[Cardless seats.] FishLab lets a cardless seat declare; KV's arbiter makes it pass. FishLab
+      exposes the latter as \flag{no-cardless-declare}.
+\item[The forced endgame.] When one team is out of cards, FishLab runs a willingness ladder over the
+      declaring team: for each half-suit and each seat, at descending confidence thresholds, a seat
+      that is willing declares, and only a last resort demands a best guess. Only the willingness bit
+      crosses between teammates. In KV's arbiter the mover must claim one half-suit per turn, and the
+      bridge chooses which.
+\item[What a wrong declaration reveals.] KV's engine reveals the true holders at resolution; FishLab
+      reveals nothing.
+\end{description}
+
+\subsection{KRAKEN inside FishLab}
+
+FishLab's bridge, \code{engine/src/kv6.hpp}, launches KRAKEN's own package (\code{kraken.decide},
+unmodified, under the vendored interpreter) as a line-oriented JSON service, one process per worker
+thread. It follows the three requirements KRAKEN's integration guide says a host must get right: every
+seat is polled off-turn through KRAKEN's proof-only channel; cards travel as names, with the half-suit
+permutation between the two decks derived at start-up from KRAKEN's own \code{\{"op":"cards"\}} table;
+and any error reply, illegal move or dead process aborts the run rather than substituting a move. KRAKEN
+has no clock, so no timeout is set. Because KRAKEN's belief cannot represent ``resolved, holders
+unrevealed'', the engine additionally hands it the true holders after a wrong declaration, out of band
+and to no policy of FishLab's --- the one thing FishLab grew for the integration, and a gift to KRAKEN
+relative to FishLab's own rule. A full request--reply transcript of one deal is in the artifacts:
+\kcBrRequests{} requests (\kcBrDecide{} on-turn decisions, \kcBrOffturn{} off-turn polls),
+\kcBrErrors{} error replies. KRAKEN's own consistency checker, which rejects an event stream no deal
+could have produced, never fired in any run reported here.
+
+\subsection{SESTINA inside KV's arbiter}
+\label{sec:theirbridge}
+
+KV's bridge is \code{fish4/dylan\_v07.py} driving \code{external\_v07/shim\_decide.cpp}, a one-shot
+binary compiled from FishLab's headers. It is stateless by construction: for every decision, a fresh
+process is started and fed
+\begin{lstlisting}
+SPEC <the frozen v07 allparams spec>
+RULES 9 0 1                 # 9 half-suits, on-turn declaration only, cardless OK
+SEAT s
+HAND <bitmask>              # the seat's hand NOW (Observation.hand)
+SEED <one constant per game>
+EV ASK|DECL|PASS ...        # every public event, running counts and score
+TURN s
+DECIDE TURN                 # or DECIDE FORCED <half-suit> / PASSTO
+\end{lstlisting}
+and the shim constructs the agent, calls \code{Agent::reset(seat, hand, rules, seed)}, replays the
+events through \code{observe()}, and answers one move. \sestina{} is never polled off-turn (their rules
+have no such channel); when the mover must declare, the bridge names the first live half-suit the mover holds a card
+in and asks for the agent's own proposal on it, falling back to a best guess (this is the paper's
+bridge revision~2; revision~1 passed the first
+live half-suit outright, and the paper prices the repair at $\kcPaperBridgeBugPrice$ sets per game).
+Every proposed move is legality-checked and a failure would be counted; the paper reports zero, and so
+does every run here.
+
+\subsection{Versions}
+
+KRAKEN is the package vendored at \code{engine/external/kraken} (v1.0; \code{V06\_DEPLOYED} plus
+\code{claim\_forced\_exhaustive=1}). The upstream branch head \code{\kcUpstreamHead} (v1.1) was fetched
+and played on the same seed, same rotations and same opponent as the first FishLab block: the results
+are \kcIdIdentical{} to the digit (\kcIdUpWin\pct{} against \kcIdWin\pct{} of games,
+\kcIdUpSetsA/\kcIdUpSetsB{} against \kcIdSetsA/\kcIdSetsB{} sets, \kcIdUpAsks{} against \kcIdAsks{}
+asks, \kcIdUpDecl{} against \kcIdDecl{} declarations). The v1.1 paper says its deployed configuration is
+unchanged from v1.0; this confirms it. KV's package was itself called FishBot v0.6 before it became
+KRAKEN; the copy vendored at \code{engine/external/kv-fishbot-v06} is an earlier snapshot of that
+package whose policy code differs from KRAKEN's in more than the one flag, it is unrelated to FishLab's
+own FishBot v0.6, and it is written ``KV FishBot v0.6'' throughout. \sestina{} is the frozen specification in
+\code{engine/fishbot\_v07.json}; the \code{allparams} form KV's bridge sends equals their
+\code{v07\_spec.txt}. The paper pins FishLab at commit \code{d017fbc}; between that commit and the build
+used here the only changes under \code{engine/src/} to any file the policy depends on are two additive
+hooks (the true-holder callback above, and factory branches for external bots).
+
+\section{Methods}
+\label{sec:methods}
+
+\subsection{The FishLab battery}
+\label{sec:m-fishlab}
+
+Each cell is a set of independent blocks of 100 deals played in all six seat rotations (600 games), so
+that each policy holds every hand-triple of a deal exactly three times and the deal's luck cancels.
+Each block has its own seed and is one invocation of \code{fish match} with \flag{json}; the row it
+returns, with its exact \code{argv}, is one line of \code{e1\_results.jsonl}. A cell's estimate is the
+mean over its blocks and its interval is a Student~$t$ interval on the block means, which is
+deal-clustered by construction. Cells: KRAKEN against \sestina{} under FishLab's default rules, under
+\flag{no-out-of-turn} (KRAKEN's dialect), under both that and \flag{no-cardless-declare}, and
+under \flag{legacy}; KRAKEN against KRAKEN as a symmetry control; KV FishBot v0.6 against \sestina{}, once on its own seeds and once on the seeds of the default
+KRAKEN cell so that the two packages are compared on identical deals; and KRAKEN against FishBot v0.6,
+F-cheap (v0.6 with search), v0.5 and v0.4 to place it on this repository's ladder. \kcETotalBlocks{} blocks, \kcETotalGames{} games. Throughput was
+about \kcEThroughput{} games per second on \kcEThreads{} threads while the other batteries ran
+alongside.
+
+\subsection{Replication in KV's arbiter}
+\label{sec:m-kv}
+
+The driver reproduces the design of their \code{scripts4/mega\_match.py} (fetched from upstream and
+kept under \code{upstream/scripts4/}): KRAKEN's \code{V06\_DEPLOYED} against three copies of
+\code{dylan\_v07}, the award rule, each deal played from both seat parities, their 600-ply cap, one
+JSON row per game. It runs their engine and their bridge
+unmodified, from the vendored package, with the shim compiled from this repository's headers; only the
+seeds are fresh. Each row additionally records, per side, asks and hits, declarations and their
+correctness, whether each declaration was forced (the mover had no legal ask), and the class of each
+wrong declaration: \emph{ownership} (an opponent held a card of the half-suit) or \emph{allocation}
+(the declaring team held all six and named the wrong split). Bridge fallbacks and unfinished games are
+counted; both are zero in every row. Intervals in KV's arbiter are normal, $\pm 1.96$ standard errors
+on per-game margins; the two parities of a deal are nearly uncorrelated (worst $|\rho| =
+\kcVMaxAbsRho$ over the six runs) and deal-clustered half-widths agree with them to within
+\kcVMaxClusterDiff{} sets.
+
+\subsection{Bridge variants}
+\label{sec:m-variants}
+
+Four variants of their bridge were run on the same deal seeds and agent seeds as the baseline, so
+that per-game differences are paired (three change one thing; the fourth combines two repairs), and a
+fifth run repeats the repaired bridge on fresh deals. Each subclasses their \code{DylanV07}:
+\begin{description}
+\item[dealt hand.] \code{HAND} is the hand as dealt, recovered by walking the seat's public transfers
+      newest-first from the current hand (a card taken by a successful ask is removed, one lost is
+      restored, one retired by a declaration is restored to the seat that held it). Every decision also
+      replays the result forward and checks that it reproduces the current hand;
+      \kcVDealtHandMismatch{} mismatches occurred in \kcVDealtGames{} games.
+\item[ladder.] When the mover must declare, it runs FishLab's forced ladder over every live half-suit
+      (voluntary proposal, then willingness at the engine's descending thresholds, then the most
+      confident best guess), through a shim extended with one command. \kcVLadderCalls{} forced
+      decisions went through it.
+\item[seed.] The per-decision agent seed varies with the history length, so the fresh process does not
+      restart the same random stream at every decision.
+\item[dealt hand and seed.] Both repairs.
+\item[dealt hand, fresh deals.] The dealt-hand bridge on \kcVDealtBigGames{} new games, unpaired.
+\end{description}
+
+\subsection{The decision probe}
+\label{sec:m-probe}
+
+\code{agree\_probe.cpp} wraps native \sestina{} in FishLab's arbiter under KV's rules (declare on
+turn only) against KRAKEN. At each of its own on-turn decisions the wrapper also serialises the position
+exactly as \code{dylan\_v07.py} does and asks KV's shim binary twice --- once with the current hand,
+once with the hand as dealt --- sending the native agent's exact seed (their bridge masks its seed to
+63 bits; the probe does not, because the seed is not what is under test). It records whether
+the shim declares when the native agent does, whether the declarations match, whether the asks match,
+and, using the true hands it has access to as the arbiter, whether each hypothetical declaration
+would have been right. The first decision of a game is a special case: the fresh shim process and the
+native agent then have identical random state, so if the serialisation is faithful they must answer
+identically. The probe was run twice, once with the native agents reused across deals as the
+production harness reuses them and once with them rebuilt for every game, because \sestina{}'s own
+report documents a rare cross-deal residual in reused agents (its \S12.6).
+
+\section{Results}
+
+\subsection{FishLab's arbiter}
+\label{sec:fishlab}
+
+\begin{table}[!ht]
+\caption{Every cell of the FishLab battery. Blocks of 100 deals $\times$ 6 rotations; intervals are
+Student~$t$ on block means. ``F-cheap'' is FishBot v0.6 with \sestina{}'s search switched on.}
+\label{tab:fishlab}
+\small
+\input{tables_kraken/fishlab}
+\end{table}
+
+Table~\ref{tab:fishlab} is the whole battery. Against \sestina{}, KRAKEN loses under every dialect:
+its share of games won runs from \kcESestinaWinMin\pct{} to \kcESestinaWinMax\pct{} and its margin
+from $\kcESestinaMarginMin$ to $\kcESestinaMarginMax$ sets per game over \kcESestinaGames{} games.
+The default-rules cell sits \kcEDefaultSEsFromClaim{} of its own standard errors from the paper's
+figure, and the like-for-like cell, declaration on turn only, \kcENoootSEsFromClaim{}. KRAKEN's
+dialect makes its result slightly worse, not better; removing cardless declaration as well moves it by
+$\kcECardlessShift$ in KRAKEN's favour, on different deals, which is within the between-seed variation
+the paired cell below exposes and in any case leaves the sign and the conclusion untouched; the legacy
+dialect sits with the on-turn-only cells. The README's dialect table, which puts KRAKEN at
+\kcReadmeBoth{} under FishLab's rules and \kcReadmeNobody{} when nobody declares off-turn, is not
+approached under either.
+
+The mirror cell is the control that the harness is symmetric: KRAKEN against itself is
+\kcEMirrorWin\pct{} to the digit (a tautology for a deterministic bot under a duplicate design, but
+it rules out a seat-order or orientation bug). The remaining cells place KRAKEN on this repository's ladder. It loses
+to FishBot v0.6 ($\kcEVsVsixMargin$), to F-cheap ($\kcEVsFcheapMargin$), to v0.5
+($\kcEVsVfiveMargin$) and to v0.4 ($\kcEVsVfourMargin$). The earlier KV FishBot v0.6 package, played through the same bridge, loses to \sestina{} by
+$\kcEKvSixMargin$ on its own seeds but by $\kcEKvSixPairedMargin$ on the KRAKEN cell's seeds, and on
+those identical blocks its margin differs from KRAKEN's by $\kcEKvSixDiff$~$[\kcEKvSixDiffLo,
+\kcEKvSixDiffHi]$ sets per game: the two packages are indistinguishable once the deals are held
+fixed. The unpaired gap between the two cells was deal variation between seed ranges, and it is worth
+stating as a calibration of this battery: differences between two \emph{unpaired} cells of a few
+blocks each should not be read below about 0.15 sets per game, and the paired instrument is the one to
+use for such contrasts. KRAKEN's declaration accuracy inside FishLab
+(\kcEDefaultDeclA\pct{}) is higher than in its own arbiter (\kcMegaDeclKV\pct{} in the paper's
+journal); there is no sign that FishLab's hosting degrades it, although no probe of the kind
+Section~\ref{sec:probe} applies to \sestina{} was built for KRAKEN.
+
+\begin{figure}[!ht]
+\centering
+\input{tables_kraken/margins_figure}
+\caption{KRAKEN's margin in every non-control cell of both arbiters, sets per game with 95\pct{}
+intervals. Green: FishLab's arbiter. Grey: KV's arbiter, from the bridge as published (top three) to
+the repaired bridge (bottom three). The dashed line is the paper's headline. The KV FishBot v0.6 cells
+are in Table~\ref{tab:fishlab} only, since their bars would be that bot's margin, not KRAKEN's.}
+\label{fig:margins}
+\end{figure}
+
+\subsection{KV's arbiter reproduces the paper}
+\label{sec:kv}
+
+With their engine, their rules and their bridge as published, on fresh deals, KRAKEN's margin is
+$\kcVRevTwoMargin$~$[\kcVRevTwoLo, \kcVRevTwoHi]$ over \kcVRevTwoGames{} games, with
+\kcVRevTwoSetShare\pct{} of sets and \kcVRevTwoWin\pct{} of games (first row of
+Table~\ref{tab:kvarena}). The paper's journal gives $\kcMegaMargin$, \kcMegaSetShare\pct{} and
+\kcMegaWin\pct{}. \sestina{} declares correctly \kcVRevTwoDeclS\pct{} of the time here against
+\kcMegaDeclS\pct{} there, and hits \kcVRevTwoAskS\pct{} of its asks against \kcMegaAskS\pct{}. The
+paper's measurement is therefore reproducible on its own apparatus, and the disagreement with
+Section~\ref{sec:fishlab} is not noise on either side.
+
+The instrumented rows say where the wrong declarations of \sestina{} come from. \sestina{} is forced to
+declare \kcVRevTwoForcedPerGame{} times a game and gets \kcVRevTwoForcedS\pct{} of those right; its
+\emph{voluntary} declarations, the ones its own gate chose to make, are right only
+\kcVRevTwoVolS\pct{} of the time. Of its wrong declarations, \kcVRevTwoOwnErr{} per game are
+ownership errors --- half-suits an opponent still held a card of --- against \kcVRevTwoAllocErr{}
+allocation errors. Natively, the gate of \sestina{} essentially never declares a half-suit an opponent
+holds a card of; something is wrong with what it is being told about the table.
+
+\subsection{One line of the bridge}
+\label{sec:variants}
+
+\begin{table}[!ht]
+\caption{Bridge variants inside KV's arbiter. All rows but the last are the same \kcVRevTwoGames{}
+games (1,000 deals $\times$ 2 parities, same deal and agent seeds), so the paired column is a per-game
+difference on identical deals. ``K'' is KRAKEN, ``S'' is \sestina{}.}
+\label{tab:kvarena}
+\small
+\input{tables_kraken/kvarena}
+\end{table}
+
+Table~\ref{tab:kvarena} prices each hypothesis. The forced-endgame ladder --- the mechanism the
+paper's own bridge repair addressed --- is worth $\kcVLadderPaired$~$[\kcVLadderPairedLo,
+\kcVLadderPairedHi]$: nothing. A varying seed is worth $\kcVSeedPaired$~$[\kcVSeedPairedLo,
+\kcVSeedPairedHi]$: nothing. Passing the hand as dealt is worth $\kcVDealtPaired$~$[\kcVDealtPairedLo, \kcVDealtPairedHi]$ sets per game, and it reverses the sign of the result:
+KRAKEN's margin becomes $\kcVDealtMargin$~$[\kcVDealtLo, \kcVDealtHi]$, its share of games
+\kcVDealtWin\pct{}. \sestina{}'s declaration accuracy rises from \kcVRevTwoDeclS\pct{} to
+\kcVDealtDeclS\pct{} (voluntary \kcVDealtVolS\pct{}), its ownership errors fall from
+\kcVRevTwoOwnErr{} to \kcVDealtOwnErr{} per game, and its ask hit rate rises from
+\kcVRevTwoAskS\pct{} to \kcVDealtAskS\pct{} --- the same corruption was costing it asks as well as
+declarations. Adding the varying seed on top changes little ($\kcVDealtSeedMargin$). On
+\kcVDealtBigGames{} further fresh games the repaired bridge gives $\kcVDealtBigMargin$~$[\kcVDealtBigLo, \kcVDealtBigHi]$.
+
+Two things follow. First, KV's arbiter and FishLab's now agree. Under the FishLab dialect closest to
+KV's --- declaration on turn only, no cardless declaration --- FishLab gives $\kcENoootNcMargin$~$[\kcENoootNcMarginLo, \kcENoootNcMarginHi]$, against $\kcVDealtMargin$ and $\kcVDealtBigMargin$
+from the repaired bridge in KV's arbiter; the remaining differences of hosting are discussed in
+Section~\ref{sec:faithful}. Second, the
+paper's mechanism story --- that \sestina{} finds cards at a comparable rate but does not know when a
+half-suit is finished --- is describing a policy whose posterior had been corrupted before it was asked
+anything. Its \kcMegaDeclS\pct{} is the bridge, not the engine.
+
+\subsection{The same defect, decision by decision}
+\label{sec:probe}
+
+\begin{table}[!ht]
+\caption{The decision probe: \kcPrGames{} games, \kcPrDecisions{} on-turn decisions of native
+\sestina{} in FishLab's arbiter under KV's rules, each also answered by KV's shim from the current hand
+and from the hand as dealt. Hypothetical declarations are scored against the true hands.}
+\label{tab:probe}
+\small
+\input{tables_kraken/probe}
+\end{table}
+
+Table~\ref{tab:probe} removes the arbiter from the question altogether. Given the current hand, KV's
+shim declares \kcPrCurDecl{} times where the native agent declares \kcPrNativeDecl{}; \kcPrCurWrongPct\pct{}
+of the shim's declarations are wrong against \kcPrNativeWrongPct\pct{} of the native agent's, and of the
+\kcPrCurOnly{} declarations the shim makes when the native agent does not, \kcPrCurOnlyWrong{} are
+wrong and \kcPrCurOnlyOwn{} name a half-suit an opponent is holding. Given the hand as dealt, the shim
+never declines a declaration the native agent makes and never allocates one differently; its
+remaining excess declarations (\kcPrDealtOnly{}, \kcPrDealtOnlyWrong{} wrong) and the ask
+disagreements are consistent with the restarted random stream, the one piece of state a fresh process
+cannot reconstruct, and the seed schedule itself is priced at $\kcVSeedPaired$ in play. The
+first-decision row is the check on everything else in their serialisation: with the native agents
+rebuilt for every game, both versions of the shim answer what the native agent answers at all
+\kcPrFreshFirst{} first decisions. With the agents reused across deals, \kcPrFirstDealt{} of
+\kcPrFirst{} agree; the one exception is a first decision at which the reused native agent itself
+differs from a freshly built one --- the cross-deal residual of \sestina{}'s report --- and at which
+the shim matches the fresh agent, so it is a property of FishLab's harness, not of the bridge.
+
+\section{The defect}
+\label{sec:defect}
+
+\subsection{What the bridge sends}
+
+Their \code{Observation.from\_state} sets \code{hand = state.hands[player]}, the hand at this moment,
+and \code{DylanV07.\_feed} writes it to the \code{HAND} line. Their shim then boots the agent with
+\code{agent->reset(seat, hand, rules, seed)} and replays the history. In FishLab, \code{reset} is
+called once, by \code{Game::setup}, with the hand as dealt, and the agent thereafter learns every
+movement from the events it observes. The two conventions coincide only until the seat's first
+transfer.
+
+\subsection{What the engine does with it}
+
+\code{Knowledge::init} (\code{engine/src/belief.hpp}) marks every card in the reset hand as owned by
+this seat and every other card as unknown with a candidate set that excludes this seat. Under the
+bridge's convention a card this seat has since taken from an opponent is therefore ``mine since the
+deal'', and a card it was dealt and has since lost is ``never mine''.
+
+The damage is done when the history is replayed. \code{Knowledge::onEvent}
+(\code{belief.hpp:\kcBeliefCertLines}) turns every ask by a seat $p$ in half-suit $S$ into a legality
+certificate --- $p$ held some other card of $S$ at that moment --- built over the cards of $S$ whose
+owner is still unknown and whose candidate set includes $p$ (lines \kcBeliefCertLines{}, verbatim):
+\input{tables_kraken/belief_excerpt}
+Suppose KRAKEN's seat $p$ asks for a card of $S$ at ply 10, holding only the 3 of that suit, and at ply
+40 \sestina{}'s seat takes that 3 from $p$. At the reconstruction for any decision after ply 40 the 3
+is already \code{owner == me}, so when ply 10 is replayed it is excluded from $D$. The certificate is
+now a statement about the wrong cards; if only one card of $S$ remains unknown with $p$ in its
+candidate set, line~\kcBeliefPinLine{} pins that card to $p$ as a deduction --- a card $p$ never
+held. The exact counting and the Sinkhorn fit that \sestina{}'s declaration gate reads then reconcile a
+constraint set no deal satisfies, and the reconciliation shows up as ownership errors: half-suits
+declared as wholly held while an opponent still holds a card of them.
+
+\subsection{Why every check passed}
+
+The paper's checks could not see this, for three reasons. \emph{Legality}: every move the shim
+returns is legality-checked and zero fallbacks are reported, but a policy with a corrupted belief
+still makes legal moves. \emph{Decision-level verification was done for the other bridge}: the
+fresh-agent comparison of the paper's Appendix~C (\kcPaperShimDecisions{} decisions, no mismatches)
+verifies KRAKEN's own transport, \code{fish4/decide.py}, against a fresh KRAKEN agent; for the v0.7
+shim the paper and its bridge README report legality checks, the fallback counter, twenty mixed games
+with zero fallbacks, and a unit test of the forced-half-suit rule (\code{tests4/test\_dylan\_bridge.py},
+fetched upstream), none of which compares a decision with what the native agent would have done. A
+test in the shape of Appendix~C would not have caught it either unless the fresh agent were the
+\emph{native} one: a fresh agent booted from the same current hand reproduces the defect and compares
+it with itself. \emph{Forensics}: the paper examined \sestina{}'s errors closely (\S11.9) and found
+that every one of the \kcPaperNeverMoved{} cards inside its ownership errors had never publicly moved;
+that ownership errors were \kcPaperRateRatio{} times as frequent, per ply of exposure, in half-suits
+KRAKEN had asked in as in half-suits it had not; and that of the declarations which followed both an
+ask by KRAKEN and a later capture of a card of that half-suit by \sestina{},
+\kcPaperFollowedBothPct\pct{} were ownership-wrong, against \kcPaperFollowedTakingPct\pct{} for a
+capture alone. That is exactly the population this defect produces: KRAKEN's ask creates the
+certificate, \sestina{}'s later capture in that half-suit is what the current-hand reset mis-files, and
+the phantom deduction lands on a card that never moved. The paper read the signature as a flaw in
+\sestina{}'s inference (``as though `at least one' had been `exactly one'\,''); it is not what the code
+does.
+
+\subsection{What inherits it}
+
+Every cross-engine figure in the paper was taken through this bridge: the head-to-head, the
+declaration decomposition (\kcPaperDeclShare\pct{} of the margin as ``declaration accounting''), the
+acquisition and turn-count tables, the README's dialect gaps, the pre-registered foreign-opponent
+checks R2 and R6, and the contestation-term port of Table~18, which measured a FishLab coordinate
+against a corrupted FishLab. Their website's exhibition reconstructs every session from the public log
+through the same \code{\_feed}. The paper's bridge ledger defends the paired contrasts among these
+--- the dialect gaps, R2, R6 --- as bridge-independent because every arm shared the bridge. That holds
+only when the bridge's effect is additive, and a corruption of the opponent's posterior worth three
+sets a game is not: the README's own table has off-turn declaration costing KRAKEN $\kcReadmeOffturnGap$
+sets against the corrupted \sestina{}, while against the native one in FishLab it is worth
+$\kcEOffturnGap$ to KRAKEN (Table~\ref{tab:fishlab}). A gap measured against a corrupted opponent is
+not the gap against the real one. The bridge-revision-2 repair the paper describes is real but
+immaterial by comparison: it addressed which half-suit a forced best guess names, worth
+$\kcPaperBridgeBugPrice$ by the paper's own pairing and $\kcVLadderPaired$ for the whole ladder here.
+
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{What is refuted, what stands, what was not tested}
+
+Refuted: that KRAKEN beats \sestina{} by about $\kcMegaMargin$ sets per game, takes \kcMegaSetShare\pct{}
+of sets, wins \kcMegaWin\pct{} of games, or has an eighteen-point declaration-accuracy edge over it.
+In both arbiters, once the bridge passes \sestina{} the hand it was dealt, KRAKEN loses by roughly
+$\kcVDealtBigMargin$ to $\kcENoootMargin$ sets per game under each of the dialects tested (four in
+FishLab, KV's baseline in KV's arbiter) and wins about two games in five. The
+mechanism story built on the \kcMegaDeclS\pct{} row is refuted with it.
+
+Standing: everything in the paper that does not pass through the bridge. Its internal lineage result
+($\kcPaperVthreeMargin$ sets per pair against its own v0.3 champion), its exact counting and
+sampling, its posterior-quality measurements, its endgame solver and its pre-registration discipline
+are untouched by anything here, and this report makes no claim about them.
+
+Not claimed: a global ranking. One foreign opponent is one opponent, and \sestina{}'s own report
+declines the same claim for the same reason. KRAKEN's placement below FishBot v0.4 through v0.6 on
+FishLab's ladder is context, not a leaderboard.
+
+\subsection{Which arbiter is faithful}
+\label{sec:faithful}
+
+Neither arbiter is the game; each hosts one bot natively and the other through a bridge, and the
+question is what each bridge costs. KRAKEN is stateless by design --- its guide says a host may send
+one line and close the pipe --- so a bridge costs it nothing, and in FishLab it is additionally handed
+the true holders on a wrong declaration and declares more accurately than in its own arbiter.
+\sestina{} is stateful and searches; a fresh process per decision restarts its random stream, their
+forced endgame lets only the mover declare and from a best guess, and it is never polled off-turn.
+Even with the dealt hand, the probe shows the shim still declaring wrongly \kcPrDealtWrongPct\pct{} of
+the time against \kcPrNativeWrongPct\pct{} natively. \sestina{}'s ask hit rate in the repaired KV
+arbiter (\kcVDealtAskS\pct{}) is not below FishLab's under the matched dialect
+(\kcENoootNcAskB\pct{}), so no residual shows there. Of the hosting differences, the two that could be
+varied one at a time are priced in Table~\ref{tab:kvarena} and are small; the rest are bounded only by
+the end-to-end comparison of matched-dialect cells in Section~\ref{sec:variants}. The honest summary is
+that the corrected KV arbiter and FishLab give the same sign and nearly the same size, and that what
+little residual there is runs against \sestina{} rather than for it.
+
+\subsection{Fairness to KRAKEN in FishLab}
+
+The symmetric question is whether \code{kv6.hpp} does to KRAKEN what \code{dylan\_v07.py} did to
+\sestina{}. The evidence that it does not: KRAKEN's three stated requirements are met;
+its own event-stream checker never rejected a position; the transcript of a full deal is well-formed;
+it is handed information FishLab's own agents do not get; it has no clock; the harness is symmetric;
+and its declaration accuracy is higher here than at home. Two things are not evidence and are not
+claimed as such: the mirror cell cannot see a defect that hits both copies equally, and no
+decision-level probe of KRAKEN's hosting was built. Two asymmetries remain. A cardless KRAKEN seat is
+not asked to declare on its own turn, because KRAKEN's on-turn loop does not implement cardless
+declaration, though it is still polled off-turn; the \flag{no-cardless-declare} cell removes that
+rule for both sides at once and moves the result by $\kcECardlessShift$ in KRAKEN's favour on
+different deals, within the battery's unpaired resolution. And in
+FishLab's forced endgame, when KRAKEN's own decision names a different half-suit from the one the
+ladder's last rung demands, the engine's default all-to-one-seat guess is applied in KRAKEN's name and
+counted; that counter is not printed by the match driver, so it is bounded here instead: KRAKEN makes
+\kcENoootForcedPerGame{} forced declarations a game under its own dialect at \kcENoootForcedAcc\pct{}
+accuracy (\kcEDefaultForcedPerGame{} at \kcEDefaultForcedAcc\pct{} under FishLab's), so even if every
+wrong one were such a substitution the effect is at most \kcENoootFallbackBound{} sets per game
+(\kcEDefaultFallbackBound{} under FishLab's rules), which does not reach the result. If KV's project
+finds a defect in \code{kv6.hpp} the way this report found one in theirs, the paired instrument to
+price it is the same one used here.
+
+\subsection{What a cross-engine measurement should require of its bridge}
+
+The general lesson is the one the paper itself states and then did not apply: a number measured
+through a bridge is a claim about the bridge. Four checks would have caught this defect, and any of
+them is cheap.
+\begin{enumerate}
+\item \textbf{Reconstruct against the native agent, not against a copy of the reconstruction.} At
+      the first decision of a game, a fresh agent and the live agent have identical state; they must
+      answer identically, and the comparison must be made on positions from real games, after
+      transfers have happened.
+\item \textbf{Round-trip every reconstructed input.} A hand handed to \code{reset} must, replayed
+      forward through the history, reproduce the hand the arbiter holds. This is one line and fails
+      loudly.
+\item \textbf{Host in both directions and require agreement.} Two independently written engines
+      that disagree by three sets a game on the same pairing are reporting a bridge defect, not a
+      dialect.
+\item \textbf{Account for errors by class.} A foreign bot that suddenly declares half-suits its
+      opponents hold is not exhibiting a subtle inference weakness; it is being lied to. Ownership
+      versus allocation errors, and forced versus voluntary declarations, separate the two in one
+      table.
+\end{enumerate}
+Legality checks and fallback counters, the checks the paper relied on, are necessary and not
+sufficient: a scrambled belief plays legal moves.
+
+\section{Conclusion}
+
+KRAKEN v1.1's cross-engine headline is an artifact of its bridge into \sestina{}, which reset the
+opponent with the hand it held rather than the hand it was dealt and thereby corrupted every
+certificate the opponent's belief is built from. The paper's number reproduces on its own apparatus;
+correcting one line and replaying the same deals moves it by $\kcVDealtPaired$ sets per game and
+reverses its sign; FishLab's arbiter, with KRAKEN hosted exactly as its guide demands, gives the same
+answer independently; and the defect is visible decision by decision. Under each of the dialects tested,
+\sestina{} beats KRAKEN by roughly two thirds of a set per game and wins about three games in five, and KRAKEN sits below every FishBot release since v0.4. A patch for their bridge
+accompanies this report.
+
+\appendix
+
+\section{Reproduction and artifacts}
+
+FishLab is at \url{https://github.com/dylann4500/fishbot}; this report was produced at commit
+\code{f9b4743} with the uncommitted additions in the working tree at the time, none of which touch the
+measured engine core. KV's repository is at
+\url{https://github.com/kv1514/fish-researchp12}
+(branch \code{claude/fishnbot-work-access-g7ciey}, head \code{\kcUpstreamHead}). All artifacts, drivers and this document's number generator are under
+\code{research/kraken-check/}:
+\begin{description}
+\item[\code{e1\_results.jsonl}] one row per FishLab block, with the exact command line;
+      \code{run\_e1.py} regenerates it.
+\item[\code{e2\_*.jsonl}] one row per game in KV's arbiter, per bridge variant, with per-side ask,
+      declaration, forced-declaration and error-class counts; \code{kvarena/run\_e2.py} and
+      \code{kvarena/e2\_variants.py} regenerate them after \code{stage\_kvarena.sh} has copied KV's
+      package into a work directory and compiled their shim (and the ladder-capable
+      \code{shim\_decide2.cpp}) against \code{engine/src}.
+\item[\code{e5\_probe.json}, \code{agree\_probe.cpp}] the decision probe.
+\item[\code{e4\_upstream\_777001.json}] upstream KRAKEN v1.1 on the vendored block's seed.
+\item[\code{bridge\_kraken.jsonl}] a full request--reply transcript of \code{kv6.hpp} for one deal.
+\item[\code{upstream/}] the paper's headline result and 10,000-game journal, the bridge ledger, and
+      the bridge file the patch applies to.
+\item[\code{dylan\_v07\_dealt\_hand.patch}] the repair (bridge revision~3).
+\item[\code{analyse.py}, \code{make\_numbers.py}, \code{make\_report.py}] the aggregation, the
+      macros and tables of this document, and the Markdown report \code{docs/KRAKEN-CLAIM-CHECK.md}.
+\end{description}
+The commands, from the repository root:
+\begin{lstlisting}
+python3 research/kraken-check/run_e1.py 9   # argument = threads (no effect on results)
+sh research/kraken-check/stage_kvarena.sh && cd engine/external/kvarena-work
+PY=../kv-venv/bin/python
+OUT=../../../research/kraken-check
+E2_VARIANT=rev2      $PY run_e2.py 1000 6 910000 $OUT/e2_rev2.jsonl
+E2_VARIANT=dealthand $PY run_e2.py 1000 6 910000 $OUT/e2_dealthand.jsonl
+for v in ladder seedvary dealtseed; do
+  E2_VARIANT=$v $PY run_e2.py 1000 6 910000 $OUT/e2_$v.jsonl; done
+E2_VARIANT=dealthand $PY run_e2.py 4000 10 920000 $OUT/e2_dealthand_big.jsonl
+sh $OUT/run_probe.sh                        # the decision probe (e5)
+cd ../../..
+python3 research/kraken-check/analyse.py
+python3 research/kraken-check/make_numbers.py
+\end{lstlisting}
+
+\section{The repair}
+
+The whole of the patch to \code{fish4/dylan\_v07.py} is the following method and its use in
+\code{\_feed} in place of \code{obs.hand}:
+\begin{lstlisting}
+@staticmethod
+def _dealt_hand(obs):
+    me, hand = obs.player, obs.hand
+    for ev in reversed(obs.history):
+        if isinstance(ev, AskEvent) and ev.success:
+            if ev.asker == me:      hand &= ~(1 << ev.card)
+            elif ev.target == me:   hand |=  (1 << ev.card)
+        elif isinstance(ev, ClaimEvent):
+            base = ev.half_suit * CARDS_PER_HALF_SUIT
+            for i, holder in enumerate(ev.revealed):
+                if holder == me:    hand |=  (1 << (base + i))
+    return hand
+\end{lstlisting}
+KV's own \code{Observation} class already provides exactly this walk as \code{initial\_hand()}, used by
+their information-leakage test, so the repair is also the one-token change \code{obs.hand} to
+\code{obs.initial\_hand()} in \code{\_feed}; the patch spells the walk out so that it does not depend
+on that helper. It uses only public events and the seat's own hand, so it is available to any host; a host whose
+engine does not reveal holders on a failed declaration can substitute the declared holders for a
+successful one and the seat's own knowledge of which of its cards were retired for a failed one.
+
+\begin{thebibliography}{9}
+\bibitem{kraken} Kausthubh Veldanda. \emph{Exact Inference Is Not Enough: Opponent Models and Endgames
+in Six-Player Literature}. KRAKEN v1.1, 30 August 2026. \code{paper/kraken.pdf} in the repository\\
+\url{https://github.com/kv1514/fish-researchp12}.
+\bibitem{sestina} Dylan Nguyen. \emph{SESTINA v1.0: Exact Inference, Robust Evaluation, and
+Adversarial Testing in Six-Player Canadian Fish}. FishLab technical report, 31 August 2026.
+\code{output/pdf/sestina\_v10.pdf} in the repository\\
+\url{https://github.com/dylann4500/fishbot}.
+\end{thebibliography}
+
+\end{document}

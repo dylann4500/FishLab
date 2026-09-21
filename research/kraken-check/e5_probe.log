@@ -1,0 +1,8 @@
+deal 10/60  onTurn=1113 curOnly=46 dealtOnly=17
+FIRST-DISAGREE(cur) seat 3 ask native=2/10 shim=DECL 5 5 1 3 3 5 1 events=14
+FIRST-DISAGREE(dealt) seat 3 ask native=2/10 shim=DECL 5 5 1 3 3 5 1 events=14
+deal 20/60  onTurn=2142 curOnly=87 dealtOnly=28
+deal 30/60  onTurn=3221 curOnly=127 dealtOnly=36
+deal 40/60  onTurn=4283 curOnly=169 dealtOnly=53
+deal 50/60  onTurn=5348 curOnly=200 dealtOnly=67
+deal 60/60  onTurn=6403 curOnly=239 dealtOnly=93

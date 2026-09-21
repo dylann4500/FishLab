@@ -1,0 +1,49 @@
+{
+ "variant": "dealtseed",
+ "games": 2000,
+ "margin": -0.653,
+ "ci95": [
+  -0.7792469751802834,
+  -0.5267530248197166
+ ],
+ "kv_sets": 8347,
+ "dylan_sets": 9653,
+ "kv_set_share": 0.4637222222222222,
+ "kv_win_pct": 40.05,
+ "ties": 0,
+ "ask_hit_kv": [
+  0.5267385491619747,
+  92002
+ ],
+ "ask_hit_dy": [
+  0.550229210313427,
+  96418
+ ],
+ "decl_ok_kv": [
+  0.9749452687910484,
+  8222
+ ],
+ "decl_ok_dy": [
+  0.9661484966250767,
+  9778
+ ],
+ "forced_kv": [
+  1774,
+  1644
+ ],
+ "forced_dy": [
+  1442,
+  1340
+ ],
+ "own_err_kv": 12,
+ "own_err_dy": 89,
+ "alloc_err_kv": 194,
+ "alloc_err_dy": 242,
+ "fallbacks": 0,
+ "off_team_owners": 0,
+ "unfinished": 0,
+ "sec_per_game": 31.877305,
+ "extra": {
+  "hand_mismatch": 0
+ }
+}

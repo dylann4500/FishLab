@@ -14,6 +14,9 @@
 // the command line, and `fish match --a=bot:<id>` measures one, both in a build
 // with -DFISH_NO_SERVE.
 #include "botcheck.hpp"
+// The inverse of the bot bridge: this engine's own policies, published over the
+// same protocol an uploaded package speaks.
+#include "botserve.hpp"
 #include "diag.hpp"
 #include "probe_deadlock.hpp"
 #include "probe_vdeadlock.hpp"
@@ -1337,6 +1340,19 @@ mc.freshAgents = argFlag(argc, argv, "freshagents");  // diagnostic, see MatchCo
     return 0;
   }
 
+  // ---- publish one of our policies over the bot protocol ------------------
+  // `fish botserve --policy=<spec>` is what a packaged FishLab bot runs; see
+  // docs/BOT_PACKAGE.md and scripts/package-bot.sh.
+  if (cmd == "botserve") {
+    std::string spec = argVal(argc, argv, "policy", "");
+    if (spec.empty()) {
+      fprintf(stderr, "usage: fish botserve --policy=<spec> [--name=NAME] [--botversion=V]\n");
+      return 2;
+    }
+    return fish::botserve::run(spec, argVal(argc, argv, "name", "FishLab"),
+                               argVal(argc, argv, "botversion", "1.0"));
+  }
+
   // ---- uploaded bot packages ---------------------------------------------
   // The same library `fish serve` offers on the setup screen, from the command
   // line: docs/BOT_PACKAGE.md is the format, and a package installed either way
@@ -1891,6 +1907,8 @@ mc.freshAgents = argFlag(argc, argv, "freshagents");  // diagnostic, see MatchCo
   std::cout << "         --invite=CODE     fix the invite code instead of generating one\n";
   std::cout << "         --bots=DIR        where uploaded bot packages live (default engine/bots)\n";
   std::cout << "         --lock-bots       only the host may upload a bot package\n";
+  std::cout << "       fish botserve --policy=SPEC   speak the bot protocol on stdin/stdout,\n";
+  std::cout << "                                     so one of our policies can be packaged\n";
   std::cout << "       fish bots <list|add|check|prepare|remove> [arg]   uploaded bot packages\n";
   std::cout << "         a package installed here is seatable and measurable as bot:<id>\n";
   std::cout << "         format: docs/BOT_PACKAGE.md\n";

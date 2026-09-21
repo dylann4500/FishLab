@@ -64,7 +64,11 @@ inline std::string policyLabel(const std::string& spec) {
     else if (optI(o, "legacy", 0)) name = "FishBot v0.6-legacy";
     name += beliefSuffix("fast");
   }
-  else if (base == "v07" || base == "fishbot_v07") name = "FishBot v0.7";
+  // SESTINA v1.0 is the deployed name for the v0.7 configuration.  The SPEC
+  // stays `v07`: every experiment script, frozen artifact and paper reference
+  // is written against that string, and this is a label on a seat, not an
+  // identifier.  engine/web/index.html carries the same name in its engine list.
+  else if (base == "v07" || base == "fishbot_v07") name = "SESTINA v1.0";
   else if (base == "v05" || base == "fishbot_v05") name = "FishBot v0.5" + beliefSuffix("fast");
   else if (base == "v04" || base == "fishbot_v04") {
     auto it = o.find("belief");
@@ -92,7 +96,12 @@ inline std::string policyLabel(const std::string& spec) {
     std::string id = botpkg::idFromSpec(spec);
     if (botpkg::registry().get(id, b)) {
       name = b.man.name;
-      if (!b.man.version.empty() && b.man.version != "0") name += " " + b.man.version;
+      // Only when the name does not already carry it: plenty of packages call
+      // themselves "FishAI v1.0" and then set version "1.0", and "FishAI v1.0
+      // 1.0" on a seat is this engine talking over its author.
+      if (!b.man.version.empty() && b.man.version != "0" &&
+          name.find(b.man.version) == std::string::npos)
+        name += " " + b.man.version;
     } else name = id.empty() ? "Uploaded bot" : id;
   }
   else if (base.empty()) name = "Detective";

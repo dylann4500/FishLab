@@ -1,0 +1,12 @@
+\begin{tabularx}{\linewidth}{Q{1.6}N{0.75}N{1.25}N{0.8}N{0.75}N{0.7}N{0.85}N{1.3}}
+\toprule
+bridge & games & K margin & K wins & S decl.\ acc. & S ask hit & S own.\ err.\ per game & paired $\Delta$ vs rev.~2 \\
+\midrule
+as published (rev.~2) & \kcVRevTwoGames{} & \ci{$\kcVRevTwoMargin{}$}{\kcVRevTwoLo{},\,\kcVRevTwoHi{}} & \kcVRevTwoWin{}\% & \kcVRevTwoDeclS{}\% & \kcVRevTwoAskS{}\% & \kcVRevTwoOwnErr{} & --- \\
+\textbf{hand as dealt} instead of current hand & \kcVDealtGames{} & \ci{$\kcVDealtMargin{}$}{\kcVDealtLo{},\,\kcVDealtHi{}} & \kcVDealtWin{}\% & \kcVDealtDeclS{}\% & \kcVDealtAskS{}\% & \kcVDealtOwnErr{} & \ci{$\kcVDealtPaired{}$}{\kcVDealtPairedLo{},\,\kcVDealtPairedHi{}} \\
+rev.~2 + forced-endgame ladder only & \kcVLadderGames{} & \ci{$\kcVLadderMargin{}$}{\kcVLadderLo{},\,\kcVLadderHi{}} & \kcVLadderWin{}\% & \kcVLadderDeclS{}\% & \kcVLadderAskS{}\% & \kcVLadderOwnErr{} & \ci{$\kcVLadderPaired{}$}{\kcVLadderPairedLo{},\,\kcVLadderPairedHi{}} \\
+rev.~2 + per-decision seed only & \kcVSeedGames{} & \ci{$\kcVSeedMargin{}$}{\kcVSeedLo{},\,\kcVSeedHi{}} & \kcVSeedWin{}\% & \kcVSeedDeclS{}\% & \kcVSeedAskS{}\% & \kcVSeedOwnErr{} & \ci{$\kcVSeedPaired{}$}{\kcVSeedPairedLo{},\,\kcVSeedPairedHi{}} \\
+dealt hand and per-decision seed & \kcVDealtSeedGames{} & \ci{$\kcVDealtSeedMargin{}$}{\kcVDealtSeedLo{},\,\kcVDealtSeedHi{}} & \kcVDealtSeedWin{}\% & \kcVDealtSeedDeclS{}\% & \kcVDealtSeedAskS{}\% & \kcVDealtSeedOwnErr{} & \ci{$\kcVDealtSeedPaired{}$}{\kcVDealtSeedPairedLo{},\,\kcVDealtSeedPairedHi{}} \\
+dealt hand, fresh deals (unpaired) & \kcVDealtBigGames{} & \ci{$\kcVDealtBigMargin{}$}{\kcVDealtBigLo{},\,\kcVDealtBigHi{}} & \kcVDealtBigWin{}\% & \kcVDealtBigDeclS{}\% & \kcVDealtBigAskS{}\% & \kcVDealtBigOwnErr{} & --- \\
+\bottomrule
+\end{tabularx}

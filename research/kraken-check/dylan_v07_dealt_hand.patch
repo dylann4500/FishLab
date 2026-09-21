@@ -1,0 +1,59 @@
+--- upstream/fish4/dylan_v07.py	2026-09-02 12:31:29
++++ dylan_v07_fixed.py	2026-09-02 12:31:34
+@@ -140,7 +140,11 @@
+ #:          their own driver does. See DylanV07._forced_half_suit. Priced at
+ #:          -0.0792 sets/game against us; results/BRIDGE_REVISIONS.md lists
+ #:          which stored journals are which.
+-BRIDGE_REV = 2
++#:   rev 3  HAND is the hand as DEALT, not the current hand.  See
++#:          DylanV07._dealt_hand.  Priced paired on 1,000 deals x 2 parities:
++#:          about -3.1 sets/game against us; the rev-2 head-to-head reverses
++#:          sign under it.
++BRIDGE_REV = 3
+ 
+ 
+ #: The frozen v0.7 spec (their engine/fishbot_v07.json, "allparamsSpec"),
+@@ -191,10 +195,42 @@
+         self._seed = seed & 0x7FFFFFFFFFFFFFFF or 1
+ 
+     # -- protocol assembly ---------------------------------------------------
++    @staticmethod
++    def _dealt_hand(obs: Observation) -> int:
++        """The hand this seat was DEALT, recovered from the current hand by undoing
++        every public transfer that touched it, newest first.
++
++        Their ``Agent::reset(seat, hand, rules, seed)`` is called by their own
++        driver with the hand as dealt, and their Knowledge marks every card not in
++        it as "somewhere else, never mine".  This bridge used to pass the CURRENT
++        hand and then replay the whole history on top of it, so a card we had
++        taken from an opponent was treated as ours since the deal, and a card we
++        had lost was treated as never ours.  Every certificate their belief
++        builds from an earlier ask ("that seat held a card of this half-suit at
++        that moment") was then built over the wrong candidate set, and the
++        posterior their declarations are gated on was quietly wrong.  Measured on
++        identical deals, that alone was worth about 3.1 sets a game to us.
++        """
++        me = obs.player
++        hand = obs.hand
++        for ev in reversed(obs.history):
++            if isinstance(ev, AskEvent) and ev.success:
++                if ev.asker == me:
++                    hand &= ~(1 << ev.card)
++                elif ev.target == me:
++                    hand |= 1 << ev.card
++            elif isinstance(ev, ClaimEvent):
++                base = ev.half_suit * CARDS_PER_HALF_SUIT
++                for i, holder in enumerate(ev.revealed):
++                    if holder == me:
++                        hand |= 1 << (base + i)
++        return hand
++
+     def _feed(self, obs: Observation) -> list[str]:
+         their_hand = 0
++        dealt = self._dealt_hand(obs)
+         for c in range(54):
+-            if obs.hand >> c & 1:
++            if dealt >> c & 1:
+                 their_hand |= 1 << _OURS_TO_THEIRS[c]
+         lines = [f"SPEC {self._spec}",
+                  "RULES 9 0 1",

@@ -1,0 +1,60 @@
+12:29:58 start threads=9
+12:30:41 default seed=777001 winA=0.3883 setsA=4.145 setsB=4.855 declA=0.988 declB=0.977 43.1s
+12:31:27 default seed=777002 winA=0.4000 setsA=4.222 setsB=4.778 declA=0.983 declB=0.979 45.7s
+12:32:30 default seed=777003 winA=0.3967 setsA=4.200 setsB=4.800 declA=0.984 declB=0.979 62.5s
+12:34:16 default seed=777004 winA=0.4300 setsA=4.240 setsB=4.760 declA=0.986 declB=0.982 106.7s
+12:35:58 default seed=777005 winA=0.3733 setsA=4.108 setsB=4.892 declA=0.982 declB=0.981 101.3s
+12:52:08 start threads=9
+12:53:12 default seed=777006 winA=0.3817 setsA=4.098 setsB=4.902 declA=0.992 declB=0.979 64.2s
+12:54:20 default seed=777007 winA=0.4267 setsA=4.192 setsB=4.808 declA=0.990 declB=0.982 68.3s
+12:55:27 default seed=777008 winA=0.4483 setsA=4.258 setsB=4.742 declA=0.984 declB=0.976 66.6s
+12:56:32 default seed=777009 winA=0.3817 setsA=4.120 setsB=4.880 declA=0.985 declB=0.984 65.5s
+12:57:28 nooot seed=778001 winA=0.3817 setsA=4.057 setsB=4.943 declA=0.977 declB=0.990 56.1s
+12:58:28 nooot seed=778002 winA=0.3900 setsA=4.107 setsB=4.893 declA=0.983 declB=0.991 59.9s
+12:59:30 nooot seed=778003 winA=0.3967 setsA=4.145 setsB=4.855 declA=0.977 declB=0.986 62.0s
+13:00:48 nooot seed=778004 winA=0.4017 setsA=4.140 setsB=4.860 declA=0.986 declB=0.986 78.1s
+13:03:05 nooot seed=778005 winA=0.4267 setsA=4.235 setsB=4.765 declA=0.982 declB=0.985 136.3s
+13:09:23 nooot seed=778006 winA=0.3783 setsA=4.102 setsB=4.898 declA=0.979 declB=0.989 378.0s
+13:13:24 nooot seed=778007 winA=0.3800 setsA=4.122 setsB=4.878 declA=0.986 declB=0.991 241.3s
+13:22:54 nooot seed=778008 winA=0.3750 setsA=4.048 setsB=4.952 declA=0.978 declB=0.985 570.0s
+13:28:40 nooot seed=778009 winA=0.3483 setsA=4.070 setsB=4.930 declA=0.980 declB=0.991 346.1s
+13:32:53 nooot seed=778010 winA=0.3950 setsA=4.182 setsB=4.818 declA=0.981 declB=0.986 252.7s
+16:28:49 mirror_kraken seed=781001 winA=0.5000 setsA=4.500 setsB=4.500 declA=0.987 declB=0.987 10555.9s
+16:32:39 mirror_kraken seed=781002 winA=0.5000 setsA=4.500 setsB=4.500 declA=0.988 declB=0.988 230.5s
+16:34:00 kv6_vs_v07 seed=782001 winA=0.4117 setsA=4.222 setsB=4.778 declA=0.983 declB=0.980 80.5s
+16:35:22 kv6_vs_v07 seed=782002 winA=0.4433 setsA=4.297 setsB=4.703 declA=0.986 declB=0.977 82.2s
+16:36:41 kv6_vs_v07 seed=782003 winA=0.4383 setsA=4.275 setsB=4.725 declA=0.987 declB=0.981 79.4s
+16:38:02 kv6_vs_v07 seed=782004 winA=0.4067 setsA=4.188 setsB=4.812 declA=0.986 declB=0.979 80.6s
+16:39:24 kv6_vs_v07 seed=782005 winA=0.4167 setsA=4.280 setsB=4.720 declA=0.984 declB=0.975 82.2s
+16:40:41 kraken_vs_v06 seed=783001 winA=0.4117 setsA=4.148 setsB=4.852 declA=0.986 declB=0.988 77.4s
+16:42:07 kraken_vs_v06 seed=783002 winA=0.4250 setsA=4.290 setsB=4.710 declA=0.983 declB=0.987 85.1s
+16:43:28 kraken_vs_v06 seed=783003 winA=0.4550 setsA=4.312 setsB=4.688 declA=0.982 declB=0.984 81.8s
+16:44:12 kraken_vs_v06 seed=783004 winA=0.4450 setsA=4.270 setsB=4.730 declA=0.982 declB=0.984 43.4s
+16:44:55 kraken_vs_v06 seed=783005 winA=0.4667 setsA=4.380 setsB=4.620 declA=0.986 declB=0.984 43.5s
+16:45:38 nooot_nocardless seed=779001 winA=0.4200 setsA=4.165 setsB=4.835 declA=0.981 declB=0.989 43.2s
+16:46:21 nooot_nocardless seed=779002 winA=0.3983 setsA=4.152 setsB=4.848 declA=0.978 declB=0.988 42.9s
+16:47:04 nooot_nocardless seed=779003 winA=0.4183 setsA=4.220 setsB=4.780 declA=0.983 declB=0.990 43.1s
+16:47:46 nooot_nocardless seed=779004 winA=0.4017 setsA=4.202 setsB=4.798 declA=0.981 declB=0.984 41.8s
+16:48:29 nooot_nocardless seed=779005 winA=0.4217 setsA=4.182 setsB=4.818 declA=0.979 declB=0.988 43.2s
+16:49:11 legacy seed=780001 winA=0.4000 setsA=4.173 setsB=4.827 declA=0.979 declB=0.988 41.9s
+16:49:55 legacy seed=780002 winA=0.4017 setsA=4.205 setsB=4.795 declA=0.977 declB=0.989 43.5s
+16:50:37 legacy seed=780003 winA=0.3800 setsA=4.105 setsB=4.895 declA=0.980 declB=0.988 41.8s
+16:51:18 legacy seed=780004 winA=0.3850 setsA=4.117 setsB=4.883 declA=0.976 declB=0.987 41.0s
+16:51:59 legacy seed=780005 winA=0.3767 setsA=4.052 setsB=4.948 declA=0.981 declB=0.987 41.6s
+16:52:45 kraken_vs_fcheap seed=784001 winA=0.4233 setsA=4.203 setsB=4.797 declA=0.978 declB=0.985 45.7s
+16:53:33 kraken_vs_fcheap seed=784002 winA=0.4683 setsA=4.313 setsB=4.687 declA=0.984 declB=0.984 47.8s
+16:54:19 kraken_vs_fcheap seed=784003 winA=0.4317 setsA=4.225 setsB=4.775 declA=0.978 declB=0.983 46.1s
+16:54:59 kraken_vs_v05 seed=785001 winA=0.4283 setsA=4.245 setsB=4.755 declA=0.983 declB=0.980 40.4s
+16:55:40 kraken_vs_v05 seed=785002 winA=0.4483 setsA=4.348 setsB=4.652 declA=0.987 declB=0.980 41.3s
+16:56:20 kraken_vs_v05 seed=785003 winA=0.4250 setsA=4.283 setsB=4.717 declA=0.987 declB=0.985 40.0s
+16:57:04 kraken_vs_v04 seed=786001 winA=0.4617 setsA=4.342 setsB=4.658 declA=0.983 declB=0.984 43.7s
+16:57:47 kraken_vs_v04 seed=786002 winA=0.4300 setsA=4.288 setsB=4.712 declA=0.978 declB=0.984 42.5s
+16:58:30 kraken_vs_v04 seed=786003 winA=0.4267 setsA=4.260 setsB=4.740 declA=0.980 declB=0.983 43.7s
+16:58:30 ALL DONE
+22:12:17 start threads=14
+22:12:53 kv6_vs_v07_paired seed=777001 winA=0.3867 setsA=4.138 setsB=4.862 declA=0.988 declB=0.977 35.5s
+22:13:31 kv6_vs_v07_paired seed=777002 winA=0.3983 setsA=4.208 setsB=4.792 declA=0.981 declB=0.979 38.1s
+22:14:11 kv6_vs_v07_paired seed=777003 winA=0.3967 setsA=4.198 setsB=4.802 declA=0.985 declB=0.979 40.2s
+22:14:51 kv6_vs_v07_paired seed=777004 winA=0.4267 setsA=4.232 setsB=4.768 declA=0.984 declB=0.982 40.2s
+22:15:31 kv6_vs_v07_paired seed=777005 winA=0.3700 setsA=4.100 setsB=4.900 declA=0.980 declB=0.981 40.4s
+22:15:31 ALL DONE

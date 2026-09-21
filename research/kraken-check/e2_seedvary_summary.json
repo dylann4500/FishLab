@@ -1,0 +1,47 @@
+{
+ "variant": "seedvary",
+ "games": 2000,
+ "margin": 2.494,
+ "ci95": [
+  2.373881260800184,
+  2.6141187391998164
+ ],
+ "kv_sets": 11494,
+ "dylan_sets": 6506,
+ "kv_set_share": 0.6385555555555555,
+ "kv_win_pct": 82.1,
+ "ties": 0,
+ "ask_hit_kv": [
+  0.5173348809772991,
+  105106
+ ],
+ "ask_hit_dy": [
+  0.4777613351420233,
+  97308
+ ],
+ "decl_ok_kv": [
+  0.9661988535283653,
+  10118
+ ],
+ "decl_ok_dy": [
+  0.7820350164932758,
+  7882
+ ],
+ "forced_kv": [
+  1939,
+  1812
+ ],
+ "forced_dy": [
+  991,
+  810
+ ],
+ "own_err_kv": 18,
+ "own_err_dy": 1157,
+ "alloc_err_kv": 324,
+ "alloc_err_dy": 561,
+ "fallbacks": 0,
+ "off_team_owners": 0,
+ "unfinished": 0,
+ "sec_per_game": 4.783745,
+ "extra": {}
+}

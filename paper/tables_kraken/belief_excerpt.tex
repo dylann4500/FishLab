@@ -1,0 +1,15 @@
+\begin{lstlisting}
+  // (C5): the asker held another card of S.  Vacuous if we already know one.
+  bool vacuous = false;
+  uint64_t D = 0;
+  for (int i = 0; i < SETSZ; i++) {
+    int d = cardOf(S, i);
+    if (d == e.card) continue;
+    if (owner[d] == e.actor) { vacuous = true; break; }
+    if (owner[d] == UNKNOWN && (mask[d] & (1u << e.actor))) D |= bit(d);
+  }
+  exclude(e.card, e.actor);                          // (C3) asker lacks the card
+  if (!vacuous && D) {
+    if (__builtin_popcountll(D) == 1) setOwner(__builtin_ctzll(D), e.actor);
+    else if (!dedupDisj) disj.push_back(Disjunction{uint8_t(e.actor), D});
+\end{lstlisting}

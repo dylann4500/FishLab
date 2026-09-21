@@ -1,0 +1,50 @@
+{
+ "variant": "ladder",
+ "games": 2000,
+ "margin": 2.443,
+ "ci95": [
+  2.3243640098035807,
+  2.5616359901964194
+ ],
+ "kv_sets": 11443,
+ "dylan_sets": 6557,
+ "kv_set_share": 0.6357222222222222,
+ "kv_win_pct": 81.55,
+ "ties": 0,
+ "ask_hit_kv": [
+  0.5162679471422719,
+  104961
+ ],
+ "ask_hit_dy": [
+  0.47977446455798534,
+  97723
+ ],
+ "decl_ok_kv": [
+  0.9674585745657815,
+  10018
+ ],
+ "decl_ok_dy": [
+  0.7806314206965673,
+  7982
+ ],
+ "forced_kv": [
+  1897,
+  1786
+ ],
+ "forced_dy": [
+  1040,
+  829
+ ],
+ "own_err_kv": 21,
+ "own_err_dy": 1183,
+ "alloc_err_kv": 305,
+ "alloc_err_dy": 568,
+ "fallbacks": 0,
+ "off_team_owners": 0,
+ "unfinished": 0,
+ "sec_per_game": 1.773555,
+ "extra": {
+  "ladder_calls": 1040,
+  "ladder_fallbacks": 0
+ }
+}

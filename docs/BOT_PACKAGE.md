@@ -396,6 +396,43 @@ papers were produced with.
 
 ---
 
+## 9b. Packaging one of *our* policies
+
+The traffic goes both ways. `fish botserve` speaks this same protocol on
+stdin/stdout and drives any policy the engine can build, so SESTINA v1.0 (or
+v0.6, or a baseline, or an ablation) can be zipped into an ordinary
+`fishlab-bot/1` package and seated through the upload path like anybody else's
+entry — or handed to somebody else's table to practise against.
+
+```bash
+scripts/package-bot.sh                       # SESTINA v1.0, the frozen v0.7
+scripts/package-bot.sh v06 fishbot-v06 "FishBot v0.6" 0.6
+```
+
+The default reads its spec straight out of `engine/fishbot_v07.json`, so the
+package is the frozen configuration by construction rather than a spec string
+copied by hand. The zip contains the manifest, the engine binary and a README.
+
+Two properties worth stating, because they are the ones a competitor will ask
+about:
+
+* **It is not a reimplementation.** `botserve` calls the same `makeAgent()` the
+  table calls, so what plays is the policy itself.
+* **It is not bit-identical to a native seat, and cannot be.** A seat in-process
+  is seeded from the deal (`mixSeed(seed, p + 77)`); this protocol deliberately
+  does not carry the deal seed, because a bot that could read it could invert it
+  and recover the hands. A searching policy therefore explores different
+  determinizations over the wire than it does natively. Measured over 400 games
+  against v0.6 on the same seeds, the packaged and native forms agree to within
+  well under the paired noise floor — 54.0% [49.1, 58.8] against 54.8% [49.9,
+  59.6] — and head to head against its own native self the package is a coin
+  flip at 53.0% [48.1, 57.8].
+
+The binary is native to whatever built it, so a package built on an arm64 Mac
+will not run on an x86 Linux box; rebuild there and re-run the script.
+
+---
+
 ## 10. Dependencies
 
 If your bot needs packages, ship `requirements.txt` and set
