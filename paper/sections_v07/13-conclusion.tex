@@ -5,9 +5,10 @@
 tie-breaking, half-suit contestation, stall detection, and guarded search for six-player Canadian
 Fish. Against the preregistered \fcheap{} baseline, the recorded implementation produced an
 observed win-rate edge of \vsevenBtwoFcheap{}~pp relative to parity over \vsevenBtwoFcheapN{}
-holdout games; the reported deal-bootstrap interval, $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$,
-is nominal, because persistent cross-deal agent state violates its independence assumption, and the
-registered decision rule was satisfied on that nominal interval. Its comparison with the phase-2
+holdout games; the reported pooled interval, $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$, is
+nominal, formed by normal approximation from per-bank deal-bootstrap intervals whose
+deal-independence has not been established under the recorded implementation's cross-deal state,
+and the registered decision rule was satisfied on that nominal interval. Its comparison with the phase-2
 composite is unresolved, at \vsevenBtwoComposite{}~pp
 $[\vsevenBtwoCompositeLo, \vsevenBtwoCompositeHi]$, and the component-attribution criterion is not
 consistently satisfied across banks.
@@ -34,7 +35,8 @@ computation for the constraint-conditioned belief model, and an evaluation proce
 observed gains from unresolved differences. The transferable design elements are the constraint
 factorisation and count program, the duplicate-deal design with held-out banks and a sign-agreement
 criterion, and the calibration of adversarial searches against planted handicaps. The first priority for
-further work is a corrected scored rerun with agent state reset between deals, which is required
-before any interval in this paper can be read as coverage-validated; after it come stronger
+further work is a corrected scored rerun with agent state reset between deals, which would produce
+new estimates under a design free of this source of dependence, the existing intervals remaining
+nominal; after it come stronger
 adversarial searches, testing whether small improvements compound, and comparison with
 independently developed agents (\S\ref{sec:discussion-future}).

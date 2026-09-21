@@ -136,18 +136,21 @@ about one deal in \vsevenSsixIncidence{} and applying it after freezing would de
 freezing. \S\ref{sec:results-controls} measures it on holdout material:
 \vsevenSsixPlainNonzero{} of \vsevenSsixCells{} audited cells show a nonzero residual with reused
 agents on one thread, every one of them a searching configuration, and the zero-tolerance gate
-condition is clean. The residual's effect on a scored win rate is bounded only by incidental
-observations (\S\ref{sec:results-controls}), not by a control cell. The statistical consequence is
-the following. Every interval in this paper is a deal-block bootstrap, or a normal approximation
-built on one, that treats deals as independent resampling units. Persistent rollout state couples
-the deals a worker thread processes, and the schedule is not retained, so the coverage of the
-reported intervals, including the primary comparison's lower bound, is not established under the
-actual construction: the intervals are nominal, and the registered decision rule was satisfied on a
-nominal interval. A small observed residual does not bound its effect on coverage. Establishing
-coverage requires either a scored rerun in which all agent state is reset between deals, or the
-retention and dependence-aware analysis of worker-ordered outcome sequences under a design
-justified in advance; neither exists. The frozen results are preserved as measured, and the
-corrected rerun is the first item of \S\ref{sec:discussion-future}.
+condition is clean. The residual's effect on a scored win rate has only incidental observations
+(\S\ref{sec:results-controls}), not a quantified bound. The statistical consequence is the
+following. Every interval in this paper is a deal-block bootstrap, or a normal approximation built
+on one, that treats deals as independent resampling units. Persistent rollout state can couple the
+deals a worker thread processes, and the schedule is not retained, so for comparisons involving
+searching agents, including the primary comparison, the independence of deal blocks and the
+coverage of the reported intervals have not been established; this is an unmodelled sensitivity
+rather than a demonstrated miscoverage, and the intervals are labelled nominal by convention. The
+registered decision rule was satisfied on a nominal interval. A fresh-state scored rerun would
+produce new estimates and intervals under a design that removes this source of cross-deal
+dependence; the validity of the resulting uncertainty estimates would still depend on their
+resampling, pooling and contrast constructions, and per-deal outcomes should be retained so that
+paired contrasts can be estimated jointly. The existing results would remain identified as
+measurements of the original implementation. The frozen results are preserved as measured, and
+the corrected rerun is the first priority of \S\ref{sec:discussion-future}.
 
 \paragraph{Validation-mode mismatch.} The isolation tests' zero-tolerance form requires one thread
 and agents rebuilt per deal, and rebuilding agents per deal changes play. The scored cells ran with
@@ -185,6 +188,16 @@ Two claims a future release might wish to make, that a Fish agent is near-optima
 strongest known, are unsupported by anything here. Both are reachable in principle, and the evidence
 each requires is specific enough to enumerate.
 
+\paragraph{Cross-deal state reset.} The defect of \S\ref{sec:discussion-engineering} should be
+repaired in a separately identified implementation, and the primary comparison and the key
+secondary comparisons re-run in a scored mode that resets all agent state between deals, before
+rather than after any subsequent configuration is frozen. A fresh-state scored rerun would produce
+new estimates and intervals under a design that removes this source of cross-deal dependence; the
+validity of the resulting uncertainty estimates would still depend on their resampling, pooling and
+contrast constructions, so the prospective plan should retain per-deal outcomes and estimate paired
+contrasts jointly. The existing results would remain identified as measurements of the original
+implementation.
+
 \paragraph{Exploitability upper bounds.} Every adversarial figure in this corpus is the observed
 edge of a particular response found by a search. A near-optimality claim requires a bound in the
 other direction, showing that no adversary in a stated class can exceed some $\varepsilon$. None
@@ -220,9 +233,3 @@ least one independently authored opponent and, for any claim about play against 
 duplicate-style human battery with enough deals to resolve a point. Neither exists, and the six-seat
 duplicate design for the latter has not been settled.
 
-\paragraph{Cross-deal state reset.} The defect of \S\ref{sec:discussion-engineering} should be
-repaired in a separately identified implementation, and the primary comparison and the key
-secondary comparisons re-run in a scored mode that resets all agent state between deals, before
-rather than after any subsequent configuration is frozen. That rerun is what would convert the
-nominal intervals of this paper into coverage-validated ones; until it exists, the frozen results
-reported here are preserved as measured and read as observed edges.

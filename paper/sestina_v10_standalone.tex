@@ -4816,7 +4816,7 @@ Empirical Evaluation in Six-Player Canadian Fish}}
 % MANIFEST-P5.json: the frozen spec
 \providecommand{\vsevenManifestFrozenSpec}{}\renewcommand{\vsevenManifestFrozenSpec}{v07:r12=25,rtie=1,pool=-1,oppfloor=-1,force=1000000,askfloor=-1,stall=12,s1=1,det=12,cand=4,kappa=2.5,rbelief=indep,depth=12,maxq=26}
 % git rev-parse HEAD: the commit this build was made at
-\providecommand{\vsevenHeadCommit}{}\renewcommand{\vsevenHeadCommit}{8d1decd}
+\providecommand{\vsevenHeadCommit}{}\renewcommand{\vsevenHeadCommit}{0d37e4f}
 % P5-B0.json: the commit recorded at generation time, pre-rewrite
 \providecommand{\vsevenBzeroCommitRecorded}{}\renewcommand{\vsevenBzeroCommitRecorded}{d920f5b}
 % git log: the same commit after the history rewrite, found by subject line
@@ -4852,11 +4852,11 @@ Empirical Evaluation in Six-Player Canadian Fish}}
 % build_tables_v07.py --paper run date
 \providecommand{\vsevenBuildDate}{}\renewcommand{\vsevenBuildDate}{2026-09-21}
 % macros used in sections_v07 that this script generates from artifacts
-\providecommand{\vsevenProvGenerated}{}\renewcommand{\vsevenProvGenerated}{250}
+\providecommand{\vsevenProvGenerated}{}\renewcommand{\vsevenProvGenerated}{252}
 % macros used in sections_v07 generated from artifacts by an EARLIER cycle
 \providecommand{\vsevenProvInherited}{}\renewcommand{\vsevenProvInherited}{24}
 % macros used in sections_v07 that no generator emits, i.e. transcribed by hand
-\providecommand{\vsevenProvTranscribed}{}\renewcommand{\vsevenProvTranscribed}{153}
+\providecommand{\vsevenProvTranscribed}{}\renewcommand{\vsevenProvTranscribed}{155}
 %% --- end numbers_v07_generated ---
 
 \begin{document}
@@ -4876,10 +4876,11 @@ Evaluation comprises \vsevenScoredCells{} scored comparison cells over \vsevenSc
 under a preregistered protocol. Against the registered baseline, \fcheap{}, the recorded
 implementation of \sestina{} produced an observed win-rate edge of \vsevenBtwoFcheap{} percentage
 points relative to parity over \vsevenBtwoFcheapN{} games, with positive estimates on both holdout
-banks. The reported deal-bootstrap interval, $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$ at a
-nominal 95\% level, is nominal: the scored implementation retains agent state across the deals a
-worker thread processes, which violates the interval's deal-independence assumption, and its
-coverage is not established. The same qualification applies to every interval reported. The
+banks. The reported interval, $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$, is a nominal pooled
+95\% interval formed by normal approximation from the per-bank deal-bootstrap intervals: the scored
+implementation retains agent state across the deals a worker thread processes, so the
+deal-independence those constructions assume, and their coverage, have not been established. Every
+interval reported is labelled nominal for the same reason. The
 comparison with an earlier development composite is unresolved, \vsevenBtwoComposite{} points
 $[\vsevenBtwoCompositeLo, \vsevenBtwoCompositeHi]$. Cross-play and rule-variant tests retain
 positive performance estimates, while the worst partner-substitution difference, \vsevenSoneMin{}
@@ -5192,17 +5193,16 @@ afforded. The corresponding liability appears in \S\ref{sec:discussion-external}
 cost does not provide independent validation.
 
 \paragraph{Planning limitations.}
-Two limitations bear on how later results should be read. First, the perfect-information version of
+Three considerations bear on how later results should be read. First, the perfect-information version of
 this game offers little to a clairvoyant planner. A player who sees every hand names only cards the
 target holds, so never fails an ask, never loses the turn, and declares each half-suit as soon as
-their team holds all of it; under the implemented rules the team on turn then takes every half-suit
-not dealt outright to the opponents. A probe with both teams omniscient verified this over
-\vsevenOmniProbeGames{} mirror games, in every one of which the non-moving team's score equalled the
-number of half-suits dealt to it outright (\filepath{research/v06/notes/R8-game-structure.md}), so a
-clairvoyant rollout assigns nearly the same value to every action available at a decision. This is
-an implementation-level result verified by that probe, not a formal value bound, and it concerns
-the evaluated variant. Determinization, the standard recipe
-for hidden-hand card games \cite{levy,ginsberg-gib}, therefore reduces here largely to choosing the
+their team holds all of it. In \vsevenOmniProbeGames{} mirror games with both teams using the
+omniscient probe policy, the non-moving team's score equalled its deal-time locked-half-suit count
+in every game (\filepath{research/v06/notes/R8-game-structure.md}). This motivates concern about
+weak discrimination by this particular continuation model; the probe does not establish equality or
+near-equality of the values of all candidate actions, and no action-level evaluation under
+clairvoyant play was recorded. Determinization, the standard recipe for hidden-hand card games
+\cite{levy,ginsberg-gib}, would then be expected to reduce here largely to choosing the
 ask most likely to hit, blind to the information an ask leaks, the information a refusal supplies,
 and the option value of postponing a declaration. \S\ref{sec:related-determinization}
 places this against the literature. Second, Fish has no passive continuation: a player must ask or
@@ -5277,9 +5277,10 @@ than the average, reporting over 1{,}000 points on the extended Seeger scale in 
 \cite{edelkamp2021paranoia}.
 
 The evaluated variant presents an additional limitation for clairvoyant rollout evaluation, stated
-in \S\ref{sec:game-why}: under clairvoyant play the available asks are scarcely distinguished in
-value, so repairing strategy fusion and non-locality, as $\alpha\mu$ does, would not by itself make
-a clairvoyant rollout informative here. We have not tested $\alpha\mu$ or its relatives on this
+in \S\ref{sec:game-why}: the recorded omniscient-play probe motivates concern that a clairvoyant
+continuation model discriminates weakly between asks, so repairing strategy fusion and
+non-locality, as $\alpha\mu$ does, would not by itself be expected to make a clairvoyant rollout
+informative here. We have not tested $\alpha\mu$ or its relatives on this
 game, and the statement is about the evaluated variant rather than about those methods.
 
 What this corpus adds is that the binding problem is not the abstract failure but \emph{the
@@ -5326,10 +5327,12 @@ improvement guarantee is void. Fish satisfies the requirement cheaply, for the r
 The full-solver line \cite{moravcik2017deepstack,brown2020rebel,schmid2023sog} established that
 test-time re-solving over public belief states is supported by the formal models and assumptions in
 those studies. We do not implement these algorithms: continual re-solving and ReBeL typically
-iterate over, and Student of Games learns a value function on, a public belief state whose support
-here is the set of deals consistent with the public history, of cardinality
-$45!/(9!)^5 \approx 1.9 \times 10^{28}$ from one seat at deal time, and we did not attempt an
-abstraction that would make that tractable for a six-player team game. Update equivalence recasts search as replicating a last-iterate-convergent update locally,
+iterate over, and Student of Games learns a value function on, a public belief state. Even after
+conditioning on one seat's nine-card hand there are $45!/(9!)^5 \approx 1.9 \times 10^{28}$
+possible initial allocations of the remaining cards to the other five seats, and the support
+conditioned on the public history alone is larger still; we did not implement the cited
+public-belief-state solvers or develop an abstraction suitable for this six-player setting, and
+the cardinality is stated as scale, not as an algorithmic lower bound. Update equivalence recasts search as replicating a last-iterate-convergent update locally,
 needing no public-information enumeration, and reports substantially lower search time than
 public-belief-state search in Hanabi \cite{sokota2024updateequivalence}; its improvement guarantee
 is stated for common-payoff games, which Fish is not. Learned Belief Search \cite{hu2021lbs} learns
@@ -5523,8 +5526,8 @@ comparison of that kind.
 
 \paragraph{Search-selection bias.} v0.6
 built a search that samples full deals from the public posterior and plays each forward with all six
-players reconstructed at their own information sets, rather than made clairvoyant, which
-\S\ref{sec:game-why} explains would leave the rollout unable to discriminate between actions. Chosen by an unguarded argmax over sampled means,
+players reconstructed at their own information sets, rather than made clairvoyant, for which
+\S\ref{sec:game-why} records a concern about weak discrimination between actions. Chosen by an unguarded argmax over sampled means,
 that search is \vsixCurseGap{}~pp \emph{worse} than the blueprint it searches from, measured against a
 control that forces the same code to return the blueprint's own choice at identical budget, seed and
 sample size. The cause is the statistic rather than the search (\S\ref{sec:agent-search}), and a
@@ -6308,9 +6311,9 @@ plus the team's expected control of the live half-suits. That is \vsix{}'s own h
 a learned one: \S\ref{sec:development-leaf} reports what happened when a fitted replacement was
 built. Write $V_{r,d}$ for either. This is the point at which the method departs from standard
 determinization: the continuation players are not made clairvoyant. \S\ref{sec:game-why} explains why
-that matters here, namely that under clairvoyant play the implemented rules give the team on turn
-every half-suit not dealt outright to the opponents, so a clairvoyant rollout assigns nearly the
-same value to every action. All candidates share the same $D_{\mathrm{det}}$ worlds, so the comparison is paired and the
+that matters here, namely that the recorded omniscient-play probe (\S\ref{sec:game-why})
+motivates concern that a clairvoyant continuation model would discriminate weakly between candidate
+actions; the probe does not establish action-level values. All candidates share the same $D_{\mathrm{det}}$ worlds, so the comparison is paired and the
 noise that matters is the noise in the difference.
 
 \paragraph{Guarded action selection.} For each candidate $r \ge 1$ form the paired difference
@@ -6472,8 +6475,9 @@ configuration's team takes at least five of the nine half-suits. Comparisons are
 \]
 so that zero denotes a 50\% win rate in the specified comparison and the sign gives the direction.
 The paper writes \emph{pp} for percentage points of this quantity, and a bracketed pair
-$[\ell, u]$ after an estimate is its two-sided 95\% confidence interval (CI) as constructed in
-\S\ref{sec:evaluation-intervals}. A comparison ``against'' a named configuration is a head-to-head
+$[\ell, u]$ after an estimate is its two-sided nominal 95\% confidence interval (CI) as
+constructed in \S\ref{sec:evaluation-intervals}, which also states why every interval in this
+paper is labelled nominal. A comparison ``against'' a named configuration is a head-to-head
 comparison: an edge of $+3$~pp means a 53\% win rate against that configuration in the paired
 design of \S\ref{sec:evaluation-duplicate}, not a three-point change from a separately measured
 baseline win rate. Three other quantities appear and are never conflated with it: the mean number
@@ -6521,12 +6525,14 @@ described as one method.
   resampling units. In the scored implementation, agents are reused across the deals a worker
   thread processes and some rollout state persists between deals (\S\ref{sec:agent-coordination}),
   so a decision in one deal can depend on earlier deals and on thread scheduling, and the
-  work-stealing schedule is not retained. The independence assumption is therefore violated for
-  searching agents, and the coverage of every interval in this paper is nominal rather than
-  established under the actual data-generating construction. The observed residual is small
-  (\S\ref{sec:results-controls}), but its effect on coverage is not bounded by any measurement, and
-  the prose qualification does not repair it; \S\ref{sec:discussion-engineering} states what
-  would.
+  work-stealing schedule is not retained. For comparisons involving searching agents, then, the
+  independence of deal blocks and the coverage of the resulting intervals have not been
+  established; this is an unmodelled history and scheduling sensitivity, not a demonstration of
+  miscoverage in any particular cell, and the non-searching cells are not affected by this
+  mechanism. By convention every interval in this paper is labelled \emph{nominal}. The observed
+  residual is small (\S\ref{sec:results-controls}), but there are only incidental observations of
+  its effect, not a quantified bound, and the label does not repair it;
+  \S\ref{sec:discussion-engineering} states what a corrected design would and would not establish.
 \paragraph{Cross-bank pooling.} Two banks of equal size pool as the mean of their two edges, with
   standard error $\mathrm{se}_{\text{pooled}} = \sqrt{\mathrm{se}_1^2 + \mathrm{se}_2^2}/2$, where
   each $\mathrm{se}$ is recovered from that bank's bootstrap interval as half-width divided by
@@ -6607,10 +6613,12 @@ behind the sample size and the conditions that would count as non-confirmation, 
 committed before any holdout bank had been played and before the sealed half had been decoded. The
 evaluation was then executed as a separate automated agent session: a large language model
 operating the repository under the author's supervision, with the session settings recorded in
-\filepath{docs/v07/PHASE-PROMPTS.md}, started without conversation history from the development
-phases and instructed to read the registered protocol and not the development-phase documents or
-training logs. That restriction was by instruction rather than by access control, since the session
-had read access to the repository, and the same author configured every phase; no evaluator
+\filepath{docs/v07/PHASE-PROMPTS.md}. The phase instructions required the session to start
+without conversation history from the development phases and to read the registered protocol and
+not the development-phase documents or training logs; the execution records document those
+instructions and the session's outputs, not its compliance, which is not independently verifiable
+from them. The restriction was by instruction rather than by access control, since the session had
+read access to the repository, and the same author configured every phase; no evaluator
 independence is claimed. Where the evaluation required a training figure for comparison it took it
 from the registered protocol, which states such expectations in advance for exactly this purpose, so that agreement
 constitutes a check and disagreement constitutes a finding.
@@ -6693,9 +6701,10 @@ The \vsevenPrimaryFloor{}~pp figure has a specific origin. The phase-2 calibrati
 of handicaps of increasing size in a \vsix{} target and fitted a responder of the principal class at
 a fixed budget against each; \vsevenPrimaryFloor{}~pp is the planted cost of the smallest rung
 whose recovered excess excluded zero on both banks, and the next rung down, at
-\vsevenFloorRungBelow{}~pp, was not recovered. The floor is therefore bracketed by those two rungs
-rather than measured as a boundary, and it is specific to that responder class, budget, handicap
-family and target.
+\vsevenFloorRungBelow{}~pp, was not recovered. These are two observed recovery outcomes under the
+specified responder class, budget, handicap family and target; they do not estimate a continuous
+detection threshold, and the registered \vsevenPrimaryFloor{}~pp decision threshold is a
+historical choice.
 
 Two findings from the calibration shape the adversarial statements in this paper. First, within the
 tested class and budgets, the floor did not decrease with evaluation games: an early prediction that
@@ -7378,13 +7387,14 @@ evaluation controls and the computational cost.
 
 Against \fcheap{}, the registered primary baseline, the recorded implementation of \sestina{}
 produced an observed win-rate edge of \vsevenBtwoFcheap{}~pp relative to parity over
-\vsevenBtwoFcheapN{} games, with a nominal 95\% interval of
+\vsevenBtwoFcheapN{} games, with a nominal pooled 95\% interval of
 $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$; this edge corresponds to a \vsevenBtwoFcheapWinRate{}
 head-to-head win rate against \fcheap{}, not to a change from a separately measured baseline win
-rate. The interval is nominal: it is a deal-block bootstrap that treats deals as independent, and
-the scored implementation retains cross-deal agent state that violates that assumption
-(\S\ref{sec:evaluation-intervals}, \S\ref{sec:discussion-engineering}), so its coverage is not
-established. The two bank estimates were \vsevenBtwoFcheapBankOne{} and
+rate. The interval is formed by normal approximation from the per-bank deal-block bootstrap
+intervals (\S\ref{sec:evaluation-intervals}), constructions that treat deals as independent
+resampling units; the scored implementation retains cross-deal agent state, so independence and
+coverage have not been established for this comparison (\S\ref{sec:discussion-engineering}). The
+two bank estimates were \vsevenBtwoFcheapBankOne{} and
 \vsevenBtwoFcheapBankTwo{}~pp. The pooled nominal lower bound exceeded the preregistered
 \vsevenPrimaryFloor{}~pp threshold, both bank estimates were positive, and the configuration passed
 the specified behavioural gate in its designated test mode (\S\ref{sec:design-gate}). The
@@ -7455,7 +7465,7 @@ Table~\ref{tab:frontier} gives the cells behind it.
 \end{tikzpicture}}
 \caption{Principal comparisons for \sestina{}. Each point is a pooled win-rate edge in percentage
 points over both holdout banks (\S\ref{sec:evaluation-intervals}: cross-bank pooling of per-bank
-deal-clustered bootstrap intervals; the bars are 95\% intervals). Both panels are oriented so that
+deal-clustered bootstrap intervals; the bars are nominal 95\% intervals). Both panels are oriented so that
 positive values favour \sestina{}. The upper panel shows the five direct head-to-head comparisons,
 with the registered primary comparison highlighted. The lower panel shows two different estimands:
 the worst partner-substitution row of \S\ref{sec:results-partners}, which is a difference between
@@ -7470,8 +7480,8 @@ adversary's edge against \sestina{}.}
 \begin{table}[!ht]\centering
 \caption{Strength against the \vsix{} frontier and lineage baselines. Each row is \sestina{}'s
 win-rate edge in percentage points against the named configuration, paired duplicate blocks, pooled
-over both holdout banks with the per-bank estimates beside it; intervals are 95\% intervals as
-constructed in \S\ref{sec:evaluation-intervals}.}
+over both holdout banks with the per-bank estimates beside it; intervals are nominal 95\%
+intervals as constructed in \S\ref{sec:evaluation-intervals}.}
 \label{tab:frontier}
 {\tabfont\begin{tabular}{llrrrr}
 \toprule
@@ -7510,7 +7520,7 @@ rather than in a discussion of caveats; the remaining diagnostic comparisons fol
 \subsubsection{Phase-2 composite comparison}
 \label{sec:results-composite}
 
-\sestina{}'s comparison with \composite{} was \vsevenBtwoComposite{}~pp (95\% CI
+\sestina{}'s comparison with \composite{} was \vsevenBtwoComposite{}~pp (nominal 95\% CI
 $[\vsevenBtwoCompositeLo, \vsevenBtwoCompositeHi]$) over \vsevenBtwoCompositeN{} games. Both banks
 are positive, so the sign replicates, but the interval includes zero, so the evaluation does not
 resolve an additional benefit over that composite.
@@ -7629,11 +7639,11 @@ Appendix~\ref{app:thresholds} reproduces the criteria with the same distinction.
 \toprule
 \# & Condition & Recorded verdict & Reading with uncertainty \\
 \midrule
-1 & the frontier comparison & not met. \vsevenBtwoFcheap{} $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$, sign replicates & lower bound above \vsevenPrimaryFloor{}; resolved \\
+1 & the frontier comparison & not met. \vsevenBtwoFcheap{} $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$, sign replicates & passes the registered rule using nominal intervals (lower bound above \vsevenPrimaryFloor{}); coverage unestablished \\
 2 & the composite comparison & met. \vsevenBtwoComposite{} $[\vsevenBtwoCompositeLo, \vsevenBtwoCompositeHi]$ & interval contains zero; the comparison is unresolved rather than negative \\
 3 & attribution: the location test & does not replicate. \vsevenLocVerdictOne{} on one bank, \vsevenLocVerdictThree{} on the other & per-bank point estimates against one third of the whole; not resolved \\
 4 & brittleness under partner change or cross-play & not met. Minimum \vsevenSoneMin{}; cross-play off-diagonal minus diagonal \vsevenXpGap{} & point estimates; the deciding partner interval $[\vsevenOppFiveWithholderLo, \vsevenOppFiveWithholderHi]$ crosses the $\vsevenSoneThreshold{}$ threshold, and the cross-play contrast carries no interval \\
-5 & a successful adversary & not met. No search found a positive edge; largest upper bound \vsevenBfourWorstUpper{} & upper bounds below the class floor; resolved for the tested searches \\
+5 & a successful adversary & not met. No search found a positive edge; largest upper bound \vsevenBfourWorstUpper{} & passes the registered rule using nominal intervals for the tested searches (upper bounds below the class floor); coverage unestablished \\
 6 & the behavioural validity gate & not met. All \vsevenGateRules{} rules pass & deterministic checks on training material \\
 7 & the validity controls & not met. Every control behaves as specified on the point-estimate reading & point estimates; on the lower-bound reading the \texttt{0.08} rung is not recovered and the sub-floor rung's upper bound exceeds the floor (\S\ref{sec:results-controls}) \\
 \bottomrule
@@ -7658,7 +7668,8 @@ point estimates and are descriptive; the interval beside a worst cell is that ce
 
 \begin{table}[!ht]\centering
 \caption{Worst panel cell per configuration: the panel member against which the configuration's
-pooled win-rate edge (percentage points, both banks) is lowest, with that cell's 95\% interval.
+pooled win-rate edge (percentage points, both banks) is lowest, with that cell's nominal 95\%
+interval.
 Per-bank values are given in bank order, 7090001 then 7090002.}
 \label{tab:worstcase}
 {\tabfont\begin{tabular}{llrcr}
@@ -7939,9 +7950,10 @@ xp3 & $+5.15$ $[+4.52, +5.78]$ & $+4.06$ $[+3.44, +4.69]$ & $+4.20$ $[+3.56, +4.
 \end{table}
 
 \begin{table}[!ht]\centering
-\caption{The three separately trained runs head to head. \vsevenHtwohSeparated{} of the three
-pairs separate from zero, which is what establishes that these are distinguishable policies rather
-than one policy three times.}
+\caption{The three separately trained runs head to head. The nominal intervals for
+\vsevenHtwohSeparated{} of the three pairs exclude zero; this is an observed separation under the
+reported procedure, not a coverage-validated test. That the three parameter vectors are distinct
+(Table~\ref{tab:crossplay}) is a separate fact from a demonstrated performance difference.}
 \label{tab:crossh2h}
 {\tabfont\begin{tabular}{lrr}
 \toprule
@@ -7965,7 +7977,7 @@ variant. Table~\ref{tab:dialects} gives every row.
 
 \begin{table}[!ht]\centering
 \caption{The rule-variant table: \sestina{}'s win-rate edge in percentage points against \fcheap{}
-under each variant, both configurations playing the same variant in every row, with 95\% intervals
+under each variant, both configurations playing the same variant in every row, with nominal 95\% intervals
 as in \S\ref{sec:evaluation-intervals}. Per-bank values are given in bank order, 7090003 then
 7090001. This is the first sweep of its kind in the corpus and has no training-bank counterpart.}
 \label{tab:dialects}
@@ -7992,8 +8004,8 @@ which the protocol assigns to the forced-endgame willingness ladder for want of 
 is arithmetically legacy minus two effective components rather than three; it is
 \vsevenLegacyResidual{} $[\vsevenLegacyResidualLo, \vsevenLegacyResidualHi]$. That interval is a
 quadrature propagation over cells that share banks and deals with unit coefficients, so it is not a
-valid 95\% interval and is wider than a paired difference would be
-(Appendix~\ref{app:corrections-self}); it is \vsevenLegacyResidualRatio{} times the size of the
+valid 95\% interval, and it would be wider than a paired difference if the relevant covariance were
+non-negative (Appendix~\ref{app:corrections-self}); it is \vsevenLegacyResidualRatio{} times the size of the
 residual. The residual estimate is not statistically interpretable under the current propagation,
 and no separate ladder intervention was conducted.
 
@@ -8005,7 +8017,8 @@ and no separate ladder intervention was conducted.
 edge against \sestina{} at the tested budgets. Every one loses, by between
 \vsevenBfourBestLoss{} and \vsevenBfourWorstLoss{}~pp; every sign replicates; and the largest upper
 bound anywhere is \vsevenBfourWorstUpper{}, which is \vsevenBfourFloorGap{}~pp below the class
-floor. The registered claim is satisfied. Table~\ref{tab:adversaries} gives every search.
+floor. The registered numerical criterion is satisfied using the nominal intervals.
+Table~\ref{tab:adversaries} gives every search.
 
 \begin{table}[!ht]\centering
 \caption{\vsevenBfourArms{} separately fitted adversarial searches against \sestina{}, run with
@@ -8086,7 +8099,7 @@ is the planted-edge recovery.
 
 \begin{table}[!ht]\centering
 \caption{Planted-edge recovery, in percentage points of win-rate edge, pooled over both banks with
-95\% intervals. \emph{Planted cost} is the handicap's cost to the target against \sestina{};
+nominal 95\% intervals. \emph{Planted cost} is the handicap's cost to the target against \sestina{};
 \emph{recovered excess} is the responder's edge against the handicapped target minus its edge
 against the unhandicapped one, a between-cell contrast. The sub-floor rung must \emph{not} be
 recovered.}
@@ -8166,9 +8179,9 @@ residual's effect on a scored win rate is not bounded by a control cell; the lar
 observed between identical scored commands is one game in \vsevenResidueGames{}
 (Appendix~\ref{app:corrections-reproducibility}), and a small observed residual does not establish
 a bound on possible bias across all experiments. For the intervals of this paper the consequence is
-the one stated in \S\ref{sec:evaluation-intervals}: the scored mode retains this state, so the
-deal-block bootstrap's independence assumption is violated for searching agents and every interval
-is nominal.
+the one stated in \S\ref{sec:evaluation-intervals}: the scored mode retains this state, so for
+comparisons involving searching agents the independence of deal blocks and the coverage of the
+intervals have not been established, and every interval is labelled nominal.
 
 \subsection{Computational cost}
 \label{sec:results-cost}
@@ -8342,18 +8355,21 @@ about one deal in \vsevenSsixIncidence{} and applying it after freezing would de
 freezing. \S\ref{sec:results-controls} measures it on holdout material:
 \vsevenSsixPlainNonzero{} of \vsevenSsixCells{} audited cells show a nonzero residual with reused
 agents on one thread, every one of them a searching configuration, and the zero-tolerance gate
-condition is clean. The residual's effect on a scored win rate is bounded only by incidental
-observations (\S\ref{sec:results-controls}), not by a control cell. The statistical consequence is
-the following. Every interval in this paper is a deal-block bootstrap, or a normal approximation
-built on one, that treats deals as independent resampling units. Persistent rollout state couples
-the deals a worker thread processes, and the schedule is not retained, so the coverage of the
-reported intervals, including the primary comparison's lower bound, is not established under the
-actual construction: the intervals are nominal, and the registered decision rule was satisfied on a
-nominal interval. A small observed residual does not bound its effect on coverage. Establishing
-coverage requires either a scored rerun in which all agent state is reset between deals, or the
-retention and dependence-aware analysis of worker-ordered outcome sequences under a design
-justified in advance; neither exists. The frozen results are preserved as measured, and the
-corrected rerun is the first item of \S\ref{sec:discussion-future}.
+condition is clean. The residual's effect on a scored win rate has only incidental observations
+(\S\ref{sec:results-controls}), not a quantified bound. The statistical consequence is the
+following. Every interval in this paper is a deal-block bootstrap, or a normal approximation built
+on one, that treats deals as independent resampling units. Persistent rollout state can couple the
+deals a worker thread processes, and the schedule is not retained, so for comparisons involving
+searching agents, including the primary comparison, the independence of deal blocks and the
+coverage of the reported intervals have not been established; this is an unmodelled sensitivity
+rather than a demonstrated miscoverage, and the intervals are labelled nominal by convention. The
+registered decision rule was satisfied on a nominal interval. A fresh-state scored rerun would
+produce new estimates and intervals under a design that removes this source of cross-deal
+dependence; the validity of the resulting uncertainty estimates would still depend on their
+resampling, pooling and contrast constructions, and per-deal outcomes should be retained so that
+paired contrasts can be estimated jointly. The existing results would remain identified as
+measurements of the original implementation. The frozen results are preserved as measured, and
+the corrected rerun is the first priority of \S\ref{sec:discussion-future}.
 
 \paragraph{Validation-mode mismatch.} The isolation tests' zero-tolerance form requires one thread
 and agents rebuilt per deal, and rebuilding agents per deal changes play. The scored cells ran with
@@ -8391,6 +8407,16 @@ Two claims a future release might wish to make, that a Fish agent is near-optima
 strongest known, are unsupported by anything here. Both are reachable in principle, and the evidence
 each requires is specific enough to enumerate.
 
+\paragraph{Cross-deal state reset.} The defect of \S\ref{sec:discussion-engineering} should be
+repaired in a separately identified implementation, and the primary comparison and the key
+secondary comparisons re-run in a scored mode that resets all agent state between deals, before
+rather than after any subsequent configuration is frozen. A fresh-state scored rerun would produce
+new estimates and intervals under a design that removes this source of cross-deal dependence; the
+validity of the resulting uncertainty estimates would still depend on their resampling, pooling and
+contrast constructions, so the prospective plan should retain per-deal outcomes and estimate paired
+contrasts jointly. The existing results would remain identified as measurements of the original
+implementation.
+
 \paragraph{Exploitability upper bounds.} Every adversarial figure in this corpus is the observed
 edge of a particular response found by a search. A near-optimality claim requires a bound in the
 other direction, showing that no adversary in a stated class can exceed some $\varepsilon$. None
@@ -8426,12 +8452,6 @@ least one independently authored opponent and, for any claim about play against 
 duplicate-style human battery with enough deals to resolve a point. Neither exists, and the six-seat
 duplicate design for the latter has not been settled.
 
-\paragraph{Cross-deal state reset.} The defect of \S\ref{sec:discussion-engineering} should be
-repaired in a separately identified implementation, and the primary comparison and the key
-secondary comparisons re-run in a scored mode that resets all agent state between deals, before
-rather than after any subsequent configuration is frozen. That rerun is what would convert the
-nominal intervals of this paper into coverage-validated ones; until it exists, the frozen results
-reported here are preserved as measured and read as observed edges.
 %% --- end sections_v07/12-discussion ---
 %% --- begin sections_v07/13-conclusion ---
 \section{Conclusion}
@@ -8441,9 +8461,10 @@ reported here are preserved as measured and read as observed edges.
 tie-breaking, half-suit contestation, stall detection, and guarded search for six-player Canadian
 Fish. Against the preregistered \fcheap{} baseline, the recorded implementation produced an
 observed win-rate edge of \vsevenBtwoFcheap{}~pp relative to parity over \vsevenBtwoFcheapN{}
-holdout games; the reported deal-bootstrap interval, $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$,
-is nominal, because persistent cross-deal agent state violates its independence assumption, and the
-registered decision rule was satisfied on that nominal interval. Its comparison with the phase-2
+holdout games; the reported pooled interval, $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$, is
+nominal, formed by normal approximation from per-bank deal-bootstrap intervals whose
+deal-independence has not been established under the recorded implementation's cross-deal state,
+and the registered decision rule was satisfied on that nominal interval. Its comparison with the phase-2
 composite is unresolved, at \vsevenBtwoComposite{}~pp
 $[\vsevenBtwoCompositeLo, \vsevenBtwoCompositeHi]$, and the component-attribution criterion is not
 consistently satisfied across banks.
@@ -8470,8 +8491,9 @@ computation for the constraint-conditioned belief model, and an evaluation proce
 observed gains from unresolved differences. The transferable design elements are the constraint
 factorisation and count program, the duplicate-deal design with held-out banks and a sign-agreement
 criterion, and the calibration of adversarial searches against planted handicaps. The first priority for
-further work is a corrected scored rerun with agent state reset between deals, which is required
-before any interval in this paper can be read as coverage-validated; after it come stronger
+further work is a corrected scored rerun with agent state reset between deals, which would produce
+new estimates under a design free of this source of dependence, the existing intervals remaining
+nominal; after it come stronger
 adversarial searches, testing whether small improvements compound, and comparison with
 independently developed agents (\S\ref{sec:discussion-future}).
 %% --- end sections_v07/13-conclusion ---
@@ -9201,8 +9223,8 @@ not an advancement & the pooled interval contains zero, or the sign does not rep
 The verdict labels above are the protocol's own. This paper does not use the word \emph{certified},
 which suggests verification by a third party, and reports the top outcome instead as what was
 actually satisfied (\S\ref{sec:design-protocol}). Recorded verdict: the comparison
-\vsevenPrimaryVerdict{}. Reading with uncertainty: the rule is stated on the pooled lower bound and
-is resolved.
+\vsevenPrimaryVerdict{}. Reading with uncertainty: the rule is stated on the pooled nominal lower
+bound and passes on that interval; coverage is unestablished (\S\ref{sec:evaluation-intervals}).
 
 \subsection*{Secondary criteria}
 
@@ -9219,7 +9241,7 @@ is not resolved against it \\
 S2 & not a private convention & the off-diagonal is within \vsevenStwoThreshold{} points of the
 diagonal & \vsevenStwoVerdict{} & point-estimate rule; no interval is computed for the contrast \\
 S3 & no fresh adversary exploits it & every arm's upper bound below its floor & PASS & upper-bound
-rule; resolved for the tested searches and budgets \\
+rule on nominal intervals; passes for the tested searches and budgets; coverage unestablished \\
 S4 & the gain is attributable & components sub-additive, no single drop exceeding the whole & PASS
 & point-estimate rule on the sum and the drops; the sub-additivity ratio's interval is
 $[\vsevenSubAdditivityLo, \vsevenSubAdditivityHi]$, and the location criterion of
@@ -9228,8 +9250,8 @@ S5 & it survives the rule variants & every row keeps its sign, none more than
 \vsevenSfiveTolerance{}~pp below default & \vsevenSfiveVerdict{} & point-estimate rule on the
 excursions; every row replicates in sign \\
 S6 & the worst case is not catastrophic & \sestina{}'s worst panel cell no worse than the deployed
-\vsix{} policy's & PASS & point-estimate rule; the two worst-cell intervals do not overlap, so the
-comparison is resolved, although the worst cell itself is not replicated in sign \\
+\vsix{} policy's & PASS & point-estimate rule; the two worst-cell nominal intervals do not
+overlap; coverage unestablished, and the worst cell itself is not replicated in sign \\
 S7 & the instrument is intact & the planted edges recover (registered as ``at or above
 \vsevenPrimaryFloor{} points''), the sub-floor rung does not, the cheats fail exactly their own
 tests & PASS & point-estimate rule as recorded; on the lower-bound reading the \texttt{0.08} rung is
@@ -9476,9 +9498,10 @@ exists in the form it does.
   giving the default row the coefficient the two-component residual gives it, the interval is
   $[\vsevenLegacyResidualLo, \vsevenLegacyResidualHi]$ rather than the recorded
   $[\vsevenLegacyResidualRecordedLo, \vsevenLegacyResidualRecordedHi]$; this paper prints the
-  narrower. No verdict moves: S5 is decided by the largest excursion, and the residual is
-  consistent with zero under either. Neither figure is a valid 95\% interval, because the cells
-  share banks and deals and the ask-cap identity shows the correlation is large.
+  narrower. No verdict moves: S5 is decided by the largest excursion. Both reported propagated
+  ranges include zero, but neither supports a calibrated inferential conclusion: neither is a valid
+  95\% interval, because the cells share banks and deals and the ask-cap identity shows the
+  correlation is large.
 
 \item[Calibration-rung correspondence.] The
   preregistration introduces B9.3's sub-floor rung as ``\texttt{hstr=0.05}, the rung phase 2 measured
@@ -9550,7 +9573,7 @@ reported as a pass.
 The protocol requires a deviation for anything the evaluation did that it does not specify, recorded
 next to the affected result rather than in a footnote. There are \vsevenDeviations{}. This register is
 read out of \filepath{docs/v07/FINAL-RESULTS.md} by the generator rather than retyped, so it cannot
-drift from the results document it reports; long entries are elided with an ellipsis and the source
+drift from the results document it reports; long entries are elided at a sentence boundary, marked with an ellipsis, and the source
 document carries them in full. Entries are printed in the order of the source register, in which
 D24 follows D27; the record does not state why, and the ordering is preserved rather than
 corrected here.
@@ -9569,33 +9592,33 @@ ID & Kind & Deviation, addition or correction \\
 \endfoot
 \bottomrule
 \endlastfoot
-\textbf{D1} & Added Cell & B5 REF-FROZEN. The eleven cells B5 names cannot yield a leave-one-out DROP: the drop is FROZEN's edge minus the variant's, and FROZEN's own edge on the lattice banks is not one of the eleven. A twelfth cell was added at the lattice size\,\ldots \\
-\textbf{D2} & Added Cells & B9 planted cost and responder-vs-unhandicapped. B9.2 requires that ``the recovered size tracks the planted size'', which needs the planted size; B9.3 speaks of the planted excess ``resolving TO zero'', which is the responder's edge against\,\ldots \\
-\textbf{D3} & Unspecified Bank & B8. Section 2.1 assigns 7090003 the role ``the ablation lattice and the dialect table'' but names no replicate for the dialect rows. 7090001 was used, by symmetry with B5, which the protocol does specify as 7090003 primary and 7090001\,\ldots \\
-\textbf{D4} & Unspecified Bank & B3 sealed rows. Section 2.1 gives 7091001 the role ``evaluation bank for the sealed adversary half'', but section 4/B3 puts every panel member on the same two banks as every other arm, and section 3 makes 7090001/7090002 the primary and\,\ldots \\
-\textbf{D5} & Protocol Note & what \texttt{tune -{}-seed=<bank> -{}-shard=s/4} actually plays. Section 4/B4 describes the eight searches as drawing ``480 deal indices of the bank''. They do not. \texttt{tune} uses \texttt{-{}-seed} only as the CEM root: it derives a fresh per-generation seed\,\ldots \\
-\textbf{D6} & Protocol Note & the seal is not enforced on every command. Section 2.1(b) records that \texttt{pathology}, \texttt{v7bits} and \texttt{v6probe} bypass \texttt{seedUsable}. \texttt{tune} and \texttt{ablate} also bypass it, for the same reason as D5: the seed \texttt{runMatch} sees is derived, not the\,\ldots \\
-\textbf{D7} & Observation, Superseded By D19 & B0.3 printed no changed-source NOTE. The protocol expected three engine sources to be listed as changed since the freeze (\texttt{arena.hpp}, \texttt{main.cpp}, \texttt{v07\_side.hpp}). Zero differ from the baseline the check actually uses. D19 explains why that\,\ldots \\
-\textbf{D8} & Added Check & reproducibility, before the material was spent. \texttt{runMatch} schedules deals by work-stealing, so the deal-to-thread assignment is not fixed run to run even at a fixed thread count, and the frozen configuration carries the cross-deal\,\ldots \\
-\textbf{D9} & Reading & S1's row count. Section 5.2 says ``five of the eight changed-partner rows''; B6 has seven changed settings plus self-play, and the protocol's own worked table counts eight including self-play. Both counts are printed and the verdict\,\ldots \\
-\textbf{D10} & Reading & S3's pass and fail conditions are not complements. ``Every arm's upper bound below 1.53'' and ``any arm clears 1.53 with a replicated sign'' leave a band in which neither holds. Both are computed and reported; if the band is occupied the\,\ldots \\
-\textbf{D11} & Reading & the 2.13 declaration-family floor. Section 3 correction 4 applies it to ``B4's Z03, and the declaration-accuracy column of B2''. Z03 is read against 2.13. B2 has no declaration-accuracy column with an interval -- \texttt{match -{}-json} emits\,\ldots \\
-\textbf{D12} & Arithmetic & S4's naive sum. The freeze carries five components; \texttt{m2=0} was dropped from it. The sum S4 tests is over those five. The six-term sum including A-m2 is printed beside it and labelled, because B5 preregisters the A-m2 cell even though\,\ldots \\
-\textbf{D13} & Note & every delta in this document is two independent intervals combined in quadrature, not a paired difference. The harness gives a paired delta only within one \texttt{ablate} invocation over a shared panel, and no cell of this battery is of that\,\ldots \\
+\textbf{D1} & Added Cell & B5 REF-FROZEN. The eleven cells B5 names cannot yield a leave-one-out DROP: the drop is FROZEN's edge minus the variant's, and FROZEN's own edge on the lattice banks is not one of the eleven. A twelfth cell was added at the lattice size on both lattice banks. B5 therefore cost 288,000 games rather than the preregistered 264,000. \\
+\textbf{D2} & Added Cells & B9 planted cost and responder-vs-unhandicapped. B9.2 requires that ``the recovered size tracks the planted size'', which needs the planted size; B9.3 speaks of the planted excess ``resolving TO zero'', which is the responder's edge against the handicapped target MINUS its edge against the unhandicapped one. Four rungs x 2 banks x 6,000 deals were added for each, 192,000 games in total. \\
+\textbf{D3} & Unspecified Bank & B8. Section 2.1 assigns 7090003 the role ``the ablation lattice and the dialect table'' but names no replicate for the dialect rows. 7090001 was used, by symmetry with B5, which the protocol does specify as 7090003 primary and 7090001 replicate. \\
+\textbf{D4} & Unspecified Bank & B3 sealed rows. Section 2.1 gives 7091001 the role ``evaluation bank for the sealed adversary half'', but section 4/B3 puts every panel member on the same two banks as every other arm, and section 3 makes 7090001/7090002 the primary and replicate for every claim. The sealed rows were run on 7090001/7090002 with the rest of the panel, so the whole panel is scored on one shared pair of banks, as minimax regret over a shared panel requires.\,\ldots \\
+\textbf{D5} & Protocol Note & what \texttt{tune -{}-seed=<bank> -{}-shard=s/4} actually plays. Section 4/B4 describes the eight searches as drawing ``480 deal indices of the bank''. They do not. \texttt{tune} uses \texttt{-{}-seed} only as the CEM root: it derives a fresh per-generation seed (\texttt{tuner.hpp:310}) and from that a per-opponent match seed (\texttt{tuner.hpp:258}), so the deals are a derived stream and the named bank's own deals are never constructed.\,\ldots \\
+\textbf{D6} & Protocol Note & the seal is not enforced on every command. Section 2.1(b) records that \texttt{pathology}, \texttt{v7bits} and \texttt{v6probe} bypass \texttt{seedUsable}. \texttt{tune} and \texttt{ablate} also bypass it, for the same reason as D5: the seed \texttt{runMatch} sees is derived, not the registered one. Phase 5 set FISH\_UNSEAL\_PHASE=5 once and used the seven registered seeds and no others. \\
+\textbf{D7} & Observation, Superseded By D19 & B0.3 printed no changed-source NOTE. The protocol expected three engine sources to be listed as changed since the freeze (\texttt{arena.hpp}, \texttt{main.cpp}, \texttt{v07\_side.hpp}). Zero differ from the baseline the check actually uses. D19 explains why that baseline is not the freeze's and gives the correct figure -- nine of 78 sources differ from the freeze commit.\,\ldots \\
+\textbf{D8} & Added Check & reproducibility, before the material was spent. \texttt{runMatch} schedules deals by work-stealing, so the deal-to-thread assignment is not fixed run to run even at a fixed thread count, and the frozen configuration carries the cross-deal agent residue of section 5.3. A scored cell was checked to be bit-identical over three runs at 13 threads and across 1, 2 and 13 threads, on training material, before any holdout bank was played. \\
+\textbf{D9} & Reading & S1's row count. Section 5.2 says ``five of the eight changed-partner rows''; B6 has seven changed settings plus self-play, and the protocol's own worked table counts eight including self-play. Both counts are printed and the verdict states which reading it used. \\
+\textbf{D10} & Reading & S3's pass and fail conditions are not complements. ``Every arm's upper bound below 1.53'' and ``any arm clears 1.53 with a replicated sign'' leave a band in which neither holds. Both are computed and reported; if the band is occupied the verdict is reported as UNDETERMINED rather than resolved by choosing a reading. \\
+\textbf{D11} & Reading & the 2.13 declaration-family floor. Section 3 correction 4 applies it to ``B4's Z03, and the declaration-accuracy column of B2''. Z03 is read against 2.13. B2 has no declaration-accuracy column with an interval -- \texttt{match -{}-json} emits declaration accuracy as a bare rate -- so the accuracy is printed as a diagnostic and PHASE 5 MAKES NO CLAIM ABOUT THE DECLARATION CHANNEL, which is what discharges the rule. \\
+\textbf{D12} & Arithmetic & S4's naive sum. The freeze carries five components; \texttt{m2=0} was dropped from it. The sum S4 tests is over those five. The six-term sum including A-m2 is printed beside it and labelled, because B5 preregisters the A-m2 cell even though the freeze does not carry the key. \\
+\textbf{D13} & Note & every delta in this document is two independent intervals combined in quadrature, not a paired difference. The harness gives a paired delta only within one \texttt{ablate} invocation over a shared panel, and no cell of this battery is of that form. Section 5.2 fixes this arithmetic and calls it conservative. \\
 \textbf{D14} & Note & \texttt{ablate} was not used anywhere. It derives its own per-opponent seeds by \texttt{mixSeed(seed, i*7919+3)} (\texttt{main.cpp:589}), so \texttt{ablate -{}-seed=7090003} would not play bank 7090003. Every lattice cell is a \texttt{match} cell on the named bank instead. \\
 \textbf{D15} & Note & the panel of 31 NAMED members contains three policies twice: R-v04 is v04, S-archetype-0 is feint, S-reference-0 is v06. The duplicated cells are run as named and used as a determinism check. \\
-\textbf{D16} & Note & Z08 fits 55 coordinates of which 18 are inert. The protocol specifies \texttt{-{}-base=v07i} for the white-box class; \texttt{v07i} derives from V06Agent and reads only the 37 v0.6 coordinates (\texttt{factory.hpp}), while the CEM extends the vector to 55 for any\,\ldots \\
+\textbf{D16} & Note & Z08 fits 55 coordinates of which 18 are inert. The protocol specifies \texttt{-{}-base=v07i} for the white-box class; \texttt{v07i} derives from V06Agent and reads only the 37 v0.6 coordinates (\texttt{factory.hpp}), while the CEM extends the vector to 55 for any v07* base. The search is over 37 live coordinates plus the inverter the base fixes. \\
 \textbf{D17} & Note & thread counts. Every scored cell ran at \texttt{-{}-threads=13}, which section 5.3(2) fixes for the preregistered batteries. The S6 gate condition ran at \texttt{-{}-threads=1} \texttt{-{}-freshagents}, and the S6 residual column at \texttt{-{}-threads=1} alone. \\
-\textbf{D18} & Correction To D8 & a scored cell is NOT bit-reproducible for a searching arm at panel sizes. The B0 check found five runs of a 400-deal cell bit-identical. The panel-duplicate check, on 1,500- and 6,000-deal cells, found one pair of identical commands\,\ldots \\
-\textbf{D19} & Correction To D7 & B0.3's changed-source NOTE could not fire, and reporting zero as ``conservative'' was wrong. \texttt{freeze\_config\_v07.py -{}-verify-only} reads its drift baseline out of \texttt{engine/fishbot\_v07.json}'s own \texttt{provenance.srcSha256\_16}. That artifact\,\ldots \\
-\textbf{D20} & Disclosure & five commits landed in the repository DURING the battery, and four engine sources now differ even from the refreshed baseline: \texttt{fish.hpp}, \texttt{game.hpp}, \texttt{human.hpp}, \texttt{table.hpp}, from the ``web play'' commits b8cb227, 2e829c2, 46f3515, 72fa936 and\,\ldots \\
-\textbf{D21} & Ordering & B0 was performed before anything else, but its ARTIFACT was written later. The five B0 checks were run interactively at the top of the session, before the commit gate and before any holdout deal was played. \texttt{engine/p5\_b0.py}, which\,\ldots \\
-\textbf{D22} & Observation & one action-limit hit in 428 scored cells: the phase-2 composite against SEALED:S-ask-1 on bank 7090001, one game in 12,000 (limitHitRate 8.33e-05). G4 gates the mirror pathology run and not scored cells, so this is not a gate violation,\,\ldots \\
-\textbf{D23} & Correction & the throughput columns were printed with median\_high (\texttt{v[len(v)//2]} on an even-length list) rather than the median. Corrected to the true median; every figure moves by at most 0.11x and every one still exceeds the 3.2x the protocol\,\ldots \\
-\textbf{D25} & Reading & section 6 item 3 read per bank. The protocol states the one-third location rule without a per-bank clause, and section 3's replication rule is written for ``a claim whose SIGN does not replicate''. Here the sign of the drop does not\,\ldots \\
-\textbf{D26} & Substitution & B11's third clause is not computable as written. It asks phase 5 to confirm ``that the holdout estimate is not systematically smaller than the training estimate by about that amount'', where the estimate B11 is about is the measured\,\ldots \\
-\textbf{D27} & Added Artifact & \texttt{research/v07/results/P5-drift.json}. D19's executed replacement for the vacuous hash-based drift check was performed but not initially recorded, which made it an assertion rather than evidence. It is now an artifact: the build command,\,\ldots \\
-\textbf{D24} & Correction & per-bank columns were printed unlabelled and sorted by seed NUMBER, which inverts the attribution for B5 and B8, whose primary bank is 7090003 and whose replicate is 7090001. Every per-bank column in \texttt{P5-TABLES.txt} is now printed as\,\ldots \\
+\textbf{D18} & Correction To D8 & a scored cell is NOT bit-reproducible for a searching arm at panel sizes. The B0 check found five runs of a 400-deal cell bit-identical. The panel-duplicate check, on 1,500- and 6,000-deal cells, found one pair of identical commands disagreeing by one game in 12,000 -- the cross-deal agent residue of section 5.3 reaching the scored mode. The magnitude is 0.008 points against a 0.63-point half-width. Reported in full under ``Panel duplicates'' above. \\
+\textbf{D19} & Correction To D7 & B0.3's changed-source NOTE could not fire, and reporting zero as ``conservative'' was wrong. \texttt{freeze\_config\_v07.py -{}-verify-only} reads its drift baseline out of \texttt{engine/fishbot\_v07.json}'s own \texttt{provenance.srcSha256\_16}. That artifact was REWRITTEN after the freeze commit 0fa4a5f -- at d1c6b35 and again at d8c554b -- and each rewrite refreshes the baseline to the then-current tree.\,\ldots \\
+\textbf{D20} & Disclosure & five commits landed in the repository DURING the battery, and four engine sources now differ even from the refreshed baseline: \texttt{fish.hpp}, \texttt{game.hpp}, \texttt{human.hpp}, \texttt{table.hpp}, from the ``web play'' commits b8cb227, 2e829c2, 46f3515, 72fa936 and e0da8fd. They touch the interactive browser table, not the policy.\,\ldots \\
+\textbf{D21} & Ordering & B0 was performed before anything else, but its ARTIFACT was written later. The five B0 checks were run interactively at the top of the session, before the commit gate and before any holdout deal was played. \texttt{engine/p5\_b0.py}, which re-runs all five and records them as \texttt{P5-B0.json}, was written and run about fifteen minutes into B2.\,\ldots \\
+\textbf{D22} & Observation & one action-limit hit in 428 scored cells: the phase-2 composite against SEALED:S-ask-1 on bank 7090001, one game in 12,000 (limitHitRate 8.33e-05). G4 gates the mirror pathology run and not scored cells, so this is not a gate violation, but the corpus standard is zero and it is recorded.\,\ldots \\
+\textbf{D23} & Correction & the throughput columns were printed with median\_high (\texttt{v[len(v)//2]} on an even-length list) rather than the median. Corrected to the true median; every figure moves by at most 0.11x and every one still exceeds the 3.2x the protocol records. \\
+\textbf{D25} & Reading & section 6 item 3 read per bank. The protocol states the one-third location rule without a per-bank clause, and section 3's replication rule is written for ``a claim whose SIGN does not replicate''. Here the sign of the drop does not change between banks; the VERDICT LABEL does -- LOCATED on 7090001, NOT LOCATED on 7090003.\,\ldots \\
+\textbf{D26} & Substitution & B11's third clause is not computable as written. It asks phase 5 to confirm ``that the holdout estimate is not systematically smaller than the training estimate by about that amount'', where the estimate B11 is about is the measured holdout gain -- but the protocol supplies no training figure for B2.1 or B2.2.\,\ldots \\
+\textbf{D27} & Added Artifact & \texttt{research/v07/results/P5-drift.json}. D19's executed replacement for the vacuous hash-based drift check was performed but not initially recorded, which made it an assertion rather than evidence. It is now an artifact: the build command, both binaries' SHA-256 and byte counts, the pathology argv, the two recomputed digests, and the source sets differing from the artifact's own baseline and from the freeze commit. \\
+\textbf{D24} & Correction & per-bank columns were printed unlabelled and sorted by seed NUMBER, which inverts the attribution for B5 and B8, whose primary bank is 7090003 and whose replicate is 7090001. Every per-bank column in \texttt{P5-TABLES.txt} is now printed as \texttt{seed:value}. In THIS document the bank order is given in each table's first row and the pairs that follow keep it: section 5's B4 table is (7090001, 7090002) and section 9's B8 table is (7090003, 7090001).\,\ldots \\
 \end{xltabular}}
 %% --- end sections_v07/F-deviations ---
 %% --- begin sections_v07/G-reproduction ---
@@ -9608,8 +9631,11 @@ The engine, every experiment artifact, the protocol, the generator that produces
 numbers and the provenance checker that audits them are in the project repository,
 \filepath{https://github.com/dylann4500/FishLab} (the repository's former name,
 \texttt{dylann4500/fishbot}, redirects there). The original v1.0 build is the annotated tag
-\texttt{sestina-v1.0}, which is not moved; the build described by this revised paper is the
-annotated tag \texttt{sestina-v1.0-paper-r1}. Three identities are kept separate below: the frozen
+\texttt{sestina-v1.0}, which is not moved. The revision described by this paper is published on
+the branch \texttt{paper/sestina-v10-editorial-revision}; the annotated tag
+\texttt{sestina-v1.0-paper-r1} marks its final commit, and its publication to the public
+repository was pending when this revision was built, so a reader who cannot resolve the tag should
+use the branch. Three identities are kept separate below: the frozen
 policy configuration, which is the specification string and parameter vector of
 Appendix~\ref{app:parameters} together with the mirror digest \texttt{\vsevenMirrorDigest{}}; the
 evaluation binary, identified by its SHA-256; and the repository tree, identified by commits that

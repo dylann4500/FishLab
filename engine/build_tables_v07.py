@@ -1611,8 +1611,13 @@ def deviations():
         body = body.replace('#', '\\#').replace('$', '\\$')
         # Elide before converting the Markdown markup below, not after: cutting
         # inside a \\texttt{...} group would emit an unbalanced brace.
-        if len(body) > 240:
-            body = body[:237].rsplit(' ', 1)[0]
+        if len(body) > 460:
+            # Elide at a sentence boundary so that every printed entry ends with
+            # a complete sentence; fall back to a word boundary only if no
+            # sentence ends after the first 200 characters.
+            cut = body[:460]
+            k = cut.rfind('. ')
+            body = cut[:k + 1] if k >= 200 else cut[:457].rsplit(' ', 1)[0]
             # an elision can strand the opening half of a pair; drop it rather
             # than let it swallow the rest of the entry
             for ch in ('"', '`'):

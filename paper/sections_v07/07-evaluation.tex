@@ -16,8 +16,9 @@ configuration's team takes at least five of the nine half-suits. Comparisons are
 \]
 so that zero denotes a 50\% win rate in the specified comparison and the sign gives the direction.
 The paper writes \emph{pp} for percentage points of this quantity, and a bracketed pair
-$[\ell, u]$ after an estimate is its two-sided 95\% confidence interval (CI) as constructed in
-\S\ref{sec:evaluation-intervals}. A comparison ``against'' a named configuration is a head-to-head
+$[\ell, u]$ after an estimate is its two-sided nominal 95\% confidence interval (CI) as
+constructed in \S\ref{sec:evaluation-intervals}, which also states why every interval in this
+paper is labelled nominal. A comparison ``against'' a named configuration is a head-to-head
 comparison: an edge of $+3$~pp means a 53\% win rate against that configuration in the paired
 design of \S\ref{sec:evaluation-duplicate}, not a three-point change from a separately measured
 baseline win rate. Three other quantities appear and are never conflated with it: the mean number
@@ -65,12 +66,14 @@ described as one method.
   resampling units. In the scored implementation, agents are reused across the deals a worker
   thread processes and some rollout state persists between deals (\S\ref{sec:agent-coordination}),
   so a decision in one deal can depend on earlier deals and on thread scheduling, and the
-  work-stealing schedule is not retained. The independence assumption is therefore violated for
-  searching agents, and the coverage of every interval in this paper is nominal rather than
-  established under the actual data-generating construction. The observed residual is small
-  (\S\ref{sec:results-controls}), but its effect on coverage is not bounded by any measurement, and
-  the prose qualification does not repair it; \S\ref{sec:discussion-engineering} states what
-  would.
+  work-stealing schedule is not retained. For comparisons involving searching agents, then, the
+  independence of deal blocks and the coverage of the resulting intervals have not been
+  established; this is an unmodelled history and scheduling sensitivity, not a demonstration of
+  miscoverage in any particular cell, and the non-searching cells are not affected by this
+  mechanism. By convention every interval in this paper is labelled \emph{nominal}. The observed
+  residual is small (\S\ref{sec:results-controls}), but there are only incidental observations of
+  its effect, not a quantified bound, and the label does not repair it;
+  \S\ref{sec:discussion-engineering} states what a corrected design would and would not establish.
 \paragraph{Cross-bank pooling.} Two banks of equal size pool as the mean of their two edges, with
   standard error $\mathrm{se}_{\text{pooled}} = \sqrt{\mathrm{se}_1^2 + \mathrm{se}_2^2}/2$, where
   each $\mathrm{se}$ is recovered from that bank's bootstrap interval as half-width divided by
@@ -151,10 +154,12 @@ behind the sample size and the conditions that would count as non-confirmation, 
 committed before any holdout bank had been played and before the sealed half had been decoded. The
 evaluation was then executed as a separate automated agent session: a large language model
 operating the repository under the author's supervision, with the session settings recorded in
-\filepath{docs/v07/PHASE-PROMPTS.md}, started without conversation history from the development
-phases and instructed to read the registered protocol and not the development-phase documents or
-training logs. That restriction was by instruction rather than by access control, since the session
-had read access to the repository, and the same author configured every phase; no evaluator
+\filepath{docs/v07/PHASE-PROMPTS.md}. The phase instructions required the session to start
+without conversation history from the development phases and to read the registered protocol and
+not the development-phase documents or training logs; the execution records document those
+instructions and the session's outputs, not its compliance, which is not independently verifiable
+from them. The restriction was by instruction rather than by access control, since the session had
+read access to the repository, and the same author configured every phase; no evaluator
 independence is claimed. Where the evaluation required a training figure for comparison it took it
 from the registered protocol, which states such expectations in advance for exactly this purpose, so that agreement
 constitutes a check and disagreement constitutes a finding.
@@ -237,9 +242,10 @@ The \vsevenPrimaryFloor{}~pp figure has a specific origin. The phase-2 calibrati
 of handicaps of increasing size in a \vsix{} target and fitted a responder of the principal class at
 a fixed budget against each; \vsevenPrimaryFloor{}~pp is the planted cost of the smallest rung
 whose recovered excess excluded zero on both banks, and the next rung down, at
-\vsevenFloorRungBelow{}~pp, was not recovered. The floor is therefore bracketed by those two rungs
-rather than measured as a boundary, and it is specific to that responder class, budget, handicap
-family and target.
+\vsevenFloorRungBelow{}~pp, was not recovered. These are two observed recovery outcomes under the
+specified responder class, budget, handicap family and target; they do not estimate a continuous
+detection threshold, and the registered \vsevenPrimaryFloor{}~pp decision threshold is a
+historical choice.
 
 Two findings from the calibration shape the adversarial statements in this paper. First, within the
 tested class and budgets, the floor did not decrease with evaluation games: an early prediction that

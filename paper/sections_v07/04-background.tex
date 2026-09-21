@@ -83,8 +83,8 @@ comparison of that kind.
 
 \paragraph{Search-selection bias.} v0.6
 built a search that samples full deals from the public posterior and plays each forward with all six
-players reconstructed at their own information sets, rather than made clairvoyant, which
-\S\ref{sec:game-why} explains would leave the rollout unable to discriminate between actions. Chosen by an unguarded argmax over sampled means,
+players reconstructed at their own information sets, rather than made clairvoyant, for which
+\S\ref{sec:game-why} records a concern about weak discrimination between actions. Chosen by an unguarded argmax over sampled means,
 that search is \vsixCurseGap{}~pp \emph{worse} than the blueprint it searches from, measured against a
 control that forces the same code to return the blueprint's own choice at identical budget, seed and
 sample size. The cause is the statistic rather than the search (\S\ref{sec:agent-search}), and a

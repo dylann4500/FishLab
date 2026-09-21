@@ -31,8 +31,8 @@ not an advancement & the pooled interval contains zero, or the sign does not rep
 The verdict labels above are the protocol's own. This paper does not use the word \emph{certified},
 which suggests verification by a third party, and reports the top outcome instead as what was
 actually satisfied (\S\ref{sec:design-protocol}). Recorded verdict: the comparison
-\vsevenPrimaryVerdict{}. Reading with uncertainty: the rule is stated on the pooled lower bound and
-is resolved.
+\vsevenPrimaryVerdict{}. Reading with uncertainty: the rule is stated on the pooled nominal lower
+bound and passes on that interval; coverage is unestablished (\S\ref{sec:evaluation-intervals}).
 
 \subsection*{Secondary criteria}
 
@@ -49,7 +49,7 @@ is not resolved against it \\
 S2 & not a private convention & the off-diagonal is within \vsevenStwoThreshold{} points of the
 diagonal & \vsevenStwoVerdict{} & point-estimate rule; no interval is computed for the contrast \\
 S3 & no fresh adversary exploits it & every arm's upper bound below its floor & PASS & upper-bound
-rule; resolved for the tested searches and budgets \\
+rule on nominal intervals; passes for the tested searches and budgets; coverage unestablished \\
 S4 & the gain is attributable & components sub-additive, no single drop exceeding the whole & PASS
 & point-estimate rule on the sum and the drops; the sub-additivity ratio's interval is
 $[\vsevenSubAdditivityLo, \vsevenSubAdditivityHi]$, and the location criterion of
@@ -58,8 +58,8 @@ S5 & it survives the rule variants & every row keeps its sign, none more than
 \vsevenSfiveTolerance{}~pp below default & \vsevenSfiveVerdict{} & point-estimate rule on the
 excursions; every row replicates in sign \\
 S6 & the worst case is not catastrophic & \sestina{}'s worst panel cell no worse than the deployed
-\vsix{} policy's & PASS & point-estimate rule; the two worst-cell intervals do not overlap, so the
-comparison is resolved, although the worst cell itself is not replicated in sign \\
+\vsix{} policy's & PASS & point-estimate rule; the two worst-cell nominal intervals do not
+overlap; coverage unestablished, and the worst cell itself is not replicated in sign \\
 S7 & the instrument is intact & the planted edges recover (registered as ``at or above
 \vsevenPrimaryFloor{} points''), the sub-floor rung does not, the cheats fail exactly their own
 tests & PASS & point-estimate rule as recorded; on the lower-bound reading the \texttt{0.08} rung is

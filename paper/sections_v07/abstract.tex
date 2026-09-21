@@ -9,10 +9,11 @@ Evaluation comprises \vsevenScoredCells{} scored comparison cells over \vsevenSc
 under a preregistered protocol. Against the registered baseline, \fcheap{}, the recorded
 implementation of \sestina{} produced an observed win-rate edge of \vsevenBtwoFcheap{} percentage
 points relative to parity over \vsevenBtwoFcheapN{} games, with positive estimates on both holdout
-banks. The reported deal-bootstrap interval, $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$ at a
-nominal 95\% level, is nominal: the scored implementation retains agent state across the deals a
-worker thread processes, which violates the interval's deal-independence assumption, and its
-coverage is not established. The same qualification applies to every interval reported. The
+banks. The reported interval, $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$, is a nominal pooled
+95\% interval formed by normal approximation from the per-bank deal-bootstrap intervals: the scored
+implementation retains agent state across the deals a worker thread processes, so the
+deal-independence those constructions assume, and their coverage, have not been established. Every
+interval reported is labelled nominal for the same reason. The
 comparison with an earlier development composite is unresolved, \vsevenBtwoComposite{} points
 $[\vsevenBtwoCompositeLo, \vsevenBtwoCompositeHi]$. Cross-play and rule-variant tests retain
 positive performance estimates, while the worst partner-substitution difference, \vsevenSoneMin{}

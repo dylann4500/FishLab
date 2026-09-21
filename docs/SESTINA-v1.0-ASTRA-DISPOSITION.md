@@ -207,3 +207,35 @@ artifact identifiers; the title is unversioned.
 
 No experiment was rerun, no engine source was changed, no artifact was modified, and no
 measurement, hash, verdict label or historical quotation was altered.
+
+
+## Part 3: round-2 verification (Astra, 21 September 2026)
+
+Astra's implementation check found nothing blocking provisional circulation and listed ten
+corrections plus status changes. All ten were applied on the same branch; the statuses below
+supersede Part 2 where they differ.
+
+| Finding | Status | Where it landed |
+|---|---|---|
+| F1 headline interval called a bootstrap interval | done | abstract, §11.1, §13: "nominal pooled 95% interval formed by normal approximation from the per-bank deal-bootstrap intervals"; endpoints unchanged |
+| F2 residual inferential wording | done | Table 11 rows 1 and 5 and Appendix C (primary, S3, S6): "passes the registered rule using nominal intervals; coverage unestablished"; Table 18 caption rewritten (observed separation, not a coverage-validated test; distinct vectors stated separately); §11.8 "registered numerical criterion is satisfied using the nominal intervals"; §7.1 convention and the captions of Figure 3 and Tables 8, 12, 20, 23 and §11.2.1 now say "nominal" |
+| F3 rerun said to validate old intervals; "violates" too categorical | done | §7.3, §11.9, §12.6: independence and coverage "have not been established for comparisons involving searching agents", non-searching cells unaffected, "nominal" as a labelling convention; §12.6 and §12.7: a fresh-state rerun produces new estimates whose validity still depends on their constructions, per-deal capture and joint paired contrasts required, existing results remain measurements of the original implementation; §13 aligned |
+| F4 clairvoyance action-level conclusion | done | §2.3 reports the probe descriptively (terminal-score identity in 300 mirror games; motivates concern about weak discrimination; does not establish action values; no action-level evaluation recorded); §3.2, §4.3, §6.7 aligned |
+| F5 observer-conditioned count | done | §3.3 separates the one-seat-conditioned count from the public-history support and states the cardinality as scale, not an algorithmic bound |
+| F6 tag availability | done (publication still pending) | Appendix G states that the branch is published, that the tag marks its final commit, and that the tag's publication was pending when the revision was built; the local tag is re-pointed at the final commit of this pass |
+| F7 ladder bracketing | done | §7.9: two observed recovery outcomes; no continuous threshold estimated; 1.53 pp a historical choice |
+| F8 workflow and search disclosures | done editorially; **author confirmation requested** | §7.6 distinguishes what the phase instructions required from what the execution records document (instructions and outputs, not compliance); §3.1's search note is drawn from the three record files, which exist in the repository but were not in the review package |
+| F9 count and cross-reference | done | §2.3 "Three considerations"; the cross-deal reset paragraph is now the first item of §12.7 and §12.6 says "first priority" |
+| F10 residual uncertainty wording | done | §12.6 "has only incidental observations, not a quantified bound"; §11.7 "would be wider if the relevant covariance were non-negative"; Appendix E "both propagated ranges include zero, but neither supports a calibrated inferential conclusion" |
+
+Status changes accepted from the review: A1 and C1 remain **unresolved**, with the disclosure now
+scoped as the review asked; A8 done; B1 and B2 editorially implemented with source verification
+pending on the author's side; B4 done as scoped; B8 done; B10 **partial** until the tag is
+published; C3, C4, D1.11 done; Q11 unresolved with the rerun described correctly and placed first in
+future work; T10 disclosed with the scope corrections; T19 and T20 partial. B6 and B7 remain
+partial; on B7, the generated deviation register now elides at a sentence boundary rather than at a
+character count, so every printed entry ends with a complete sentence, and the page count is 83.
+
+Checks: build exit 0, 83 pages, 0 overfull boxes, 0 undefined references; provenance audit passes;
+standalone regenerated and built; pages 1, 60 and 78 inspected. No measurement, artifact, hash,
+verdict label or quotation changed.

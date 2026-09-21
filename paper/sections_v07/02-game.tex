@@ -175,17 +175,16 @@ afforded. The corresponding liability appears in \S\ref{sec:discussion-external}
 cost does not provide independent validation.
 
 \paragraph{Planning limitations.}
-Two limitations bear on how later results should be read. First, the perfect-information version of
+Three considerations bear on how later results should be read. First, the perfect-information version of
 this game offers little to a clairvoyant planner. A player who sees every hand names only cards the
 target holds, so never fails an ask, never loses the turn, and declares each half-suit as soon as
-their team holds all of it; under the implemented rules the team on turn then takes every half-suit
-not dealt outright to the opponents. A probe with both teams omniscient verified this over
-\vsevenOmniProbeGames{} mirror games, in every one of which the non-moving team's score equalled the
-number of half-suits dealt to it outright (\filepath{research/v06/notes/R8-game-structure.md}), so a
-clairvoyant rollout assigns nearly the same value to every action available at a decision. This is
-an implementation-level result verified by that probe, not a formal value bound, and it concerns
-the evaluated variant. Determinization, the standard recipe
-for hidden-hand card games \cite{levy,ginsberg-gib}, therefore reduces here largely to choosing the
+their team holds all of it. In \vsevenOmniProbeGames{} mirror games with both teams using the
+omniscient probe policy, the non-moving team's score equalled its deal-time locked-half-suit count
+in every game (\filepath{research/v06/notes/R8-game-structure.md}). This motivates concern about
+weak discrimination by this particular continuation model; the probe does not establish equality or
+near-equality of the values of all candidate actions, and no action-level evaluation under
+clairvoyant play was recorded. Determinization, the standard recipe for hidden-hand card games
+\cite{levy,ginsberg-gib}, would then be expected to reduce here largely to choosing the
 ask most likely to hit, blind to the information an ask leaks, the information a refusal supplies,
 and the option value of postponing a declaration. \S\ref{sec:related-determinization}
 places this against the literature. Second, Fish has no passive continuation: a player must ask or

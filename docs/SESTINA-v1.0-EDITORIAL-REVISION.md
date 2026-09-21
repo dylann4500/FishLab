@@ -179,3 +179,18 @@ as a second pass on the same branch. The finding-by-finding plan and disposition
   original text; `docs/v07/ADVERSARIES.md` carries a dated correction note after its original text;
   the annotated tag `sestina-v1.0-paper-r1` marks the build described by the revised paper
   (created locally; pushing is the author's action).
+
+
+### Round 2 (Astra implementation check, 21 September 2026)
+
+Ten wording and cross-reference corrections were applied (disposition Part 3): the headline
+interval is described as a nominal pooled interval formed from per-bank bootstrap intervals; the
+dependence caveat now says independence and coverage are not established for comparisons involving
+searching agents rather than that every interval is violated; the corrected rerun is described as
+producing new estimates rather than validating the old intervals, and is the first item of future
+work; the clairvoyance statement reports the omniscient-play probe descriptively; the solver
+paragraph separates the one-seat-conditioned count from the public-history support; the ladder
+result is stated as two observed outcomes; Appendix G states that the revision tag's publication was
+pending; and the residual-uncertainty sentences in §11.7, §12.6 and Appendix E are aligned. A1, C1
+and Q11 remain unresolved pending a fresh-state scored rerun. The author is asked to confirm the
+§7.6 workflow description and the §3.1 search note against the session and search records.

@@ -61,9 +61,10 @@ than the average, reporting over 1{,}000 points on the extended Seeger scale in 
 \cite{edelkamp2021paranoia}.
 
 The evaluated variant presents an additional limitation for clairvoyant rollout evaluation, stated
-in \S\ref{sec:game-why}: under clairvoyant play the available asks are scarcely distinguished in
-value, so repairing strategy fusion and non-locality, as $\alpha\mu$ does, would not by itself make
-a clairvoyant rollout informative here. We have not tested $\alpha\mu$ or its relatives on this
+in \S\ref{sec:game-why}: the recorded omniscient-play probe motivates concern that a clairvoyant
+continuation model discriminates weakly between asks, so repairing strategy fusion and
+non-locality, as $\alpha\mu$ does, would not by itself be expected to make a clairvoyant rollout
+informative here. We have not tested $\alpha\mu$ or its relatives on this
 game, and the statement is about the evaluated variant rather than about those methods.
 
 What this corpus adds is that the binding problem is not the abstract failure but \emph{the
@@ -110,10 +111,12 @@ improvement guarantee is void. Fish satisfies the requirement cheaply, for the r
 The full-solver line \cite{moravcik2017deepstack,brown2020rebel,schmid2023sog} established that
 test-time re-solving over public belief states is supported by the formal models and assumptions in
 those studies. We do not implement these algorithms: continual re-solving and ReBeL typically
-iterate over, and Student of Games learns a value function on, a public belief state whose support
-here is the set of deals consistent with the public history, of cardinality
-$45!/(9!)^5 \approx 1.9 \times 10^{28}$ from one seat at deal time, and we did not attempt an
-abstraction that would make that tractable for a six-player team game. Update equivalence recasts search as replicating a last-iterate-convergent update locally,
+iterate over, and Student of Games learns a value function on, a public belief state. Even after
+conditioning on one seat's nine-card hand there are $45!/(9!)^5 \approx 1.9 \times 10^{28}$
+possible initial allocations of the remaining cards to the other five seats, and the support
+conditioned on the public history alone is larger still; we did not implement the cited
+public-belief-state solvers or develop an abstraction suitable for this six-player setting, and
+the cardinality is stated as scale, not as an algorithmic lower bound. Update equivalence recasts search as replicating a last-iterate-convergent update locally,
 needing no public-information enumeration, and reports substantially lower search time than
 public-belief-state search in Hanabi \cite{sokota2024updateequivalence}; its improvement guarantee
 is stated for common-payoff games, which Fish is not. Learned Belief Search \cite{hu2021lbs} learns
