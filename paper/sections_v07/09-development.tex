@@ -14,9 +14,9 @@ interval reported in this section has a lower bound below the registered
 \vsix{} deployed its policy with test-time search disabled, while also having measured that search
 working. The configurations available at the end of that cycle therefore form what this paper
 calls the \emph{\vsix{} frontier}: the set comprising the deployed non-searching policy and the
-searching configurations \fcheap{} and \fmid{}, ordered by search cost. The term denotes that set
-of evaluated configurations, not a measured Pareto frontier in cost and performance; no dominance
-criterion was applied.
+searching configurations \fcheap{} and \fmid{}, ordered by search cost. The term is the protocol's; it
+denotes that comparison set of evaluated configurations, not a measured Pareto frontier in cost
+and performance, and no dominance criterion was applied.
 
 This distinction drove the most consequential methodological choice in the programme. Several
 available configurations already exceeded the deployed policy, including unfitted single-switch
@@ -33,8 +33,8 @@ The calibration procedure of \S\ref{sec:evaluation-floor} was built in this phas
 the principal responder class's floor at \vsevenFloorPhaseOne{}~pp and predicted that it would fall
 as (evaluation games)$^{-1/2}$. The phase of \S\ref{sec:development-adversaries} re-measured the
 same handicap ladder at four times the games: the smallest recovered rung was then the
-\vsevenPrimaryFloor{}~pp rung, and the next rung down remained unrecovered, so the prediction was
-not borne out within the ladder's resolution. That is the first of the two findings
+\vsevenPrimaryFloor{}~pp rung, and the \vsevenFloorRungBelow{}~pp rung remained unrecovered, so the
+prediction was not borne out within the ladder's resolution. That is the first of the two findings
 \S\ref{sec:evaluation-floor} reports, the second being that floors are family-specific, with the
 declaration channel's at \vsevenDeclFloor{}~pp. Two further results shape later sections.
 
@@ -68,15 +68,16 @@ The constraint on this phase was that the searches must not share a bias, since 
 of one method do not provide methodological diversity. Every exploiter search in the corpus before it
 had been the same search: a cross-entropy fit of a linear vector maximising win rate from one seed
 against one target. This phase constructed six adversary classes in the synchronised regime, plus
-one fitted search in the ex-ante-correlated regime, and measured channel ceilings before fitting
-anything against them.
+one fitted search in the ex-ante-correlated regime, and, before fitting anything against them,
+measured the effect of a diagnostic intervention on each channel under the evaluated condition: a
+\vsix{} target, the phase-2 responder class and budget, and the training banks.
 
 \paragraph{Adversarial-search outcome.}
 Nothing constructed produced a resolved adversarial edge against the \vsix{} frontier beyond the
 class floor. The largest adversarial response edge found against the deployed policy is an in-class
 figure of \vsevenBestExploit{}~pp $[\vsevenBestExploitLo, \vsevenBestExploitHi]$ over
 \vsevenBestExploitN{} games, which is below the class floor of \vsevenPrimaryFloor{}. Seven
-independently fitted searches gave the same picture and none cleared its class floor.
+separately fitted searches gave the same picture and none cleared its class floor.
 
 Every configuration that beat the deployed policy by more than the floor proved on measurement not
 to be target-specific: the target's own test-time search at \vsevenSearchAsExploit{}~pp, and a
@@ -87,9 +88,9 @@ and finds it the largest observed leave-one-out drop among the five components \
 rather than the whole of the gain.
 
 Two further results from this phase bear on \sestina{}'s design. The declaration-urgency channel
-that the phase expected to be its headline has a measured ceiling of \vsevenUrgencyCeiling{}~pp
-$[\vsevenUrgencyCeilingLo, \vsevenUrgencyCeilingHi]$ and did not yield a resolved adversarial
-advantage at the tested budget, but the same channel is worth \vsevenUrgencyWorthLo{} to
+that the phase expected to be its headline has a diagnostic intervention estimate of
+\vsevenUrgencyCeiling{}~pp $[\vsevenUrgencyCeilingLo, \vsevenUrgencyCeilingHi]$ under that
+condition and did not yield a resolved adversarial advantage at the tested budget, but the same channel is worth \vsevenUrgencyWorthLo{} to
 \vsevenUrgencyWorthHi{}~pp to a configuration that simply disables it: the adversary owns the
 smaller half of a two-point defect in the target. And the event-count cliff of
 \S\ref{sec:agent-urgency} was not reached by any adversary in the tested searches, while a
@@ -117,10 +118,11 @@ The design register's second-ranked hypothesis, at priority \vsevenLonePriority{
 Its proposed mechanism was that the deployed allocator, a product of per-card marginals, selects a
 different allocation from the joint posterior's argmax often enough to matter.
 
-The measurement did not support that mechanism. Over approximately \vsevenLoneDecls{} recorded
-voluntary declarations, across two banks and both urgency settings, and counted over capture cells
-that include re-runs of the same seeds, the sequential approximate joint's argmax and the
-marginal-product argmax selected the same allocation at every one, with the joint score holding a
+The measurement did not support that mechanism. Over \vsevenLoneDeclsTotal{} recorded voluntary
+declarations across two banks and both urgency settings, \vsevenLoneDeclsDistinct{} of them from
+distinct (bank, urgency-setting) capture cells and the remainder from re-runs of the same seeds and
+from the two cells of the sequential-joint policy, the sequential approximate joint's argmax and
+the marginal-product argmax selected the same allocation at every one, with the joint score holding a
 strict opinion on \vsevenLoneStrictLo\% to \vsevenLoneStrictHi\% of ambiguous cases.
 This agreement is empirical: the two procedures are not equivalent in general, since the six cards
 of a half-suit are coupled through the capacity constraint, and no argument that the sequential
@@ -142,8 +144,9 @@ under that model rather than a policy defect.
 
 The channel is also largely downstream of a defect that \sestina{} removes for other reasons.
 Disabling the urgency escalation eliminates \vsevenLoneUrgencyShare\% of the entire
-allocation-error class and drops the oracle ceiling for a perfect allocator from
-\vsevenLoneCeilingBefore{} to \vsevenLoneCeilingAfter{}~pp, which is below the reference bar. The
+allocation-error class and drops the oracle-assisted estimate for a perfect allocator, at the
+measured incidence, from \vsevenLoneCeilingBefore{} to \vsevenLoneCeilingAfter{}~pp, which is below
+the reference bar. The
 consequence is a composition constraint this paper observes: a declaration-channel gain and the
 urgency-off gain should not be added, because they overlap in the same error class.
 

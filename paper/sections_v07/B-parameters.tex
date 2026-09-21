@@ -22,7 +22,7 @@ inverter), and each \texttt{key=value} sets one option on it. Two properties of 
 \item \textbf{An explicit key beats a bulk vector.} A spec may carry
       \texttt{allparams=$w_1|w_2|\ldots$}, the entire parameter vector; explicit keys written
       alongside it are re-applied afterwards. Before this was fixed, a sentinel such as
-      \texttt{pool=-1} was silently clamped away by the bulk vector, and three independently fitted
+      \texttt{pool=-1} was silently clamped away by the bulk vector, and three separately fitted
       configurations carried machinery their spec said was switched off.
 \end{itemize}
 
@@ -70,7 +70,11 @@ turn indicator, the card-count difference, the number of unresolved cards, the n
 half-suits, the acting seat's and its weakest teammate's hand sizes, counts of half-suits the team
 probably and probably does not control, and two interaction terms of the turn indicator with
 control and with the unresolved count. Its sixteen weights are compiled constants of the \vfive{}
-policy family and are not coordinates of the fitted vector.
+policy family and are not coordinates of the fitted vector. The tabulated ask weights are the
+coordinates $w$ of \eqref{eq:askscore}; the score multiplies $w^{\!\top}\phi(a)$ by the scale
+$\lambda = \vsevenLinearWeight{}$ and adds the value term and the three ownership terms, so a
+tabulated weight is comparable with the others in the table but not directly with the value-term
+coefficient $\beta$.
 
 \begin{table}[!ht]\centering
 \caption{The twenty ask-score features and their deployed weights $w$, in the order of the feature

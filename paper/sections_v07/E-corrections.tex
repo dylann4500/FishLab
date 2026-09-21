@@ -22,26 +22,24 @@ exists in the form it does.
   \vsevenPhaseOneCost$\times$. Both figures describe the
   \emph{unrestricted} configuration, which is not the point of the frontier anything was measured at.
   The endgame-restricted operating point was re-measured at $\sim$\vsevenCostRecorded$\times$ during
-  phase~3, and that correction was carried into the protocol. \textbf{This report corrects the correction}: measured on the shared panel at a fixed thread count,
+  phase~3, and that correction was carried into the protocol. This report corrects the correction: measured on the shared panel at a fixed thread count,
   \fcheap{}, the configuration the \vsevenCostRecorded$\times$ describes, costs at least
   \vsevenCostFcheapTight$\times$ the blueprint, and \sestina{} at least
   \vsevenCostFrozenTight$\times$ (\S\ref{sec:results-cost}). Every figure in that table is an
-  observed whole-match slowdown, diluted by the opponent's cost, and none carries an interval. The
-  record has now been wrong in both directions and the reason is the same both times, a ratio quoted
-  without the basis it was computed on.
+  observed whole-match slowdown, diluted by the opponent's cost, and none carries an interval. Both
+  earlier errors were ratios quoted without the basis they were computed on.
 
 \item[Interpretation of adversarial-response results.] The v0.4 findings document reports that a policy fitted
   specifically against v0.4 fails to reach parity with it; the same study's own table records the
-  response reaching $\vsevenVfourLbr\%$ with an interval spanning parity. The \vsix{} study corrected this. It is
-  repeated here because this cycle's own principal adversarial result, \S\ref{sec:results-adversarial}, eight searches, all
-  losing, is a number of exactly the same kind, and the correction is what stops this paper making
-  the same claim.
+  response reaching $\vsevenVfourLbr\%$ with an interval spanning parity. The \vsix{} study corrected
+  this; it is repeated here because the eight losing searches of \S\ref{sec:results-adversarial} are
+  a number of the same kind.
 
 \item[Declaration-allocation comparison.] The register ranked it second by priority, at
   \vsevenLonePriority{}, and estimated it at roughly two percentage points.
   \S\ref{sec:development-alloc} reports that the two allocators selected the same allocation at every
-  one of $\sim$\vsevenLoneDecls{} recorded declarations (counted over cells that include re-runs of
-  the same seeds), that the exact-joint alternative performed worse on the declaration decision, and
+  one of \vsevenLoneDeclsTotal{} recorded declarations (\vsevenLoneDeclsDistinct{} from distinct
+  capture cells), that the exact-joint alternative performed worse on the declaration decision, and
   that most of the residual error class is an information limit under the constraint model rather
   than a defect; the tested mechanism therefore produced no difference, which is an empirical
   finding rather than an identity.
@@ -63,9 +61,9 @@ exists in the form it does.
 \item[Detection calibration across evaluation budgets.] Phase~1 measured
   \vsevenFloorPhaseOne{} and predicted the floor would fall as the inverse square root of evaluation
   games. At exactly four times the games the smallest recovered rung was \vsevenPrimaryFloor{}, and
-  the next rung down remained unrecovered, with a phase-2 excess centred near zero rather than merely
-  wide. For that responder class and budget, a planted effect below about a point and a half was not
-  recovered; this does not establish that such effects are absent. \S\ref{sec:results-controls}
+  the \vsevenFloorRungBelow{}~pp rung remained unrecovered, with a phase-2 excess centred near zero
+  rather than merely wide. For that responder class and budget the exact result is that two-rung
+  outcome; it does not establish that smaller effects are absent. \S\ref{sec:results-controls}
   reports the corresponding controls on holdout material.
 
 \end{description}
@@ -86,25 +84,23 @@ exists in the form it does.
 \end{description}
 \begin{description}
 
-\item[Freeze-verification baseline.] The freeze checker reads its source-drift baseline out of the freeze artifact's own
-  provenance field, and that artifact was rewritten twice after the freeze commit, each rewrite
-  refreshing the baseline to the then-current tree. The check therefore compared the tree against a
-  baseline taken from the tree, and the sources the protocol predicted would be listed as changed no
-  longer differed from it. Measured against the actual freeze commit, \vsevenDriftChanged{} of the
-  \vsevenDriftTotal{} engine sources differ, \vsevenDriftList{}, of which
-  \vsevenDriftMidBattery{} arrived in the commits that landed while the battery ran and
-  \vsevenDriftPreBattery{} already differed before it began. \textbf{What is not weakened is the policy identity}: the round-trip assertions and the
-  mirror digest are computed by \emph{running} the engine, not by comparing file hashes, and all of
-  them round-trip. Because the hash-based check was vacuous it was replaced by an executed one, the
-  engine was rebuilt from the tree as it stood at the end of the battery and the mirror digest
-  recomputed with the fresh binary. It is \texttt{\vsevenMirrorDigest{}}, identical to the frozen
-  artifact and to the binary that played every cell.
+\item[Freeze-verification baseline.] The freeze checker reads its source-drift baseline from the
+  freeze artifact's own provenance field, and that artifact was rewritten twice after the freeze
+  commit, each rewrite refreshing the baseline to the then-current tree, so the check compared the
+  tree against itself and could not fire. Measured against the actual freeze commit,
+  \vsevenDriftChanged{} of the \vsevenDriftTotal{} engine sources differ, \vsevenDriftList{}, of
+  which \vsevenDriftMidBattery{} arrived in the commits that landed while the battery ran and
+  \vsevenDriftPreBattery{} already differed before it began. The policy identity is not weakened:
+  the round-trip assertions and the mirror digest are computed by running the engine, and the
+  engine rebuilt from the tree as it stood at the end of the battery reproduces the mirror digest
+  \texttt{\vsevenMirrorDigest{}}, identical to the frozen artifact and to the binary that played
+  every cell (artifact \filepath{P5-drift.json}, deviation D27).
 
 \item[Scored-run reproducibility.]
   \label{app:corrections-reproducibility}
   Before any holdout material was spent, one training cell was checked to be bit-identical over
   \vsevenReproRuns{} runs across three thread counts, and it was
-  (\vsevenReproIdentical{}). \textbf{That check was too small.} The panel contains three policies
+  (\vsevenReproIdentical{}). That check was too small. The panel contains three policies
   twice, so twenty-four pairs of byte-identical commands were run twice each; one pair disagreed, by
   one game in \vsevenResidueGames{}. That is the cross-deal agent residue of \S\ref{sec:results-controls}
   reaching the \emph{scored} mode, which four hundred deals was not large enough to expose. The
@@ -137,9 +133,11 @@ exists in the form it does.
   moves and this paper reads no lift out of it either. What the correction is worth is only this:
   the sign as printed \emph{implies} a small collapse, and the data support no direction at all.
 
-\item[Bibliographic metadata corrections.] Every one of the seventy-one references this paper
-  cites was checked against its source rather than against the earlier cycle's bibliography, which
-  is where all of them were inherited from, and eight carried a metadata error. Three author lists
+\item[Bibliographic metadata corrections.] During the preparation of the v1.0 report the author
+  checked each of the seventy-one references against its source rather than against the earlier
+  cycle's bibliography, from which all of them were inherited; this is an internal correction
+  inventory, not an independent bibliographic verification, and eight entries carried a metadata
+  error. Three author lists
   were wrong: one entry carried the adjacent entry's five names where the paper it cites has four,
   one printed nine names from a later paper by overlapping authors where the cited preprint has
   seven, and one added an author the cited work does not have. The others were a repository start
@@ -149,20 +147,15 @@ exists in the form it does.
   of five entries and split two entries that referred to distinct documents; the reference list's
   header records those edits.
 
-\item[Rule-variant residual uncertainty.] The phase-5 document forms
-  the residual's half-width over five rule-variant cells with unit coefficients, one of which is the
-  \texttt{-{}-maxasks=360} row. That row is bit-identical to the default --- the same win rate and
-  the same interval on both banks --- so it carries no variance, and its own document says so two
-  lines later. Excluding it, and giving the default row the coefficient the two-component residual
-  actually gives it, the interval is
+\item[Rule-variant residual uncertainty.] The phase-5 document forms the residual's half-width
+  over five rule-variant cells with unit coefficients, including the \texttt{-{}-maxasks=360} row,
+  which is bit-identical to the default on both banks and so carries no variance. Excluding it, and
+  giving the default row the coefficient the two-component residual gives it, the interval is
   $[\vsevenLegacyResidualLo, \vsevenLegacyResidualHi]$ rather than the recorded
-  $[\vsevenLegacyResidualRecordedLo, \vsevenLegacyResidualRecordedHi]$. This paper prints the
-  narrower of the two. The two documents also express the width differently, this one as the full
-  interval over the residual and the recording as the half-width over it, so their multiples are not
-  comparable as printed and are omitted here. No verdict moves:
-  S5 is decided by the largest excursion, and the residual is consistent with zero under either.
-  Neither figure is a true 95\% interval, because all the cells share banks and deals and the
-  ask-cap identity proves the correlation is large.
+  $[\vsevenLegacyResidualRecordedLo, \vsevenLegacyResidualRecordedHi]$; this paper prints the
+  narrower. No verdict moves: S5 is decided by the largest excursion, and the residual is
+  consistent with zero under either. Neither figure is a valid 95\% interval, because the cells
+  share banks and deals and the ask-cap identity shows the correlation is large.
 
 \item[Calibration-rung correspondence.] The
   preregistration introduces B9.3's sub-floor rung as ``\texttt{hstr=0.05}, the rung phase 2 measured
@@ -212,8 +205,7 @@ exists in the form it does.
   protocol presented it as an inherited record that this cycle corrected. And the leaf evaluator's \vsevenKoneFold-fold gain in between-candidate
   $R^2$ is an in-sample gain, described in its source as replicating out of sample; out of sample the
   same pair is \vsevenKoneRsqOosBefore{} against \vsevenKoneRsqOosAfter{}, so the direction
-  replicates and the multiple does not. Neither error changes a verdict: the cost figure is corrected
-  again by \S\ref{sec:results-cost} in any case, and the leaf's conversion failure is what kills it.
+  replicates and the multiple does not. Neither error changes a verdict.
 
 \end{description}
 

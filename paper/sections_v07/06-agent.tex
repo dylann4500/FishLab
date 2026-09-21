@@ -124,7 +124,7 @@ last card of $H(c)$ permanently removes that target's right to ask in it.
 \end{equation}
 
 \sestina{} inherits $w$, $\lambda$, $\beta$ and the three extra weights from \vsix{} unchanged.
-\textbf{No gradient or population fit was run in this cycle}: the one coordinate that is not
+No gradient or population fit was run in this cycle: the one coordinate that is not
 inherited, \eqref{eq:contest}, had its value chosen as the argmax of a measured dose response, which
 is a one-dimensional selection on win rate and is reported as such in
 \S\ref{sec:results-selection}. The vector was found by \vsix{}'s repaired
@@ -158,8 +158,11 @@ replaces enumeration order with a deterministic draw keyed by the public record:
   \rho \;=\; \mathrm{hash}\bigl(\mathcal{P}_t,\; s,\; t\bigr),
   \label{eq:tiebreak}
 \end{equation}
-with $\mathcal{P}_t$ the running hash of the public event stream, $s$ the seat index, $t$ the event
-count, and $\iota$ a uniform index map from the hash into the tied set. The tolerance
+with $\mathcal{P}_t$ a partial digest of the public event stream, namely a rolling hash over each
+event's kind, actor, target, card and outcome, which omits the half-suit index and the allocation a
+declaration names; whether those omitted public fields can matter to a tie case was not
+established. Here $s$ is the seat index, $t$ the event count, and $\iota$ a uniform index map from
+the hash into the tied set. The tolerance
 $\varepsilon$ is $10^{-9}$ in absolute score units, a fixed engine constant rather than a
 configuration option, so $\mathcal{E}_t$ is a tolerance-based tied set rather than necessarily a
 bit-identical one. Every seat observes all three arguments of $\rho$, so every teammate can
@@ -253,10 +256,11 @@ allocation is fixed in turn, and the resulting chain-rule product is what the po
 $\hat\pi^\star_{\mathrm{alloc}}$ and thresholds on. \emph{Exact constraint-joint selection}: the
 exact object \eqref{eq:alloc} is available from the block dynamic program but sits on no decision
 path. \S\ref{sec:development-alloc} reports the relevant measurements: the marginal-product
-selection and the sequential approximate joint's argmax selected the same allocation in
-approximately \vsevenLoneDecls{} recorded voluntary declarations, counted over capture cells that
-include re-runs of the same seeds, an agreement that is empirical and does not establish
-equivalence to the exact joint maximiser; and substituting the exact constraint-joint selection
+selection and the sequential approximate joint's argmax selected the same allocation in every one
+of \vsevenLoneDeclsTotal{} recorded voluntary declarations, of which \vsevenLoneDeclsDistinct{} are
+from distinct (bank, urgency-setting) capture cells and the remainder from re-runs of the same
+seeds and from the two cells of the sequential-joint policy, an agreement that is empirical and
+does not establish equivalence to the exact joint maximiser; and substituting the exact constraint-joint selection
 changed a small fraction of decisions and performed worse on the declaration decision.
 
 \paragraph{Declaration timing.} Write $\hat\pi_{\mathrm{alloc}}^\star$ for the sequentially
@@ -402,8 +406,9 @@ plus the team's expected control of the live half-suits. That is \vsix{}'s own h
 a learned one: \S\ref{sec:development-leaf} reports what happened when a fitted replacement was
 built. Write $V_{r,d}$ for either. This is the point at which the method departs from standard
 determinization: the continuation players are not made clairvoyant. \S\ref{sec:game-why} explains why
-that matters here, namely that clairvoyant play in Fish is degenerate and every action would score
-alike. All candidates share the same $D_{\mathrm{det}}$ worlds, so the comparison is paired and the
+that matters here, namely that under clairvoyant play the implemented rules give the team on turn
+every half-suit not dealt outright to the opponents, so a clairvoyant rollout assigns nearly the
+same value to every action. All candidates share the same $D_{\mathrm{det}}$ worlds, so the comparison is paired and the
 noise that matters is the noise in the difference.
 
 \paragraph{Guarded action selection.} For each candidate $r \ge 1$ form the paired difference

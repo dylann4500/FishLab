@@ -1061,7 +1061,7 @@ def b8_dialects():
                      (_tex(name), _sg(m), _sg(lo), _sg(hi), _sg(per[BANK3]),
                       _sg(per[BANK1]), _sg(m - base)))
     TABLE_SPEC['dialects.tex'] = ('lrrrr',
-        'Dialect & Edge (pp) & 95\\% CI & Per bank & vs default')
+        'Rule variant & Edge (pp) & 95\\% CI & Per bank & vs default')
     writeTable('dialects.tex', lines)
     mx = max(exc)
     emit('vsevenDiaMaxExcursion', _sg(mx[2]), 'P5-B8.jsonl: largest excursion from the default row')
@@ -1611,8 +1611,8 @@ def deviations():
         body = body.replace('#', '\\#').replace('$', '\\$')
         # Elide before converting the Markdown markup below, not after: cutting
         # inside a \\texttt{...} group would emit an unbalanced brace.
-        if len(body) > 460:
-            body = body[:457].rsplit(' ', 1)[0]
+        if len(body) > 240:
+            body = body[:237].rsplit(' ', 1)[0]
             # an elision can strand the opening half of a pair; drop it rather
             # than let it swallow the rest of the entry
             for ch in ('"', '`'):
@@ -1953,6 +1953,31 @@ def ask_weights():
     emit('vsevenAskWeightCount', str(nfeat), 'engine/fishbot_v07.json: ask-weight coordinates')
 
 
+# ---------------------------------------------------------------- K2 declaration counts
+# The phase-3 replay of the declaration allocators recorded every voluntary
+# declaration of the captured team.  Two counts are emitted: every recorded
+# declaration across the three capture files, and the count over distinct
+# (bank, urgency-setting) cells, which excludes the two re-runs on the same
+# seeds and the two cells of the sequential-joint policy.  The paper quotes both.
+def k2_declaration_counts():
+    files = {'on': 'K2-ceiling-urgon.jsonl', 'off': 'K2-ceiling-urgoff.jsonl', 'jalloc': 'K2-perdec-jalloc.jsonl'}
+    total = 0
+    best = {}
+    for tag, fn in files.items():
+        for r in load_jsonl(os.path.join(_RES, fn)):
+            n = int(r['metrics']['declShipAccuracy']['n'])
+            total += n
+            if tag in ('on', 'off'):
+                key = (tag, r['seed'])
+                if key not in best or r['deals'] > best[key][0]:
+                    best[key] = (r['deals'], n)
+    distinct = sum(n for _, n in best.values())
+    emit('vsevenLoneDeclsTotal', _commafy(total),
+         'K2-ceiling-urgon/urgoff, K2-perdec-jalloc: recorded voluntary declarations, all capture cells')
+    emit('vsevenLoneDeclsDistinct', _commafy(distinct),
+         'K2-ceiling-urgon/urgoff: declarations over distinct (bank, urgency) cells, largest cell per pair')
+
+
 def paper_main():
     os.makedirs(_TBL, exist_ok=True)
     b3_panel_table()          # the headline: worst case and minimax regret, first
@@ -1975,6 +2000,7 @@ def paper_main():
     verdicts()
     forest_plot()
     ask_weights()
+    k2_declaration_counts()
     emit('vsevenBuildDate', _time.strftime('%Y-%m-%d'), 'build_tables_v07.py --paper run date')
     # provenance counts, which the reproducibility appendix quotes
     try:

@@ -97,8 +97,10 @@ index rather than by stated confidence, because a confidence comparison would mo
 one seat's hand to five others. That restriction costs $+\numArbCost{}$~pp of win rate pooled over
 \numArbGames{} games on five seeds, and an arbitrator that, given the true deal, selects a correct
 declaration from those proposed is worth \numArbOracle{}~pp pooled over three of those seeds. Both
-figures bound the value of choosing among a fixed set of proposals; neither bounds a policy that
-changes what it proposes. A half-suit differential and a win-rate edge are different units and are
+figures measure the effects of two diagnostic arbitration interventions over the fixed proposal
+set: the oracle selects a correct proposal when one exists and does not optimise continuation
+value, so neither figure bounds the value attainable by arbitration over that set, nor the value of
+a policy that changes what it proposes. A half-suit differential and a win-rate edge are different units and are
 not converted into one another here.
 
 \subsection{Computational and informational structure}
@@ -132,9 +134,11 @@ Three teammates share a payoff, hold different private information, and have no 
 beyond their public actions. This is the decentralised control problem the common-information
 approach formalises, in which a notional coordinator who knows the common information issues
 \emph{prescriptions} mapping each controller's private information to an action
-\cite{nayyar2013common}. In Fish the common information is the entire public history, so the
-coordinator's information state is exactly the belief object the engine already maintains. The
-coordinator's problem is not solvable here, since a prescription maps every possible nine-card hand to
+\cite{nayyar2013common}. In Fish the common information is the entire public history, which
+induces a common-information belief over the joint private hands. \sestina{} instead maintains an
+observer-conditioned belief that combines a seat's private hand with the public history; this is
+related to, but not identical with, the coordinator belief used in common-information formulations.
+The coordinator's problem is not solvable here, since a prescription maps every possible nine-card hand to
 an ask, so the reduction serves as a correctness lens rather than an algorithm. What it does yield
 cheaply is a property the cooperative-search literature has to work for \cite{lerer2020sparta}: the
 mapping implemented by a \emph{deterministic} procedure reading only public state and its own hand
@@ -152,8 +156,8 @@ private sampled signal. Knowledge of the policy does not reveal an action determ
 hand, but it lets an opponent compute the distribution of a seat's action from the public record
 (\S\ref{sec:agent-coordination}). \S\ref{sec:threat} adopts that as the threat model, and
 \S\ref{sec:results-adversarial} reports what an adversary that reads the target's policy and
-inverts its transcript achieved. In the literature and repositories we reviewed we found no prior
-work covering this case.
+inverts its transcript achieved. Within the search scope described in \S\ref{sec:related-fish}, we
+did not identify prior work that addresses this case.
 
 \paragraph{Computational cost.}
 A deal resolves in roughly a hundred public events, and on one \vsevenMirrorThreads{}-thread
@@ -164,8 +168,8 @@ seat; the evaluated configuration, which searches, shows an observed whole-match
 \vsevenCostFrozenTight$\times$ relative to the non-searching blueprint (\S\ref{sec:results-cost}). This is what makes
 the evaluation programme of \S\ref{sec:evaluation} possible: \vsevenBtwoFcheapN{} paired games for a
 single headline comparison, two disjoint holdout banks for every claim, a \vsevenPanelMembers{}-member
-opponent panel scored identically for four configurations, and \vsevenBfourArmsWord{} independent
-adversarial searches all run on one desktop. In a domain where one evaluation cell costs
+opponent panel scored identically for four configurations, and \vsevenBfourArmsWord{} separately
+fitted adversarial searches all run on one desktop. In a domain where one evaluation cell costs
 GPU-hours, the version of this study that reports its own negative results could not have been
 afforded. The corresponding liability appears in \S\ref{sec:discussion-external}: low simulation
 cost does not provide independent validation.
@@ -174,17 +178,20 @@ cost does not provide independent validation.
 Two limitations bear on how later results should be read. First, the perfect-information version of
 this game offers little to a clairvoyant planner. A player who sees every hand names only cards the
 target holds, so never fails an ask, never loses the turn, and declares each half-suit as soon as
-their team holds all of it; under such play the value of a position is determined by the current
-card distribution, so a clairvoyant rollout distinguishes little between the asks available at a
-decision. We have not characterised this formally, and the claim is about the evaluated variant
-under clairvoyant play rather than a theorem about the game. Determinization, the standard recipe
+their team holds all of it; under the implemented rules the team on turn then takes every half-suit
+not dealt outright to the opponents. A probe with both teams omniscient verified this over
+\vsevenOmniProbeGames{} mirror games, in every one of which the non-moving team's score equalled the
+number of half-suits dealt to it outright (\filepath{research/v06/notes/R8-game-structure.md}), so a
+clairvoyant rollout assigns nearly the same value to every action available at a decision. This is
+an implementation-level result verified by that probe, not a formal value bound, and it concerns
+the evaluated variant. Determinization, the standard recipe
 for hidden-hand card games \cite{levy,ginsberg-gib}, therefore reduces here largely to choosing the
 ask most likely to hit, blind to the information an ask leaks, the information a refusal supplies,
 and the option value of postponing a declaration. \S\ref{sec:related-determinization}
 places this against the literature. Second, Fish has no passive continuation: a player must ask or
 declare, so there is no equivalent of the check-and-call rollout on which the standard cheap
 exploitability probe is built \cite{lisy2017lbr}. \S\ref{sec:discussion-future} names this as the
-largest single obstacle between this work and a defensible near-optimality claim. Second, a
+largest single obstacle between this work and a defensible near-optimality claim. Third, a
 deterministic procedure reading only the public state and its own hand can be evaluated by a
 teammate on any hypothesised hand; \S\ref{sec:agent-coordination} states the conditions under which
 that supports coordination without communication.

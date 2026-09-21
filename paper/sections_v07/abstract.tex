@@ -6,19 +6,23 @@ weighting, a linear action score, public-history tie-breaking, a half-suit conte
 deduction-state stall detector, and guarded determinized search.
 
 Evaluation comprises \vsevenScoredCells{} scored comparison cells over \vsevenScoredGames{} games
-under a preregistered protocol. Against the registered baseline, \fcheap{}, \sestina{} achieves a
-win-rate edge of \vsevenBtwoFcheap{} percentage points relative to parity (95\% CI
-$[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$) over \vsevenBtwoFcheapN{} games, with positive
-estimates on both holdout banks. Its comparison with an earlier development composite is unresolved:
-\vsevenBtwoComposite{} points (95\% CI $[\vsevenBtwoCompositeLo, \vsevenBtwoCompositeHi]$).
-Cross-play and rule-variant tests retain positive performance estimates, while the worst
-partner-substitution difference, \vsevenSoneMin{} points (95\% CI
-$[\vsevenOppFiveWithholderLo, \vsevenOppFiveWithholderHi]$), does not resolve the registered
+under a preregistered protocol. Against the registered baseline, \fcheap{}, the recorded
+implementation of \sestina{} produced an observed win-rate edge of \vsevenBtwoFcheap{} percentage
+points relative to parity over \vsevenBtwoFcheapN{} games, with positive estimates on both holdout
+banks. The reported deal-bootstrap interval, $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$ at a
+nominal 95\% level, is nominal: the scored implementation retains agent state across the deals a
+worker thread processes, which violates the interval's deal-independence assumption, and its
+coverage is not established. The same qualification applies to every interval reported. The
+comparison with an earlier development composite is unresolved, \vsevenBtwoComposite{} points
+$[\vsevenBtwoCompositeLo, \vsevenBtwoCompositeHi]$. Cross-play and rule-variant tests retain
+positive performance estimates, while the worst partner-substitution difference, \vsevenSoneMin{}
+points $[\vsevenOppFiveWithholderLo, \vsevenOppFiveWithholderHi]$, does not resolve the registered
 $\vsevenSoneThreshold{}$-point threshold. None of \vsevenBfourArmsWord{} tested adversarial searches
 achieves a positive edge against \sestina{} at the evaluated budgets.
 
 Four candidate modifications yield no demonstrated additional improvement under the tested
 conditions. Known cross-deal state persistence and the difference between scored and
 isolation-tested execution modes limit implementation-level conclusions. The results establish an
-improvement over the specified baseline, but do not establish near-optimality or an upper bound on
+observed improvement over the specified baseline under the recorded implementation; they do not
+establish coverage-validated uncertainty for that improvement, near-optimality, or an upper bound on
 exploitability.

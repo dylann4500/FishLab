@@ -1229,3 +1229,16 @@ The adversary bank is split 14 / 14 by a rule fixed before any result was known 
 8. **The declaration rule is shared byte for byte across the entire frontier** — `V06Agent` overrides
    only `reset`, `resetWithKnowledge`, `observe` and `chooseAsk` — but the *inputs* to that rule are
    not, so an attack on the rule transfers across the frontier while its size need not.
+
+---
+
+**Correction (21 September 2026, added during the editorial revision of the v1.0 report; the
+text above is left as written).** Summary item A7 and §4F state that the construction which
+raises the *target's* forced-endgame incidence "was measured at −17 points". No cell in the
+results tree supports that figure: no recorded configuration string describes such a
+construction, the only measurement near −17 in this phase is the unrelated `v06:belief=exactdisj`
+belief-objective screen row, and the planned search arm X07 (objective `forced`) has no recorded
+result. The one construction that was measured is a team that never declares voluntarily (the
+`no-declare` screen row), which raises its *own* forced-endgame incidence, not the target's. The
+v1.0 report's Appendix E records this correction, and its §9.4.5 describes the
+incidence-raising route as untested rather than closed by a price.

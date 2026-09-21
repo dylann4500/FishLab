@@ -27,7 +27,7 @@ $s$ & the acting seat; $\mathcal{T}_s$ its two teammates, $\mathcal{O}_s$ its th
 $D$ & the hidden state: the initial deal, an assignment of all 54 cards to seats, nine each \\
 $\mathcal{I}_s^t$ & seat $s$'s information set after $t$ public events \\
 $\mathcal{C}_s^t$ & the hard constraints (C1)--(C5) seat $s$ has accumulated after $t$ events \\
-$\mathcal{P}_t$ & the running hash of the public event stream \\
+$\mathcal{P}_t$ & a partial digest (rolling hash) of the public event stream (\S\ref{sec:agent-tiebreak}) \\
 $\mathrm{own}_t(c)$, $H(c)$ & the seat holding card $c$; the half-suit containing $c$ \\
 $\mathcal{H}_t$ & the half-suits not yet claimed \\
 \midrule
@@ -79,8 +79,10 @@ An acting policy never receives the game state. It receives its own knowledge ob
 and the public event stream. There is no reference from a policy to the deal, to another seat's hand
 or to the referee. This is an architectural barrier rather than a convention, and it is what allows
 the side-channel audit of \S\ref{sec:evaluation-side} to be read as a test of the policy: a policy
-that cannot reach the deal cannot read it, so any decision the audit fails to reproduce from public
-information indicates state carried across deals rather than information taken from the referee.
+that cannot reach the deal cannot read it, so a replay failure indicates dependence on information
+or state not represented in the replay construction. Subsequent source inspection localised the
+observed residual to persistent rollout state (\S\ref{sec:agent-coordination}), although the
+specific carrier field and its scored win-rate effect were not isolated.
 
 \subsection{Observer-specific deal constraints}
 \label{sec:inference-constraints}

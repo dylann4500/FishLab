@@ -84,14 +84,11 @@ comparison of that kind.
 \paragraph{Search-selection bias.} v0.6
 built a search that samples full deals from the public posterior and plays each forward with all six
 players reconstructed at their own information sets, rather than made clairvoyant, which
-\S\ref{sec:game-why} explains would be degenerate. Chosen by an unguarded argmax over sampled means,
+\S\ref{sec:game-why} explains would leave the rollout unable to discriminate between actions. Chosen by an unguarded argmax over sampled means,
 that search is \vsixCurseGap{}~pp \emph{worse} than the blueprint it searches from, measured against a
 control that forces the same code to return the blueprint's own choice at identical budget, seed and
-sample size. The cause is the statistic rather than the search: one determinization's return is the
-final half-suit differential, whose spread is an order of magnitude larger than genuine differences
-between candidates, so the argmax selects on residual noise and does so more confidently the more
-candidates it is offered. A paired lower-confidence-bound deviation rule removed the measured deficit in that
-experiment. The guarded search, which v0.6 measured and then deployed switched off, is a component
+sample size. The cause is the statistic rather than the search (\S\ref{sec:agent-search}), and a
+paired lower-confidence-bound deviation rule removed the measured deficit in that experiment. The guarded search, which v0.6 measured and then deployed switched off, is a component
 of \sestina{} (\S\ref{sec:agent-search}).
 
 \paragraph{Evaluation resolution and optimiser design.} Pooling every same-pair cell in the v0.6 battery gave \vsixHeadPooled\% with a naive $z$ of
@@ -117,6 +114,5 @@ The v0.6 results motivated five development stages: evaluation calibration, adve
 candidate-mechanism testing, configuration selection and freezing, and holdout evaluation under a
 preregistered protocol. \S\ref{sec:development} and \S\ref{sec:results} report the exploratory and
 holdout stages, respectively. The protocol separated configuration selection from final evaluation
-to reduce selection-related bias; the organisational details, including which briefs, software
-processes and information restrictions separated the stages, are in Appendix~\ref{app:repro} and
-the protocol document it cites.
+to reduce selection-related bias; the software processes and information restrictions that separated
+the stages are stated in \S\ref{sec:evaluation-seal}.

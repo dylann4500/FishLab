@@ -13,15 +13,21 @@ evaluation controls and the computational cost.
 \subsection{Baseline comparisons}
 \label{sec:results-primary}
 
-Against \fcheap{}, the registered primary baseline, \sestina{} achieved a win-rate edge of
-\vsevenBtwoFcheap{}~pp relative to parity (95\% CI $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$)
-over \vsevenBtwoFcheapN{} games; this edge corresponds to a \vsevenBtwoFcheapWinRate{} head-to-head
-win rate against \fcheap{}, not to a change from a separately measured baseline win rate. The two
-bank estimates were \vsevenBtwoFcheapBankOne{} and \vsevenBtwoFcheapBankTwo{}~pp. The pooled lower
-bound exceeded the preregistered \vsevenPrimaryFloor{}~pp threshold, both bank estimates were
-positive, and the configuration passed the specified behavioural gate in its designated test mode
-(\S\ref{sec:design-gate}). The registered primary decision rule was therefore satisfied, and the
-comparison \vsevenPrimaryVerdict{}. The scored-mode isolation limitation is reported in
+Against \fcheap{}, the registered primary baseline, the recorded implementation of \sestina{}
+produced an observed win-rate edge of \vsevenBtwoFcheap{}~pp relative to parity over
+\vsevenBtwoFcheapN{} games, with a nominal 95\% interval of
+$[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$; this edge corresponds to a \vsevenBtwoFcheapWinRate{}
+head-to-head win rate against \fcheap{}, not to a change from a separately measured baseline win
+rate. The interval is nominal: it is a deal-block bootstrap that treats deals as independent, and
+the scored implementation retains cross-deal agent state that violates that assumption
+(\S\ref{sec:evaluation-intervals}, \S\ref{sec:discussion-engineering}), so its coverage is not
+established. The two bank estimates were \vsevenBtwoFcheapBankOne{} and
+\vsevenBtwoFcheapBankTwo{}~pp. The pooled nominal lower bound exceeded the preregistered
+\vsevenPrimaryFloor{}~pp threshold, both bank estimates were positive, and the configuration passed
+the specified behavioural gate in its designated test mode (\S\ref{sec:design-gate}). The
+registered primary decision rule was therefore satisfied on the nominal interval, and the
+comparison \vsevenPrimaryVerdict{}; that verdict is a recorded protocol outcome rather than a
+coverage-validated inference. The scored-mode isolation limitation is reported in
 \S\ref{sec:results-controls}. Figure~\ref{fig:forest} places this comparison beside the others, and
 Table~\ref{tab:frontier} gives the cells behind it.
 
@@ -174,21 +180,22 @@ estimates against thresholds that the deciding intervals cross.
 
 \begin{table}[!ht]\centering
 \caption{The seven registered non-confirmation conditions against what the holdout returned.
-\emph{Recorded} is the verdict under the protocol's rule as written; \emph{reading} states the
-statistic that rule uses and, where the deciding interval crosses the threshold, says so.
+\emph{Recorded verdict} is the verdict under the protocol's rule as written; \emph{reading with
+uncertainty} states the statistic that rule uses and, where the deciding interval crosses the
+threshold, says so. Every interval is nominal (\S\ref{sec:evaluation-intervals}).
 Appendix~\ref{app:thresholds} reproduces the criteria with the same distinction.}
 \label{tab:seven}
 {\tabfont
 \begin{tabularx}{\linewidth}{@{}c Q{0.8} Q{1.1} Q{1.1}@{}}
 \toprule
-\# & Condition & Recorded & Reading \\
+\# & Condition & Recorded verdict & Reading with uncertainty \\
 \midrule
 1 & the frontier comparison & not met. \vsevenBtwoFcheap{} $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$, sign replicates & lower bound above \vsevenPrimaryFloor{}; resolved \\
 2 & the composite comparison & met. \vsevenBtwoComposite{} $[\vsevenBtwoCompositeLo, \vsevenBtwoCompositeHi]$ & interval contains zero; the comparison is unresolved rather than negative \\
 3 & attribution: the location test & does not replicate. \vsevenLocVerdictOne{} on one bank, \vsevenLocVerdictThree{} on the other & per-bank point estimates against one third of the whole; not resolved \\
 4 & brittleness under partner change or cross-play & not met. Minimum \vsevenSoneMin{}; cross-play off-diagonal minus diagonal \vsevenXpGap{} & point estimates; the deciding partner interval $[\vsevenOppFiveWithholderLo, \vsevenOppFiveWithholderHi]$ crosses the $\vsevenSoneThreshold{}$ threshold, and the cross-play contrast carries no interval \\
 5 & a successful adversary & not met. No search found a positive edge; largest upper bound \vsevenBfourWorstUpper{} & upper bounds below the class floor; resolved for the tested searches \\
-6 & the soundness gate & not met. All \vsevenGateRules{} rules pass & deterministic checks on training material \\
+6 & the behavioural validity gate & not met. All \vsevenGateRules{} rules pass & deterministic checks on training material \\
 7 & the validity controls & not met. Every control behaves as specified on the point-estimate reading & point estimates; on the lower-bound reading the \texttt{0.08} rung is not recovered and the sub-floor rung's upper bound exceeds the floor (\S\ref{sec:results-controls}) \\
 \bottomrule
 \end{tabularx}}
@@ -401,15 +408,16 @@ Table~\ref{tab:crossplay} is the cross-play matrix and Table~\ref{tab:crossh2h} 
 head to head.
 
 \begin{table}[!ht]\centering
-\caption{Cross-play. Three runs of the same architecture, trained independently on disjoint fitting
-banks with different search trajectories and, for one, a different starting basin; pairwise parameter
+\caption{Cross-play. Three runs of the same architecture, trained separately with the same fitting
+infrastructure on disjoint fitting banks, with different search trajectories and, for one, a
+different starting basin; pairwise parameter
 distance \vsevenXpDistanceLo{} to \vsevenXpDistanceHi{} over \vsevenCoordinates{} coordinates.}
 \label{tab:crossplay}
 {\tabfont\input{tables_v07/crossplay}}
 \end{table}
 
 \begin{table}[!ht]\centering
-\caption{The three independently trained runs head to head. \vsevenHtwohSeparated{} of the three
+\caption{The three separately trained runs head to head. \vsevenHtwohSeparated{} of the three
 pairs separate from zero, which is what establishes that these are distinguishable policies rather
 than one policy three times.}
 \label{tab:crossh2h}
@@ -443,7 +451,8 @@ is arithmetically legacy minus two effective components rather than three; it is
 quadrature propagation over cells that share banks and deals with unit coefficients, so it is not a
 valid 95\% interval and is wider than a paired difference would be
 (Appendix~\ref{app:corrections-self}); it is \vsevenLegacyResidualRatio{} times the size of the
-residual, and the data are consistent with the ladder contributing nothing.
+residual. The residual estimate is not statistically interpretable under the current propagation,
+and no separate ladder intervention was conducted.
 
 \subsection{Adversarial-search results}
 \label{sec:results-adversarial}
@@ -456,8 +465,10 @@ bound anywhere is \vsevenBfourWorstUpper{}, which is \vsevenBfourFloorGap{}~pp b
 floor. The registered claim is satisfied. Table~\ref{tab:adversaries} gives every search.
 
 \begin{table}[!ht]\centering
-\caption{\vsevenBfourArms{} independently constructed adversarial searches against \sestina{}. Each
-row is the adversarial response win-rate edge in percentage points: the fitted adversary's edge
+\caption{\vsevenBfourArms{} separately fitted adversarial searches against \sestina{}, run with
+common cross-entropy-method fitting infrastructure (the \texttt{tune} driver) and differing in
+objective, initialisation and search variance. Each row is the adversarial response win-rate edge
+in percentage points: the fitted adversary's edge
 against \sestina{}, so a positive value would mean the adversary beats the target. Each was fitted
 on a deal stream disjoint from the banks it is evaluated on. Per-bank values are given in bank
 order, 7090001 then 7090002.}
@@ -564,7 +575,7 @@ worker thread with reused agents. Neither column is the scored mode, which used
 \end{table}
 
 The gate column is zero for every configuration on both banks (\vsevenSsixGateNonzero{} nonzero
-cells), so no inter-seat channel is detected under the certifying condition. The fresh-agent,
+cells), so no inter-seat channel is detected under the registered test condition. The fresh-agent,
 single-thread configuration passed the specified isolation tests. The scored configuration retained
 a cross-deal state residual in searching agents, so these test results do not establish strict seat
 isolation or exact reproducibility for the scored mode. The left column reproduces the known engine
@@ -576,7 +587,10 @@ the statement in \S\ref{sec:evaluation-side} that rebuilding agents per deal cha
 residual's effect on a scored win rate is not bounded by a control cell; the largest discrepancy
 observed between identical scored commands is one game in \vsevenResidueGames{}
 (Appendix~\ref{app:corrections-reproducibility}), and a small observed residual does not establish
-a bound on possible bias across all experiments.
+a bound on possible bias across all experiments. For the intervals of this paper the consequence is
+the one stated in \S\ref{sec:evaluation-intervals}: the scored mode retains this state, so the
+deal-block bootstrap's independence assumption is violated for searching agents and every interval
+is nominal.
 
 \subsection{Computational cost}
 \label{sec:results-cost}

@@ -5,8 +5,10 @@
 
 The engine, every experiment artifact, the protocol, the generator that produces this paper's
 numbers and the provenance checker that audits them are in the project repository,
-\filepath{https://github.com/dylann29/fish-optimization}; the release corresponding to this paper
-is the annotated tag \texttt{sestina-v1.0}. Three identities are kept separate below: the frozen
+\filepath{https://github.com/dylann4500/FishLab} (the repository's former name,
+\texttt{dylann4500/fishbot}, redirects there). The original v1.0 build is the annotated tag
+\texttt{sestina-v1.0}, which is not moved; the build described by this revised paper is the
+annotated tag \texttt{sestina-v1.0-paper-r1}. Three identities are kept separate below: the frozen
 policy configuration, which is the specification string and parameter vector of
 Appendix~\ref{app:parameters} together with the mirror digest \texttt{\vsevenMirrorDigest{}}; the
 evaluation binary, identified by its SHA-256; and the repository tree, identified by commits that
@@ -23,7 +25,7 @@ capture of \vsevenKfiveBytes{} bytes, exceeded the hosting limit and was excised
 history so the repository could be published. That rewrote every commit from phase 3 onward.
 
 Three consequences, stated because a reader checking this paper against the repository will otherwise
-be misled. First, \textbf{the commit hashes recorded inside the phase-5 artifacts no longer resolve}:
+be misled. First, the commit hashes recorded inside the phase-5 artifacts no longer resolve:
 the verification block records \texttt{\vsevenBzeroCommitRecorded{}} and the freeze artifact's drift
 check keys on \texttt{\vsevenFreezeCommitRecorded{}}, and neither object exists in the published
 history. Every hash printed in this paper is the post-rewrite one, recovered by matching commit
@@ -51,7 +53,8 @@ evidence for the tested cases rather than a proof of global program equivalence.
 \subsection*{Computing environment}
 
 The scored battery ran on one Apple M5 Pro desktop with \vsevenMachineCores{} logical cores under
-macOS, with every scored cell at \vsevenScoredThreads{} worker threads
+macOS (the record gives only the Darwin kernel version, \vsevenDarwinVersion{}), with every scored
+cell at \vsevenScoredThreads{} worker threads
 (Appendix~\ref{app:deviations}, D17) and the isolation audits at one; the throughput figure of
 \S\ref{sec:game-why} was taken on the same machine at \vsevenMirrorThreads{} threads. The engine
 was built with \texttt{clang++} at \texttt{-std=c++20 -O3 -march=native -funroll-loops
@@ -74,22 +77,17 @@ Under \filepath{research/v07/results/}, digested in
 \vsevenManifestVerified{} re-verify against their recorded SHA-256 and byte count on disk at the time
 this document was generated.
 
-\begin{itemize}
-\item \filepath{P5-B0.json}, the verification block: seven bank digests, the sealed plaintext hash,
-  the freeze round-trips, the seed registry, the engine self-audit, and the reproducibility runs.
-\item \filepath{P5-gate.jsonl}, the commit gate for all four configurations, rule by rule.
-\item \filepath{P5-B2.jsonl} \ldots\ \filepath{P5-B9.jsonl}, one JSON row per cell, each carrying
-  the literal argument vector it was produced by and the complete match object the harness emitted.
-\item \filepath{P5-B10.jsonl}, one row per audited cell. These are seat-isolation audits rather
-  than matches and carry a \texttt{side} object with the mismatch count and its denominator, not a
-  match object.
-\item \filepath{P5-Z01.jsonl} \ldots\ \filepath{P5-Z08.jsonl}, \filepath{P5-B9-h*.jsonl}, the
-  fitting traces: header, one record per generation, and the final weight vector each adversary spec
-  was rebuilt from.
-\item \filepath{P5-TABLES.txt}, the phase-5 reduction, produced by \filepath{engine/p5_analyse.py}.
-\end{itemize}
-
-Every row carries its own argument vector, so any single cell can be re-run by hand from the artifact
+The block comprises \filepath{P5-B0.json}, the verification block (bank digests, the sealed
+plaintext hash, the freeze round-trips, the seed registry, the engine self-audit and the
+reproducibility runs); \filepath{P5-gate.jsonl}, the commit gate for all four configurations, rule
+by rule; \filepath{P5-B2.jsonl} to \filepath{P5-B9.jsonl}, one JSON row per scored cell carrying
+the literal argument vector it was produced by and the complete match object the harness emitted;
+\filepath{P5-B10.jsonl}, one row per seat-isolation audit, carrying a \texttt{side} object with the
+mismatch count and its denominator rather than a match object; the fitting traces
+\filepath{P5-Z01.jsonl} to \filepath{P5-Z08.jsonl} and \filepath{P5-B9-h*.jsonl}, each with a
+header, one record per generation and the final weight vector its adversary was rebuilt from; and
+\filepath{P5-TABLES.txt}, the phase-5 reduction produced by \filepath{engine/p5_analyse.py}. Every
+row carries its own argument vector, so any single cell can be re-run by hand from the artifact
 without reference to this document or to the driver that produced it.
 
 \subsection*{Numerical generation and provenance}
@@ -109,13 +107,9 @@ without reference to this document or to the driver that produced it.
 \item \filepath{paper/inline.py} flattens the modular source into a single self-contained file.
 \end{enumerate}
 
-Sections~\ref{sec:game}--\ref{sec:background} quote results from this programme's earlier cycles. Those
-numbers are not retyped here either: the earlier cycles' generators emitted them from their own
-artifacts, and this document loads those generated files directly. The split is therefore \vsevenProvGenerated{} generated by this cycle,
-\vsevenProvInherited{} generated by an earlier one, and \vsevenProvTranscribed{} transcribed under a
-header naming the report or artifact that records them, which
-\filepath{paper/check_provenance.py} verifies exists on disk, and whose printed split this
-paragraph is required to match.
+Sections~\ref{sec:game}--\ref{sec:background} quote results from this programme's earlier cycles;
+those numbers are loaded from the earlier cycles' own generated files rather than retyped, and the
+provenance checker verifies that every transcribed number's named source exists on disk.
 
 The generated file is \verb|\input| after the placeholder file, so a value in the placeholder can never
 reach a PDF built after the battery has been run. Generated on \vsevenBuildDate{}.

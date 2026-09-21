@@ -20,15 +20,21 @@ engine imposes no such condition, and \S\ref{sec:game-rules} states what it does
 asking the asker, and an endgame delegation heuristic; they are evidence about how the game is
 played and talked about, not sources of quantitative claims.
 
-\paragraph{Computational prior work.} Literature searches conducted during this project's
-development cycles, covering academic indexes, public code repositories and the RLCard toolkit
-\cite{rlcard}, found no academic work on the six-player game and no public repository containing
-search, planning or a working learner for it. The one agent located, Somani's \texttt{literature}
+\paragraph{Computational prior work.} The prior-art survey of 21 August 2026 queried the arXiv
+API (\texttt{all:"Canadian Fish"}, \texttt{all:"Literature card game"}, \texttt{abs:"Go Fish"},
+\texttt{all:"half-suit"}), GitHub code search (\texttt{literature card game}, \texttt{canadian fish
+card game}, \texttt{fish card game ai}, \texttt{half suit card game}), the RLCard environment list
+\cite{rlcard} and the Google Play store, and was refreshed on 22 and 23 August 2026 with topic
+searches on search and inference in imperfect-information team games; the records are
+\filepath{research/v04/lit/fish-prior-art.md}, \filepath{research/v05/lit/v05-refresh.md} and
+\filepath{research/v06/notes/R7-literature-search.md}. Within that scope we did not identify
+academic work on the six-player game, nor a public repository containing search, planning or a
+working learner for it. The one agent identified, Somani's \texttt{literature}
 \cite{somani,somani-server}, plays the four-player, 48-card variant, which does not raise the
 six-player allocation problem, and publishes no strength numbers; a closed-source mobile
 application advertises bots with no stated methodology \cite{playstore}. Every novelty statement in
-this paper therefore takes the form ``we found no prior published work that \ldots{}'' and is a
-statement about those searches rather than a demonstrated absence. The Valet testbed
+this paper therefore takes the form ``we did not identify \ldots{}'' and is a statement about those
+searches rather than a demonstrated absence. The Valet testbed
 \cite{goadrich2026valet} packages twenty-one traditional imperfect-information card games in a
 common description language with measured branching factors and durations; a shared testbed of
 that kind would supply the external calibration this line of work lacks, but no comparison against
@@ -76,10 +82,11 @@ States in an imperfect-information game do not have well-defined values, so dept
 needs something at the leaf that represents the opponent's ability to choose. Brown, Sandholm and
 Amos supply it: let the opponent select among $k$ continuation strategies at the depth limit, each
 yielding its own leaf-value vector, and require the searcher to be good against that choice
-\cite{brown2018depthlimited}. The soundness argument is stated for two-player zero-sum games, and
-Fish's team-level game presents three uncorrelated opponent seats at the leaf, so nothing is
-inherited; it is adopted here as a robustification heuristic with a measurable consequence, and
-audited rather than assumed.
+\cite{brown2018depthlimited}. The soundness argument is stated for two-player zero-sum games;
+Fish's team-level game presents three opponent seats with distinct private information at the
+leaf, and the cited two-player continuation construction was not instantiated for this setting, so
+nothing is inherited. The idea is adopted here only as a robustification heuristic with a
+measurable consequence, audited rather than assumed.
 
 Two lines address what a search may prune. Zhang and Sandholm solve subgames over low-order
 knowledge rather than the full common-knowledge closure, and prove that the naive form can
@@ -102,9 +109,11 @@ improvement guarantee is void. Fish satisfies the requirement cheaply, for the r
 
 The full-solver line \cite{moravcik2017deepstack,brown2020rebel,schmid2023sog} established that
 test-time re-solving over public belief states is supported by the formal models and assumptions in
-those studies. We do not implement these algorithms, because each requires iterating or learning
-over a closure whose cardinality at deal time is $45!/(9!)^5 \approx 1.9 \times 10^{28}$ deals from
-one seat. Update equivalence recasts search as replicating a last-iterate-convergent update locally,
+those studies. We do not implement these algorithms: continual re-solving and ReBeL typically
+iterate over, and Student of Games learns a value function on, a public belief state whose support
+here is the set of deals consistent with the public history, of cardinality
+$45!/(9!)^5 \approx 1.9 \times 10^{28}$ from one seat at deal time, and we did not attempt an
+abstraction that would make that tractable for a six-player team game. Update equivalence recasts search as replicating a last-iterate-convergent update locally,
 needing no public-information enumeration, and reports substantially lower search time than
 public-belief-state search in Hanabi \cite{sokota2024updateequivalence}; its improvement guarantee
 is stated for common-payoff games, which Fish is not. Learned Belief Search \cite{hu2021lbs} learns

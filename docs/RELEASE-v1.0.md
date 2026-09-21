@@ -1,8 +1,17 @@
 # SESTINA v1.0
 
+> **Revision history (21 September 2026).** The technical report attached to this release was
+> revised after two editorial reviews; the revised build (`output/pdf/sestina_v10.pdf`, tag
+> `sestina-v1.0-paper-r1`) carries an unversioned title, a complete rule statement, corrected
+> claim scopes, and an explicit statement that its confidence intervals are nominal because the
+> scored implementation retains agent state across deals. The text below is the record of the
+> original v1.0 release and describes the original 72-page build; see
+> `docs/SESTINA-v1.0-EDITORIAL-REVISION.md` and `docs/SESTINA-v1.0-ASTRA-DISPOSITION.md` for the
+> change logs. The frozen agent, its configuration and every measurement are unchanged.
+
 The first release under the SESTINA name, and the strongest agent this project has produced for
 six-player Canadian Fish (Literature). It was developed and evaluated as **FishBot v0.7**, the
-seventh cycle of the lineage, and renamed at release; its predecessors keep the names they were
+seventh cycle of the lineage, and renamed at release; its predecessors keep the names they were 
 published under.
 
 **The technical report is attached below as `sestina_v10.pdf` (72 pages).**

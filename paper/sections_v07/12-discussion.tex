@@ -15,7 +15,7 @@ The evidence is consistent with an advantage that is not an artefact of self-pla
 which is the failure mode the cooperative-play literature warns about
 \cite{bard-hanabi,hu-otherplay}. A single seat's upgrade is worth \vsevenOneSeatFive{}~pp against
 the \vsevenSoneSelf{}~pp three-seat gain, a positive gain consistent with benefits beyond
-identical-agent coordination; cross-play between three independently trained runs moves the result
+identical-agent coordination; cross-play between three separately trained runs moves the result
 by \vsevenXpGapAbs{}~pp on the point estimate; and the advantage retains a positive estimate under
 \vsevenDiaRowsWord{} rule variants with a largest excursion of \vsevenDiaMaxExcursion{}~pp.
 
@@ -119,9 +119,9 @@ present a self-play configuration as the one a person would encounter, because b
 does not establish performance with human players.
 
 Every number in this paper was produced by one engine, written by this project, audited by tests this
-project wrote. The strongest available substitute for external replication was used, in the form of
-material sealed before the configuration existed, digests computed by a second build, and a protocol
-registered in advance, and it remains a substitute. In particular, there are no independently authored
+project wrote. The study therefore relies on the following internal validation measures: material
+sealed before the configuration existed, digests computed by a second build, and a protocol
+registered in advance. These do not substitute for external replication. In particular, there are no independently authored
 six-player Fish agents to compare against, which is why \S\ref{sec:intro-strength} confines the
 paper's comparative claim to this project's own lineage.
 
@@ -137,16 +137,24 @@ freezing. \S\ref{sec:results-controls} measures it on holdout material:
 \vsevenSsixPlainNonzero{} of \vsevenSsixCells{} audited cells show a nonzero residual with reused
 agents on one thread, every one of them a searching configuration, and the zero-tolerance gate
 condition is clean. The residual's effect on a scored win rate is bounded only by incidental
-observations (\S\ref{sec:results-controls}), not by a control cell. The frozen results are
-preserved as measured; a separately identified corrected implementation with sensitivity reruns of
-the key comparisons is additional research, listed in \S\ref{sec:discussion-future}.
+observations (\S\ref{sec:results-controls}), not by a control cell. The statistical consequence is
+the following. Every interval in this paper is a deal-block bootstrap, or a normal approximation
+built on one, that treats deals as independent resampling units. Persistent rollout state couples
+the deals a worker thread processes, and the schedule is not retained, so the coverage of the
+reported intervals, including the primary comparison's lower bound, is not established under the
+actual construction: the intervals are nominal, and the registered decision rule was satisfied on a
+nominal interval. A small observed residual does not bound its effect on coverage. Establishing
+coverage requires either a scored rerun in which all agent state is reset between deals, or the
+retention and dependence-aware analysis of worker-ordered outcome sequences under a design
+justified in advance; neither exists. The frozen results are preserved as measured, and the
+corrected rerun is the first item of \S\ref{sec:discussion-future}.
 
 \paragraph{Validation-mode mismatch.} The isolation tests' zero-tolerance form requires one thread
 and agents rebuilt per deal, and rebuilding agents per deal changes play. The scored cells ran with
 \vsevenScoredThreads{} worker threads and reused agents, a mode in which the strict isolation test
 was not run on holdout material, and the residual is not removed from it.
 
-\paragraph{Shared training ancestry.} The three independently trained runs of
+\paragraph{Shared training ancestry.} The three separately trained runs of
 \S\ref{sec:results-crossplay} all begin from or near the \vsix{} vector. A convention all three
 inherited from that common ancestor would appear on the diagonal and off it alike and would be
 invisible to the test. What the test rules out is a convention formed during each run's own fit.
@@ -186,8 +194,8 @@ agent.
 
 \paragraph{Team local-best-response methods.} The standard
 cheap exploitability probe rests on a passive continuation \cite{lisy2017lbr}. Fish has none, since a
-player must ask or declare (\S\ref{sec:game-why}). Until a defensible rollout policy for that role is
-named and calibrated the probe cannot be ported, and the literature's own caution that choosing a
+player must ask or declare (\S\ref{sec:game-why}). A direct port is not justified without
+specifying and calibrating the continuation policy, and the literature's own caution that choosing a
 value function is the difficult part applies directly \cite{brown2018depthlimited}.
 
 \paragraph{Ex-ante correlated adversaries.} The adversary model names three correlation regimes and
@@ -213,6 +221,8 @@ duplicate-style human battery with enough deals to resolve a point. Neither exis
 duplicate design for the latter has not been settled.
 
 \paragraph{Cross-deal state reset.} The defect of \S\ref{sec:discussion-engineering} should be
-repaired in a separately identified implementation and the key comparisons re-measured as
-sensitivity reruns, before rather than after any subsequent configuration is frozen; the frozen
-results reported here are preserved as measured.
+repaired in a separately identified implementation, and the primary comparison and the key
+secondary comparisons re-run in a scored mode that resets all agent state between deals, before
+rather than after any subsequent configuration is frozen. That rerun is what would convert the
+nominal intervals of this paper into coverage-validated ones; until it exists, the frozen results
+reported here are preserved as measured and read as observed edges.

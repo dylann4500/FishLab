@@ -61,6 +61,16 @@ described as one method.
   every cell, and in this corpus the clustered interval is typically no wider than, and often
   slightly narrower than, the interval that treats games as independent, which is the direction a
   negative within-deal correlation produces.
+\paragraph{Independence assumption.} All three constructions treat deal blocks as independent
+  resampling units. In the scored implementation, agents are reused across the deals a worker
+  thread processes and some rollout state persists between deals (\S\ref{sec:agent-coordination}),
+  so a decision in one deal can depend on earlier deals and on thread scheduling, and the
+  work-stealing schedule is not retained. The independence assumption is therefore violated for
+  searching agents, and the coverage of every interval in this paper is nominal rather than
+  established under the actual data-generating construction. The observed residual is small
+  (\S\ref{sec:results-controls}), but its effect on coverage is not bounded by any measurement, and
+  the prose qualification does not repair it; \S\ref{sec:discussion-engineering} states what
+  would.
 \paragraph{Cross-bank pooling.} Two banks of equal size pool as the mean of their two edges, with
   standard error $\mathrm{se}_{\text{pooled}} = \sqrt{\mathrm{se}_1^2 + \mathrm{se}_2^2}/2$, where
   each $\mathrm{se}$ is recovered from that bank's bootstrap interval as half-width divided by
@@ -139,9 +149,14 @@ was not accessed. The documented access procedure is the one recorded there.
 The entire final battery, comprising every cell, its sample size, its threshold, the arithmetic
 behind the sample size and the conditions that would count as non-confirmation, was written down and
 committed before any holdout bank had been played and before the sealed half had been decoded. The
-evaluation was then executed from a cleared context, reading that document and nothing else from the
-project's records. Where it required a training figure for comparison it took it from the registered
-protocol, which states such expectations in advance for exactly this purpose, so that agreement
+evaluation was then executed as a separate automated agent session: a large language model
+operating the repository under the author's supervision, with the session settings recorded in
+\filepath{docs/v07/PHASE-PROMPTS.md}, started without conversation history from the development
+phases and instructed to read the registered protocol and not the development-phase documents or
+training logs. That restriction was by instruction rather than by access control, since the session
+had read access to the repository, and the same author configured every phase; no evaluator
+independence is claimed. Where the evaluation required a training figure for comparison it took it
+from the registered protocol, which states such expectations in advance for exactly this purpose, so that agreement
 constitutes a check and disagreement constitutes a finding.
 
 Anything the evaluation did that the protocol does not specify is recorded as a deviation, next to
@@ -153,15 +168,19 @@ the affected result. There are \vsevenDeviations{}, listed in Appendix~\ref{app:
 This study evaluates many candidate mechanisms, opponents, ablations, adversarial searches and
 configurations, and the inferential status of that needs stating precisely.
 
-\textbf{No formal family-wise or false-discovery correction was applied}, and no interval reported
+No formal family-wise or false-discovery correction was applied, and no interval reported
 here is adjusted for multiplicity. What the design provides instead is structural.
 \emph{Registration} fixes the primary comparison, its threshold and its interpretation before the
 holdout outcomes were examined, so the primary claim is a single pre-specified test rather than the
 best of many.
-\emph{Sealing} makes the holdout material unavailable to the selection process by construction rather
-than by discipline. \emph{Disjoint banks with a sign criterion} require a claim to appear twice
-before it is reported. \emph{Calibration} of the detection floor (\S\ref{sec:evaluation-floor})
-establishes what the instrument can resolve, so that a null is interpretable. And an explicit
+\emph{Sealing} guarded the named holdout banks against routine match access and committed their
+digests before any candidate existed; the guard is an environment-variable override on the match
+runner, some fitting and diagnostic drivers bypass it, and a digest commits to content without
+making it inaccessible (\S\ref{sec:evaluation-seal}, Appendix~\ref{app:deviations} D5 and D6), so
+this is a guarded procedure with prior commitments rather than unavailability by construction. \emph{Disjoint banks with a sign criterion} require a claim to appear twice
+before it is reported. \emph{Calibration} (\S\ref{sec:evaluation-floor}) supports the interpretation of a null
+adversarial result under the registered responder class, budget, handicap family and banks; it does
+not make every null interpretable. And an explicit
 \emph{selection check} (\S\ref{sec:results-selection}) computes how much of the measured gain a
 maximum over $K$ candidates would produce under the null and compares advance-stated training figures
 against their holdout counterparts.
@@ -183,8 +202,8 @@ behavioural criteria.
 A configuration is therefore gated \emph{before} any strength number is computed for it, on
 \vsevenGateRulesWord{} rules covering provably unsuccessful asks, runs of them, action-limit games,
 the mirror game-length tail, late declarations, and the side-channel tests below. The protocol calls
-this the \emph{soundness gate}, and the paper keeps that name for the artifact; it is an empirical
-test suite encoding behavioural criteria, not a proof. A provably unsuccessful ask is legal and
+this the \emph{soundness gate}; outside quotations this paper calls it the behavioural validity
+gate, because it is an empirical test suite encoding behavioural criteria, not a proof. A provably unsuccessful ask is legal and
 could in principle serve an information or turn-transfer purpose, so a rejection expresses a design
 requirement rather than the invalidity of every rejected strategy. A configuration that fails is
 rejected regardless of its win rate. The gate runs on \emph{training} material by design, being a
@@ -217,9 +236,10 @@ decision rule, not a resolution limit for every comparison in the paper.
 The \vsevenPrimaryFloor{}~pp figure has a specific origin. The phase-2 calibration planted a ladder
 of handicaps of increasing size in a \vsix{} target and fitted a responder of the principal class at
 a fixed budget against each; \vsevenPrimaryFloor{}~pp is the planted cost of the smallest rung
-whose recovered excess excluded zero on both banks, and the next rung down, below one point, was not
-recovered. The floor is therefore bracketed by the ladder's rungs rather than measured as a
-boundary, and it is specific to that responder class, budget, handicap family and target.
+whose recovered excess excluded zero on both banks, and the next rung down, at
+\vsevenFloorRungBelow{}~pp, was not recovered. The floor is therefore bracketed by those two rungs
+rather than measured as a boundary, and it is specific to that responder class, budget, handicap
+family and target.
 
 Two findings from the calibration shape the adversarial statements in this paper. First, within the
 tested class and budgets, the floor did not decrease with evaluation games: an early prediction that
@@ -229,7 +249,8 @@ next rung down remained unrecovered, with a phase-2 excess whose interval was ce
 rather than merely wide. This is one comparison, of two evaluation sizes for one responder class on
 nested banks. For the tested responder class at these
 budgets, then, more evaluation games and more fitting computation address different sources of
-uncertainty, and a planted effect below about a point and a half was not recovered by this class.
+uncertainty. The exact result is that the \vsevenFloorRungBelow{}~pp rung was not recovered whereas
+the \vsevenPrimaryFloor{}~pp rung was; no continuous detection threshold between them is estimated.
 Failure to recover a small planted effect does not establish its absence, and recovery of one
 handicap family does not establish sensitivity to every exploit of the same size. Second, floors are
 family-specific: the declaration channel has its own and higher floor of \vsevenDeclFloor{}~pp,

@@ -15,12 +15,11 @@ action policy and guarded search. The study evaluates this configuration against
 baselines, examines component contributions, and assesses sensitivity to partners, rule variants,
 and tested adversarial responses.
 
-Computational work on the six-player game appears to be limited. In the literature searches
-conducted during this project's development cycles we found no academic work on it, no public
-repository containing search, planning or a working learner for it, and no coverage in RLCard
-\cite{rlcard} (\S\ref{sec:related-fish}); the scope of those searches is stated there. The nearest
-published agent plays a four-player, 48-card variant that does not raise the six-player allocation
-problem.
+Computational work on the six-player game appears to be limited. Within the search scope stated
+in \S\ref{sec:related-fish} we did not identify academic work on it, a public repository containing
+search, planning or a working learner for it, or coverage in RLCard \cite{rlcard}. The nearest
+agent we identified plays a four-player, 48-card variant that does not raise the six-player
+allocation problem.
 
 This paper presents \textbf{\sestina{}}, a configuration developed from FishBot \vsix{}, and
 evaluates it using the protocol described in \S\ref{sec:evaluation}. Earlier versions established
@@ -46,7 +45,7 @@ produced and measured it. Appendix~\ref{app:repro} gives the detailed mapping.
 \item[RQ1] Does \sestina{} achieve a replicated improvement over \fcheap{}, the registered
   baseline (\S\ref{sec:development-frontier}), measured on material sealed before \sestina{}
   existed?
-\item[RQ2] Does that improvement survive changes of partner, cross-play against independently trained
+\item[RQ2] Does that improvement survive changes of partner, cross-play against separately trained
   policies, alternative rule variants, and adversarial responses fitted against it?
 \item[RQ3] Which of \sestina{}'s changes account for the improvement, and which candidate
   mechanisms fail to produce measurable strength?

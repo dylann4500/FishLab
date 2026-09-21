@@ -3,11 +3,14 @@
 
 \sestina{} combines constraint-based inference, a linear action policy, public-history
 tie-breaking, half-suit contestation, stall detection, and guarded search for six-player Canadian
-Fish. Against the preregistered \fcheap{} baseline, it achieves a win-rate edge of
-\vsevenBtwoFcheap{}~pp relative to parity (95\% CI $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$)
-over \vsevenBtwoFcheapN{} holdout games. Its comparison with the phase-2 composite is unresolved, at
-\vsevenBtwoComposite{}~pp $[\vsevenBtwoCompositeLo, \vsevenBtwoCompositeHi]$, and the
-component-attribution criterion is not consistently satisfied across banks.
+Fish. Against the preregistered \fcheap{} baseline, the recorded implementation produced an
+observed win-rate edge of \vsevenBtwoFcheap{}~pp relative to parity over \vsevenBtwoFcheapN{}
+holdout games; the reported deal-bootstrap interval, $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$,
+is nominal, because persistent cross-deal agent state violates its independence assumption, and the
+registered decision rule was satisfied on that nominal interval. Its comparison with the phase-2
+composite is unresolved, at \vsevenBtwoComposite{}~pp
+$[\vsevenBtwoCompositeLo, \vsevenBtwoCompositeHi]$, and the component-attribution criterion is not
+consistently satisfied across banks.
 
 The evaluation includes partner substitution, cross-play, rule variants, and adversarial-response
 searches. These tests provide evidence within the evaluated configurations and budgets, with
@@ -25,11 +28,13 @@ Four candidate mechanisms did not demonstrate an additional improvement under th
 conditions, and each result is reported with the measurement and the limitation that scope it
 (\S\ref{sec:development-rejected}).
 
-The main outcomes are a documented improvement over the specified baseline, an exact reference
+The main outcomes are an observed improvement over the specified baseline under the recorded
+implementation, with nominal rather than coverage-validated uncertainty, an exact reference
 computation for the constraint-conditioned belief model, and an evaluation procedure that separates
 observed gains from unresolved differences. The transferable design elements are the constraint
 factorisation and count program, the duplicate-deal design with held-out banks and a sign-agreement
-criterion, and the calibration of adversarial searches against planted handicaps. Priorities for
-further work are correction and re-evaluation of cross-deal state persistence, stronger adversarial
-searches, testing whether small improvements compound, and comparison with independently developed
-agents (\S\ref{sec:discussion-future}).
+criterion, and the calibration of adversarial searches against planted handicaps. The first priority for
+further work is a corrected scored rerun with agent state reset between deals, which is required
+before any interval in this paper can be read as coverage-validated; after it come stronger
+adversarial searches, testing whether small improvements compound, and comparison with
+independently developed agents (\S\ref{sec:discussion-future}).

@@ -831,29 +831,49 @@ LaTeX Font Info:    External font `lmex10' loaded for size
  [3] (sections_v07/01-introduction [4
 
 ])
-(sections_v07/02-game [5] [6] [7]) (sections_v07/03-related [8] [9] [10]
-[11]) (sections_v07/04-background [12] [13] [14]) (sections_v07/05-inference
-[15] [16]
+(sections_v07/02-game [5] [6] [7] [8]) (sections_v07/03-related
+Underfull \hbox (badness 2990) in paragraph at lines 23--42
+\T1/lmr/m/n/10.95 (\T1/lmtt/m/n/10.95 all:"Canadian Fish"\T1/lmr/m/n/10.95 , \T
+1/lmtt/m/n/10.95 all:"Literature card game"\T1/lmr/m/n/10.95 , \T1/lmtt/m/n/10.
+95 abs:"Go Fish"\T1/lmr/m/n/10.95 , \T1/lmtt/m/n/10.95 all:"half-suit"\T1/lmr/m
+/n/10.95 ),
+ []
+
+
+Underfull \hbox (badness 1735) in paragraph at lines 23--42
+\T1/lmr/m/n/10.95 GitHub code search (\T1/lmtt/m/n/10.95 literature card game\T
+1/lmr/m/n/10.95 , \T1/lmtt/m/n/10.95 canadian fish card game\T1/lmr/m/n/10.95 ,
+ \T1/lmtt/m/n/10.95 fish card game
+ []
+
+
+Underfull \hbox (badness 1112) in paragraph at lines 23--42
+\T1/lmtt/m/n/10.95 ai\T1/lmr/m/n/10.95 , \T1/lmtt/m/n/10.95 half suit card game
+\T1/lmr/m/n/10.95 ), the RL-Card en-vi-ron-ment list [[]] and the Google Play s
+tore,
+ []
+
+[9] [10] [11] [12]) (sections_v07/04-background [13] [14])
+(sections_v07/05-inference [15] [16]
 LaTeX Font Info:    Trying to load font information for U+dsrom on input line 1
-18.
+20.
  (Udsrom.fd
 File: Udsrom.fd 1995/08/01 v0.1 Double stroke roman font definitions
 )
 Package microtype Info: Fixing zero \fontdimen 6 for font `U/dsrom/m/n/10.95'
-(microtype)             (new value: 10.95pt) on input line 118.
+(microtype)             (new value: 10.95pt) on input line 120.
 Package microtype Info: Fixing zero \fontdimen 6 for font `U/dsrom/m/n/8'
-(microtype)             (new value: 8.0pt) on input line 118.
+(microtype)             (new value: 8.0pt) on input line 120.
 Package microtype Info: Fixing zero \fontdimen 6 for font `U/dsrom/m/n/6'
-(microtype)             (new value: 6.0pt) on input line 118.
- [17] [18] [19]) (sections_v07/06-agent
-(tables_v07/components) [20] [21] [22] [23] [24] [25] [26] [27] [28])
-(sections_v07/07-evaluation [29] [30] [31] [32] [33])
-(sections_v07/08-threat-model [34]) (sections_v07/09-development [35] [36]
-[37] [38] [39]) (sections_v07/10-design (tables_v07/banks)
-(tables_v07/sidechannel) (tables_v07/gate) [40] [41] [42] (tables_v07/battery))
-(sections_v07/11-results [43] (tables_v07/forest) (tables_v07/frontier)
-[44]
-Underfull \hbox (badness 1502) in paragraph at lines 57--61
+(microtype)             (new value: 6.0pt) on input line 120.
+ [17] [18] [19])
+(sections_v07/06-agent (tables_v07/components) [20] [21] [22] [23] [24]
+[25] [26] [27] [28]) (sections_v07/07-evaluation [29] [30] [31] [32] [33]
+[34]) (sections_v07/08-threat-model [35]) (sections_v07/09-development [36]
+[37] [38] [39] [40]) (sections_v07/10-design [41] (tables_v07/banks)
+(tables_v07/sidechannel) (tables_v07/gate) [42] [43] (tables_v07/battery))
+(sections_v07/11-results [44] (tables_v07/forest) (tables_v07/frontier)
+Underfull \hbox (badness 1502) in paragraph at lines 63--67
 []\T1/lmr/m/n/10.95 Against [] it gains $\OT1/lmr/m/n/10.95 +0\OML/lmm/m/it/10.
 95 :\OT1/lmr/m/n/10.95 15$ \T1/lmr/m/n/10.95 pp $\OT1/lmr/m/n/10.95 [\OMS/lmsy/
 m/n/10.95 ^^@\OT1/lmr/m/n/10.95 0\OML/lmm/m/it/10.95 :\OT1/lmr/m/n/10.95 29\OML
@@ -861,36 +881,36 @@ m/n/10.95 ^^@\OT1/lmr/m/n/10.95 0\OML/lmm/m/it/10.95 :\OT1/lmr/m/n/10.95 29\OML
 59]$\T1/lmr/m/n/10.95 , an in-ter-val con-tain-ing
  []
 
-[45] (tables_v07/selection)
-Underfull \hbox (badness 10000) in alignment at lines 194--194
+[45] [46] (tables_v07/selection)
+Underfull \hbox (badness 10000) in alignment at lines 201--201
 [][][][] 
  []
 
-[46] (tables_v07/worstcase) [47] (tables_v07/regret) (tables_v07/farpanel)
-[48] (tables_v07/attribution) [49] (tables_v07/partners_v05)
-(tables_v07/partners_v06) (tables_v07/regimes) [50] (tables_v07/crossplay)
-(tables_v07/crossh2h) (tables_v07/dialects) [51] (tables_v07/adversaries)
-[52] (tables_v07/controls) [53] (tables_v07/residual) [54] (tables_v07/cost))
-(sections_v07/12-discussion [55] [56] [57] [58]) (sections_v07/13-conclusion)
-[59] (sections_v07/bibliography [60] [61] [62] [63]) [64]
-(sections_v07/A-dialect [65
+[47] (tables_v07/worstcase) [48] (tables_v07/regret) (tables_v07/farpanel)
+[49] (tables_v07/attribution) [50] (tables_v07/partners_v05)
+(tables_v07/partners_v06) (tables_v07/regimes) [51] (tables_v07/crossplay)
+(tables_v07/crossh2h) (tables_v07/dialects) [52] (tables_v07/adversaries)
+[53] [54] (tables_v07/controls) (tables_v07/residual) [55] (tables_v07/cost))
+(sections_v07/12-discussion [56] [57] [58] [59]) (sections_v07/13-conclusion
+[60]) (sections_v07/bibliography [61] [62] [63] [64] [65]) [66]
+(sections_v07/A-dialect [67
 
 ]) (sections_v07/B-parameters (tables_v07/options)
-[66] (tables_v07/layout) [67] (tables_v07/askweights) [68])
-(sections_v07/C-thresholds [69]
+[68] (tables_v07/layout) [69] (tables_v07/askweights) [70])
+(sections_v07/C-thresholds [71]
 Package microtype Info: Character `029' is missing
 (microtype)             in font `T1/lmr/m/sc/10.95'.
 (microtype)             Ignoring protrusion settings for this character.
-) (sections_v07/D-panel [70]
-(tables_v07/panelfull)) (sections_v07/E-corrections [71] [72]
-Underfull \hbox (badness 1048) in paragraph at lines 78--86
+ [72]) (sections_v07/D-panel
+(tables_v07/panelfull [73])) (sections_v07/E-corrections [74]
+Underfull \hbox (badness 1048) in paragraph at lines 76--84
    []\T1/lmr/bx/n/10.95 Repos-i-to-ry-his-tory rewrite.[] \T1/lmr/m/n/10.95 A p
 er-decision search cap-ture from the de-vel-op-ment phase,
  []
 
-[73] [74]) (sections_v07/F-deviations (tables_v07/deviations [75] [76] [77]
-[78])) (sections_v07/G-reproduction [79] [80]) [81] [82] (sestina_v10.aux)
+[75] [76]) (sections_v07/F-deviations (tables_v07/deviations [77] [78] [79]))
+(sections_v07/G-reproduction [80] [81]) [82] (sestina_v10.aux)
 Package rerunfilecheck Info: File `sestina_v10.out' has not changed.
-(rerunfilecheck)             Checksum: 0D6918F50ED5BFF31DD7A4DD9FC73781;18771.
+(rerunfilecheck)             Checksum: F34D9682F92FEDC5EC9AEA5EBBA9A2F0;18771.
  )
-Output written on sestina_v10.xdv (82 pages, 621564 bytes).
+Output written on sestina_v10.xdv (82 pages, 627876 bytes).
