@@ -817,8 +817,15 @@ def b4_adversaries():
 B5TAG = {'A-search': 'Search', 'A-rtie': 'Rtie', 'A-urgoff': 'Urgoff', 'A-stall': 'Stall',
          'A-r12': 'Rtwelve', 'A-m2': 'Mtwo', 'L-search': 'Search', 'L-rtie': 'Rtie',
          'L-urgoff': 'Urgoff', 'L-stall': 'Stall', 'L-r12': 'Rtwelve'}
-COMPONENTS = [('Rtwelve', 'r12=25'), ('Search', 'the search'), ('Rtie', 'rtie=1'),
-              ('Urgoff', 'urgency-off'), ('Stall', 'stall=12')]
+# (macro tag, conceptual component name, harness identifier).  The paper's
+# attribution table prints the concept with the identifier in parentheses,
+# so that a reader meets the same names Section 6 uses; the macro tags and
+# the artifact cell names are unchanged.
+COMPONENTS = [('Rtwelve', 'half-suit contestation', 'r12=25'),
+              ('Search', 'guarded search', 's1=1'),
+              ('Rtie', 'public-history tie-break', 'rtie=1'),
+              ('Urgoff', 'urgency escalation off', 'urgency-off'),
+              ('Stall', 'stall detector', 'stall=12')]
 
 def b5_attribution():
     rows = _rows('P5-B5.jsonl')
@@ -831,7 +838,7 @@ def b5_attribution():
     emit('vsevenBfiveWholeLo', _sg(rlo), 'P5-B5.jsonl REF-FROZEN: lower bound')
     emit('vsevenBfiveWholeHi', _sg(rhi), 'P5-B5.jsonl REF-FROZEN: upper bound')
     lines, addins = [], []
-    for tag, name in COMPONENTS:
+    for tag, name, ident in COMPONENTS:
         a = [c for c in by if c.startswith('A-') and B5TAG[c] == tag][0]
         am, alo, ahi, _ = pool(by[a])
         emit('vsevenAddIn%s' % tag, _sg(am), 'P5-B5.jsonl %s: add-one-in from v06' % a)
@@ -847,13 +854,14 @@ def b5_attribution():
             loo = '$%s$ & $[%s, %s]$' % (_sg(d), _sg(dlo), _sg(dhi))
         else:
             loo = '--- & ---'
-        lines.append('\\texttt{%s} & $%s$ & $[%s, %s]$ & %s \\\\' % (_tex(name), _sg(am), _sg(alo), _sg(ahi), loo))
+        lines.append('%s (\\texttt{%s}) & $%s$ & $[%s, %s]$ & %s \\\\'
+                     % (_tex(name), _tex(ident), _sg(am), _sg(alo), _sg(ahi), loo))
     # m2=0 is preregistered as a B5 cell although the freeze does not carry it
     mm, mlo, mhi, _ = pool(by['A-m2'])
     emit('vsevenAddInMtwo', _sg(mm), 'P5-B5.jsonl A-m2: add-one-in, NOT carried by the freeze')
     emit('vsevenAddInMtwoLo', _sg(mlo), 'P5-B5.jsonl A-m2: lower bound')
     emit('vsevenAddInMtwoHi', _sg(mhi), 'P5-B5.jsonl A-m2: upper bound')
-    lines.append('\\texttt{m2=0} \\textit{(not in the freeze)} & $%s$ & $[%s, %s]$ & --- & --- \\\\'
+    lines.append('rescoring switch (\\texttt{m2=0}; not in the freeze) & $%s$ & $[%s, %s]$ & --- & --- \\\\'
                  % (_sg(mm), _sg(mlo), _sg(mhi)))
     writeTable('attribution.tex', lines, 'lrcrc',
                'Component & Add-one-in & 95\\% CI & Leave-one-out & 95\\% CI')
@@ -864,7 +872,7 @@ def b5_attribution():
     # its half-width is theirs in quadrature; the ratio's interval follows from
     # propagating both.  Without this the paper cannot say what lies inside it.
     ses = [pool(by[[c for c in by if c.startswith('A-') and B5TAG[c] == t][0]])[3]
-           for t, _ in COMPONENTS]
+           for t, _, _ in COMPONENTS]
     s_sum = math.sqrt(sum(x * x for x in ses))
     _, _, _, s_ref = pool(ref)
     r = rm / naive
@@ -1359,7 +1367,7 @@ def b0_verification():
     emit('vsevenNotVectorisable', ', '.join('\\texttt{%s}' % _tex(x)
                                             for x in fz['switchesNotExpressibleAsVector']),
          'engine/fishbot_v07.json: switches that cannot be expressed in the parameter vector')
-    emit('vsevenInheritedVector', _tex(fz['inheritedVectorProvenance'][:120]),
+    emit('vsevenInheritedVector', _tex(fz['inheritedVectorProvenance']),
          'engine/fishbot_v07.json: provenance of the inherited parameter vector')
     rep = d['reproducibility']
     emit('vsevenReproRuns', str(len(rep['runs'])), 'P5-B0.json: repeat runs of one training cell')
@@ -1823,6 +1831,8 @@ def verdicts():
           else ('a measured but unconfirmed advance' if lo > 0 and replicates(fc)
                 else 'no advance')),
          'PREREGISTRATION 5.1 applied to P5-B2.jsonl B2.2')
+    emit('vsevenBtwoFcheapWinRate', '%.2f\\%%' % (50.0 + m),
+         'P5-B2.jsonl B2.2: pooled head-to-head win rate against F-cheap, 50 + edge')
     emit('vsevenPrimaryFloor', '1.53', 'PREREGISTRATION 5.1: the phase-2 C1-class detection floor')
     emit('vsevenDeclFloor', '2.13', 'PREREGISTRATION 3 correction 4: the declaration-family floor')
     comp = [r for r in b2 if r['cell'] == 'B2.4']
@@ -1834,8 +1844,17 @@ def verdicts():
 def forest_plot():
     """Figure 3: the principal comparisons as a forest plot, drawn from the
     artifacts so the figure cannot drift from the tables.  TikZ coordinates are
-    computed here rather than typed into the .tex."""
-    rows = []
+    computed here rather than typed into the .tex.
+
+    Two panels.  The upper panel is the five direct head-to-head comparisons,
+    each SESTINA's edge against the named configuration.  The lower panel holds
+    two different estimands and is labelled as such: the worst partner
+    substitution, which is a difference between two upgrade effects, and
+    SESTINA's edge against the strongest adversarial response, which is the
+    NEGATION of the adversary's own edge as Table 22 prints it.  Both panels are
+    oriented so that positive favours SESTINA; the raw B4 data and Table 22's
+    convention are unchanged."""
+    direct = []
     b2 = _rows('P5-B2.jsonl')
     for cellid, label in (('B2.1', 'vs.\\ v0.6 (deployed)'),
                           ('B2.2', 'vs.\\ F-cheap \\textit{(primary)}'),
@@ -1844,39 +1863,56 @@ def forest_plot():
                           ('B2.5', 'vs.\\ v0.5')):
         rs = [r for r in b2 if r['cell'] == cellid]
         m, lo, hi, _ = pool(rs)
-        rows.append((label, m, lo, hi, cellid == 'B2.2'))
-    # two robustness rows on the same axis, so the reader sees the scale
+        direct.append((label, m, lo, hi, cellid == 'B2.2'))
+    other = []
     b6 = _rows('P5-B6.jsonl')
     fr = [r for r in b6 if r['opp'] == 'v05' and r['arm'] == 'FROZEN' and r['partners'] == 'withholder']
     inc = [r for r in b6 if r['opp'] == 'v05' and r['arm'] == 'INCUMBENT' and r['partners'] == 'withholder']
     d, dlo, dhi = delta(fr, inc)
-    rows.append(('worst partner substitution', d, dlo, dhi, False))
+    other.append(('worst partner substitution', d, dlo, dhi, False))
     b4 = _rows('P5-B4eval.jsonl')
     worst = max(((pool([r for r in b4 if r['cell'] == z])[2], z) for z in {r['cell'] for r in b4}))
     rs = [r for r in b4 if r['cell'] == worst[1]]
     m, lo, hi, _ = pool(rs)
-    rows.append(('best adversary found', m, lo, hi, False))
+    # Table 22 prints the ADVERSARY's edge; here SESTINA's edge against it, so
+    # the value and both bounds are negated and the bounds swap.
+    other.append(('vs.\\ strongest adversary', -m, -hi, -lo, False))
 
+    rows = direct + other
     lo_ax = min(r[2] for r in rows) - 0.6
     hi_ax = max(r[3] for r in rows) + 0.6
     span = hi_ax - lo_ax
-    W = 9.8
+    W = 8.0   # narrower than the single-panel figure: the row values now carry their intervals
     x = lambda v: (v - lo_ax) / span * W
     out = ['\\begin{tikzpicture}[x=1cm,y=1cm]']
-    n = len(rows)
-    for i, (label, m, lo, hi, primary) in enumerate(rows):
-        y = -(i * 0.72)
+    step_y = 0.72
+    ys = []
+    y = 0.0
+    for i, (label, m, lo, hi, primary) in enumerate(direct):
+        ys.append(y); y -= step_y
+    # Panel geometry, top to bottom: last A row, a clear band, the separator,
+    # a clear band, the B title (set above its anchor), a clear band, the first
+    # B row.  Each band is wide enough that no text touches the rule.
+    y_sep = ys[-1] - 0.55
+    y_titleB = y_sep - 0.50          # anchor (south west) of the B title
+    y = y_titleB - 0.42
+    for i, (label, m, lo, hi, primary) in enumerate(other):
+        ys.append(y); y -= step_y
+    out.append('  \\node[anchor=south west,font=\\scriptsize\\itshape,text=fishgray] at (0,%.3f) {A. direct comparisons: SESTINA\'s edge against the named configuration};' % (ys[0] + 0.30))
+    out.append('  \\node[anchor=south west,font=\\scriptsize\\itshape,text=fishgray] at (0,%.3f) {B. other estimands, oriented so that positive favours SESTINA};' % (y_titleB))
+    for (label, m, lo, hi, primary), yy in zip(rows, ys):
         col = 'fishgreen' if primary else 'fishgray'
         w = 'ultra thick' if primary else 'thick'
-        out.append('  \\node[anchor=east,font=\\small] at (-0.25,%.3f) {%s};' % (y, label))
-        out.append('  \\draw[%s,%s] (%.3f,%.3f) -- (%.3f,%.3f);' % (col, w, x(lo), y, x(hi), y))
-        out.append('  \\draw[%s] (%.3f,%.3f) -- (%.3f,%.3f);' % (col, x(lo), y - 0.11, x(lo), y + 0.11))
-        out.append('  \\draw[%s] (%.3f,%.3f) -- (%.3f,%.3f);' % (col, x(hi), y - 0.11, x(hi), y + 0.11))
-        out.append('  \\fill[%s] (%.3f,%.3f) circle (0.075);' % (col, x(m), y))
-        out.append('  \\node[anchor=west,font=\\scriptsize\\ttfamily] at (%.3f,%.3f) {%+.2f};'
-                   % (W + 0.25, y, m))
-    ybot = -(n - 1) * 0.72 - 0.55
-    ytop = 0.55
+        out.append('  \\node[anchor=east,font=\\small] at (-0.25,%.3f) {%s};' % (yy, label))
+        out.append('  \\draw[%s,%s] (%.3f,%.3f) -- (%.3f,%.3f);' % (col, w, x(lo), yy, x(hi), yy))
+        out.append('  \\draw[%s] (%.3f,%.3f) -- (%.3f,%.3f);' % (col, x(lo), yy - 0.11, x(lo), yy + 0.11))
+        out.append('  \\draw[%s] (%.3f,%.3f) -- (%.3f,%.3f);' % (col, x(hi), yy - 0.11, x(hi), yy + 0.11))
+        out.append('  \\fill[%s] (%.3f,%.3f) circle (0.075);' % (col, x(m), yy))
+        out.append('  \\node[anchor=west,font=\\scriptsize\\ttfamily] at (%.3f,%.3f) {%+.2f [%+.2f, %+.2f]};'
+                   % (W + 0.25, yy, m, lo, hi))
+    ybot = ys[-1] - 0.55
+    ytop = ys[0] + 0.62
+    out.append('  \\draw[fishgray,thin] (-4.2,%.3f) -- (%.3f,%.3f);' % (y_sep, W + 3.4, y_sep))
     out.append('  \\draw[densely dashed,fishgray] (%.3f,%.3f) -- (%.3f,%.3f);' % (x(0), ybot, x(0), ytop))
     out.append('  \\draw[->,fishgray] (0,%.3f) -- (%.3f,%.3f);' % (ybot, W + 0.1, ybot))
     step = 2 if span > 9 else 1
@@ -1885,11 +1921,36 @@ def forest_plot():
         out.append('  \\draw[fishgray] (%.3f,%.3f) -- (%.3f,%.3f) node[below,font=\\scriptsize] {%d};'
                    % (x(t), ybot, x(t), ybot - 0.1, t))
         t += step
-    out.append('  \\node[font=\\scriptsize,anchor=north] at (%.3f,%.3f) {win-rate edge (percentage points)};'
+    out.append('  \\node[font=\\scriptsize,anchor=north] at (%.3f,%.3f) {win-rate edge (percentage points); positive favours SESTINA};'
                % (W / 2, ybot - 0.45))
     out.append('\\end{tikzpicture}')
     with open(os.path.join(_TBL, 'forest.tex'), 'w') as f:
         f.write('\n'.join(out) + '\n')
+
+
+# ---------------------------------------------------------------- ask features and weights
+# Appendix B promises the twenty ask features with their fitted weights.  The
+# names are the source's own (engine/src/v05.hpp, the w[NFEAT] comment column)
+# and the weights are the first NFEAT coordinates of the frozen allparams
+# vector, read from the freeze artifact rather than typed.
+ASK_FEATURES = ['hit probability', 'squared hit', 'certain hit', 'own set progress',
+                'team control', 'lock completion', 'continuation', 'completion bonus',
+                'reply threat', 'information leak', 'target hand size', 'empties target',
+                'repeats set', 'known team cards', 'location entropy', 'team owns set',
+                'exposure on miss', 'trailing pressure', 'runway', 'leak magnitude']
+
+def ask_weights():
+    fz = json.load(open(os.path.join(_ROOT, 'engine', 'fishbot_v07.json')))
+    w = fz['allparams']
+    layout = fz.get('allparamsLayout', {})
+    nfeat = int(layout.get('nfeat', 20)) if isinstance(layout, dict) else 20
+    if nfeat != len(ASK_FEATURES):
+        raise SystemExit('ask_weights: layout says %d ask weights, names list has %d' % (nfeat, len(ASK_FEATURES)))
+    lines = []
+    for i, name in enumerate(ASK_FEATURES):
+        lines.append('%d & %s & $%s$ \\\\' % (i, _tex(name), _sg(w[i], 5)))
+    writeTable('askweights.tex', lines, 'rlr', 'Index & Feature & Weight')
+    emit('vsevenAskWeightCount', str(nfeat), 'engine/fishbot_v07.json: ask-weight coordinates')
 
 
 def paper_main():
@@ -1913,6 +1974,7 @@ def paper_main():
     commit_map()
     verdicts()
     forest_plot()
+    ask_weights()
     emit('vsevenBuildDate', _time.strftime('%Y-%m-%d'), 'build_tables_v07.py --paper run date')
     # provenance counts, which the reproducibility appendix quotes
     try:

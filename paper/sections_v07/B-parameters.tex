@@ -1,7 +1,7 @@
 \section{Configuration grammar and parameters}
 \label{app:parameters}
 
-\subsection*{The grammar}
+\subsection*{Configuration grammar}
 
 A configuration is named by a single string, and every policy in this paper, every arm, every
 panel member, every fitted adversary, is one of these strings. The grammar is
@@ -26,7 +26,7 @@ inverter), and each \texttt{key=value} sets one option on it. Two properties of 
       configurations carried machinery their spec said was switched off.
 \end{itemize}
 
-\subsection*{The frozen configuration}
+\subsection*{Frozen configuration}
 
 \begin{quote}\small\ttfamily\raggedright
 \vsevenFrozenSpecWrapped{}
@@ -42,7 +42,7 @@ Three of these are switches that cannot be expressed as coordinates of the param
 from the vector and why the round-trip check of \S\ref{sec:agent} has to execute rather than
 compare strings.
 
-\subsection*{The parameter vector}
+\subsection*{Parameter vector}
 
 \begin{center}\tabfont
 \input{tables_v07/layout}
@@ -55,8 +55,30 @@ The first \vsevenVsixCoords{} coordinates are inherited unchanged from the previ
 The freeze artifact records its provenance as
 
 \begin{quote}\ttfamily\footnotesize\raggedright
-\vsevenInheritedVector{}\ldots
+\vsevenInheritedVector{}
 \end{quote}
+
+\noindent
+The twenty ask features of \eqref{eq:askscore} and their deployed weights, the first twenty
+coordinates of the frozen \texttt{allparams} vector, are listed in Table~\ref{tab:askweights}; the
+feature definitions are the \texttt{features} routine of \filepath{engine/src/v05.hpp}, and the
+weights are read from \filepath{engine/fishbot\_v07.json} by the generator. The state-value
+function $V$ of \eqref{eq:declev} is a linear function of sixteen public-state features, defined in
+the same source file: a constant, the score margin, the team's aggregate expected control of the
+live half-suits and a sharpened form of it, the counts of locked and of contested half-suits, the
+turn indicator, the card-count difference, the number of unresolved cards, the number of live
+half-suits, the acting seat's and its weakest teammate's hand sizes, counts of half-suits the team
+probably and probably does not control, and two interaction terms of the turn indicator with
+control and with the unresolved count. Its sixteen weights are compiled constants of the \vfive{}
+policy family and are not coordinates of the fitted vector.
+
+\begin{table}[!ht]\centering
+\caption{The twenty ask-score features and their deployed weights $w$, in the order of the feature
+vector $\phi(a)$; the short names are those used in the source. The features are functions of the
+approximate belief $\hat\mu$ and the public state, as described in \S\ref{sec:agent-policy}.}
+\label{tab:askweights}
+{\tabfont\input{tables_v07/askweights}}
+\end{table}
 
 \noindent
 The remaining coordinates are the extended responder block, and they are all zero but one. That is
@@ -65,7 +87,7 @@ the identity condition: with every responder coordinate at zero the extended cla
 fit was run in this cycle. The single non-zero coordinate, \texttt{r12}, had its value chosen as the
 argmax of a measured dose response (\S\ref{sec:agent-policy}, \S\ref{sec:agent-contest}).
 
-\subsection*{Coordinates known to be inert}
+\subsection*{Inactive parameters and interventions}
 
 Not every fitted coordinate does anything, and a paper that presented all
 \vsevenCoordinates{} as tuned quantities would be overstating the search. Known inert coordinates in

@@ -1,44 +1,52 @@
-\section{The rules dialect, clause by clause}
+\section{Rule specification}
 \label{app:dialect}
 
 Six of the eight contested rule choices of \S\ref{sec:game-dialect} are engine switches, so their
-effect is measurable rather than assumed; the misdeclaration award is hardcoded, and the
-forced-endgame ladder has a threshold flag but not one the scored harness exposes, so within a
-scored match it moves only inside the \texttt{-{}-legacy} bundle. This appendix lists each choice
-against the switch that changes it, so that a reader can re-implement the dialect or vary it.
+effect can be measured; the misdeclaration award is hardcoded, and the forced-endgame ladder has a
+threshold flag but not one the scored harness exposes, so within a scored match it moves only inside
+the \texttt{-{}-legacy} bundle. This appendix lists each choice against the switch that changes it,
+so that a reader can re-implement the variant or vary it. The turn-transfer, declaration-timing,
+forced-endgame and action-cap rules that the table abbreviates are stated in full in
+\S\ref{sec:game-rules} and \S\ref{sec:game-dialect}, from the engine source.
 
 \begin{center}\tabfont
 \begin{tabular}{llp{0.42\linewidth}}
 \toprule
 Clause & Switch & Setting studied \\
 \midrule
-Deck and half-suits & \texttt{-{}-sets=8} & 54 cards in nine half-suits; \texttt{-{}-sets=8} plays the
-48-card, eight-half-suit variant \\
+Deck and half-suits & \texttt{-{}-sets=8} & 54 cards in nine half-suits, nine per player;
+\texttt{-{}-sets=8} plays the 48-card, eight-half-suit variant with eight cards per player, in which
+a 4--4 game is recorded as a win for the team at seat index 0 \\
 Out-of-turn declaration & \texttt{-{}-no-out-of-turn} & permitted; the switch forbids it \\
 Cardless declaration & \texttt{-{}-no-cardless-declare} & permitted; the switch forbids it \\
 Simultaneous declarers & \texttt{-{}-arb=high}, \texttt{-{}-arb=turn} & lowest seat index first;
-the switches arbitrate by stated confidence and by turn order \\
+the switches arbitrate by highest seat index first and by scanning from the current turn-holder.
+Arbitration by stated confidence is deliberately absent from the engine \\
 Misdeclaration & --- & the half-suit is awarded to the opposing team \\
-Forced endgame & --- & eight-level willingness ladder when one whole team is cardless \\
-Action cap & \texttt{-{}-maxasks=N} & 400 asks; residue adjudicated by physical majority \\
-Legacy bundle & \texttt{-{}-legacy} & the full v0.3-era dialect, bundling several of the above \\
+Forced endgame & --- & eight-level willingness ladder when one whole team is cardless: thresholds
+$0.995$, $0.98$, $0.95$, $0.90$, $0.80$, $0.65$, $0.50$, then a compulsory best guess
+(\S\ref{sec:game-dialect}) \\
+Action cap & \texttt{-{}-maxasks=N} & 400 asks; residue adjudicated by physical majority, a 3--3
+split going to the team holding the half-suit's lowest-index card \\
+Legacy bundle & \texttt{-{}-legacy} & the v0.3-era variant: no out-of-turn declaration, no cardless
+declaration, a 360-ask cap, and a two-level ladder ($0.38$, then a compulsory best guess) \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \S\ref{sec:results-dialects} measures the paper's headline comparison over \vsevenDiaRows{}
-dialect rows: the default, and seven variations drawn from six of these clauses. Every row keeps its sign and every row replicates; the largest excursion from the
+rule-variant rows: the default, and seven variations drawn from six of these clauses. Every row keeps its sign and every row replicates; the largest excursion from the
 default row is \vsevenDiaMaxExcursion{}~pp, on \vsevenDiaMaxExcursionRow{}.
 
-\paragraph{Two clauses on which an earlier report in this corpus is wrong, corrected here.}
+\paragraph{Corrections to earlier rule interpretations.}
 
 \begin{enumerate}
-\item \textbf{An undeclared half-suit does not score nothing.} An earlier report justified an
+\item \textbf{Action-cap adjudication.} An earlier report justified an
   unconditional forcing rule on the premise that an unclaimed half-suit is worthless. Under the
   dialect actually evaluated, residue at the action cap is awarded by physical majority, and on a
   wrong post-horizon declaration the declaring team holds a mean \numResidueHeld{} of the six cards.
   The rule converts a probable award into a certain concession.
-\item \textbf{Restarting the forced-endgame ladder sharpens nothing.} The argument is that restarting
+\item \textbf{Forced-endgame declaration order.} The argument is that restarting
   the willingness ladder after each declaration lets early, safer declarations resolve cards and so
   sharpen later ones. It is sound and, in the play it was measured on, inoperative: on every occasion
   a team went cardless with live half-suits --- \numLadderOccasions{} such records at seed

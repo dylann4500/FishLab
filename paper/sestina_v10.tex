@@ -52,7 +52,7 @@
 \definecolor{fishlight}{HTML}{EAF4EF}
 \definecolor{fishgray}{HTML}{4B5954}
 \hypersetup{colorlinks=true, linkcolor=fishgreen, citecolor=fishgreen, urlcolor=fishgreen,
-            pdftitle={SESTINA v1.0: Exact Inference, Robust Evaluation, and Adversarial Testing
+            pdftitle={SESTINA v1.0: Constraint-Based Inference and Empirical Evaluation
                       in Six-Player Canadian Fish},
             pdfauthor={Dylan Nguyen}}
 % nosep zeroes topsep as well as itemsep, which ran every list straight into
@@ -181,8 +181,8 @@
 \DeclareRobustCommand{\incumbent}{\texorpdfstring{\mbox{v0.6 deployed}}{v0.6 deployed}}
 \DeclareRobustCommand{\vseven}{\sestina{}}
 
-\title{\textbf{SESTINA v1.0: Exact Inference, Robust Evaluation,\\
-and Adversarial Testing in Six-Player Canadian Fish}}
+\title{\textbf{SESTINA v1.0: Constraint-Based Inference and\\
+Empirical Evaluation in Six-Player Canadian Fish}}
 \author{Dylan Nguyen}
 \date{\today}
 
@@ -208,6 +208,13 @@ and Adversarial Testing in Six-Player Canadian Fish}}
 \input{sections_v07/abstract}
 \end{abstract}
 
+% The contents start their own page: the title, author and abstract fill the
+% first one, and running the two together crowded it.
+\clearpage
+% Sections and subsections only: the sub-subsections of Sections 9 and 11
+% remain reachable through the PDF bookmarks, and listing them made the
+% contents run to three pages.
+\setcounter{tocdepth}{2}
 \tableofcontents
 \clearpage
 

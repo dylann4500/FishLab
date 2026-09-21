@@ -1,55 +1,35 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-\sestina{} is the strongest agent this project has produced. Against \fcheap{}, the cheapest
-configuration genuinely on the \vsix{} frontier and the comparison target registered before any
-holdout deal was played, it gains \vsevenBtwoFcheapMag{}~pp of team win-rate edge
-$[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$ over \vsevenBtwoFcheapN{} games of sealed material, with
-the sign replicating on both banks and every advance-specified validity condition satisfied.
+\sestina{} combines constraint-based inference, a linear action policy, public-history
+tie-breaking, half-suit contestation, stall detection, and guarded search for six-player Canadian
+Fish. Against the preregistered \fcheap{} baseline, it achieves a win-rate edge of
+\vsevenBtwoFcheap{}~pp relative to parity (95\% CI $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$)
+over \vsevenBtwoFcheapN{} holdout games. Its comparison with the phase-2 composite is unresolved, at
+\vsevenBtwoComposite{}~pp $[\vsevenBtwoCompositeLo, \vsevenBtwoCompositeHi]$, and the
+component-attribution criterion is not consistently satisfied across banks.
 
-No coordination or robustness test in this paper overturns that advantage, though the picture they
-give is mixed. A single seat's
-upgrade purchases \vsevenOneSeatFive{} of the \vsevenSoneSelf{}~pp three-seat gain, so the value is
-largely individual rather than conventional; cross-play between three independently trained runs moves
-the result by \vsevenXpGapAbs{}~pp; the advantage persists across \vsevenDiaRowsWord{} rule dialects; and
-none of \vsevenBfourArmsWord{} independently constructed adversarial searches, including a white-box
-adversary that inverts the target's transcript against a \vsix{} model of its deterministic policy,
-found a positive edge at the tested budgets. Two of those tests are not clean: the partner row that
-decides the coordination claim is \vsevenSoneMin{}
-$[\vsevenOppFiveWithholderLo, \vsevenOppFiveWithholderHi]$, above the registered
-$\vsevenSoneThreshold{}$ collapse threshold on the point estimate but not resolved against it
-(\S\ref{sec:results-partners}); and over the shared panel \sestina{} is
-\vsevenRegretFrozenRank{}rd of four on minimax regret with a worst cell that does not replicate in
-sign (\S\ref{sec:results-panel}).
+The evaluation includes partner substitution, cross-play, rule variants, and adversarial-response
+searches. These tests provide evidence within the evaluated configurations and budgets, with
+unresolved partner-threshold uncertainty and known implementation limitations: the partner row that
+decides the registered coordination criterion is \vsevenSoneMin{}~pp
+$[\vsevenOppFiveWithholderLo, \vsevenOppFiveWithholderHi]$, above the $\vsevenSoneThreshold{}$
+threshold on the point estimate but not resolved against it (\S\ref{sec:results-partners}); over
+the shared panel \sestina{} is \vsevenRegretFrozenRank{}rd of four on empirical minimax regret with
+a worst cell that does not replicate in sign (\S\ref{sec:results-panel}); and every scored cell ran
+in an execution mode that retains a known cross-deal state residual in searching agents
+(\S\ref{sec:discussion-engineering}). None of the \vsevenBfourArmsWord{} tested responses, including
+a transcript-inversion adversary using a \vsix{} surrogate of the target, achieves a positive edge,
+but the study does not bound the performance of stronger or differently constructed adversaries.
+Four candidate mechanisms did not demonstrate an additional improvement under the tested
+conditions, and each result is reported with the measurement and the limitation that scope it
+(\S\ref{sec:development-rejected}).
 
-Two further findings qualify that picture and are the reason this paper is worth more than its
-headline. The
-first is that \sestina{} does not measurably outperform a composite configuration assembled during
-its own development, at \vsevenBtwoComposite{}~pp
-$[\vsevenBtwoCompositeLo, \vsevenBtwoCompositeHi]$. The improvement in this cycle is therefore real,
-but it was produced during adversary generation by a coordinate sweep whose value was the argmax of
-a dose response, and the architecture work that followed added no measurable strength on top of it. The second is that four plausible
-candidate mechanisms were experimentally rejected, each with a diagnosis rather than merely a null:
-the declaration-allocation channel because the mechanism it posited does not exist, a fitted leaf
-evaluator because the rule consuming it is nearly leaf-invariant, per-decision objectives because the
-ask and declaration channels trade against each other, and a learned re-ranker because it loses
-outright when deployed unrestricted and, restricted to the exchangeable tied set, is
-indistinguishable from a free public-history randomisation.
-
-Taken together, progress in this policy class is now limited by effects smaller than the evaluation
-and adversary-search machinery can reliably detect. At the calibrated detection scale of this study
-the class appears locally flat, in the sense that no investigated architectural mechanism produced a
-replicated gain above the instrument's resolution. That is not a demonstration that no further gains
-exist. The evaluation resolves effects of about a point and not of a quarter of a point, so a family
-of small mechanisms that compound remains consistent with everything reported here, and testing that
-possibility is the clearest next step.
-
-Finally, the limits of what this study establishes are worth restating, because they are what the
-evidence permits. \sestina{} is the strongest configuration in this project's lineage. It is not
-shown to be near-optimal, it is not shown to be unexploitable, and it is not shown to be the strongest
-Fish-playing agent in existence. The comparison class contains only agents this project wrote, no
-human evaluation exists, and every exploitability figure here is a lower bound produced by a search
-rather than a bound on what a search could find. \S\ref{sec:discussion-future} sets out the evidence
-each of those claims would require. Producing a stronger Fish agent turned out to require not only
-better play but a substantially better method for deciding whether apparent improvements were real,
-and the second of those is the part most likely to transfer.
+The main outcomes are a documented improvement over the specified baseline, an exact reference
+computation for the constraint-conditioned belief model, and an evaluation procedure that separates
+observed gains from unresolved differences. The transferable design elements are the constraint
+factorisation and count program, the duplicate-deal design with held-out banks and a sign-agreement
+criterion, and the calibration of adversarial searches against planted handicaps. Priorities for
+further work are correction and re-evaluation of cross-deal state persistence, stronger adversarial
+searches, testing whether small improvements compound, and comparison with independently developed
+agents (\S\ref{sec:discussion-future}).

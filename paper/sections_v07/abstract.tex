@@ -1,32 +1,24 @@
-Six-player Canadian Fish is a decentralised imperfect-information team game in which every action is
-public, so the hidden state reduces to the initial deal and the posterior over that deal can be
-computed exactly. We develop and evaluate \sestina{}, the strongest configuration produced in this
-project's FishBot lineage. It combines an approximate Sinkhorn fit to that posterior, started from a fitted
-policy prior, with a linear ask and declaration policy, a public-history tie-breaking rule that preserves
-common knowledge among teammates, a half-suit contestation weighting, a
-deduction-state stall detector in place of an event-count termination rule, and a guarded
-determinized test-time search. Evaluation follows a protocol registered in advance and run on sealed
-holdout material, using duplicate deal blocks, deal-clustered bootstrap confidence intervals,
-replication across two disjoint deal banks as an advance-specified criterion, calibrated detection
-floors, and mechanical side-channel controls.
+Six-player Canadian Fish is a decentralised imperfect-information team game in which card transfers
+and actions are public. We present \sestina{}, an agent developed from the FishBot policy family,
+together with an exact dynamic program for the uniform distribution over deals satisfying
+observer-specific game constraints. The deployed agent uses approximate inference with behavioural
+weighting, a linear action score, public-history tie-breaking, a half-suit contestation feature, a
+deduction-state stall detector, and guarded determinized search.
 
-Against \fcheap{}, the cheapest configuration genuinely on the \vsix{} frontier and the registered
-comparison target, \sestina{} achieves a \vsevenBtwoFcheap{} percentage-point win-rate edge
-(95\% CI $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$) over \vsevenBtwoFcheapN{} sealed games, with
-the sign replicating on both banks. The advantage persists under cross-play between independently trained runs and
-\vsevenDiaRowsWord{} rule dialects. Under partner substitution against a v0.5 opponent
-\vsevenSonePositive{} of \vsevenSoneRows{} changed-partner rows stay positive, but the worst is \vsevenSoneMin{}
-$[\vsevenOppFiveWithholderLo, \vsevenOppFiveWithholderHi]$, which that battery does not resolve
-against the registered $\vsevenSoneThreshold{}$ collapse threshold. Separately, none of
-\vsevenBfourArmsWord{} independently constructed adversarial searches found a positive edge at the
-tested budgets.
+Evaluation comprises \vsevenScoredCells{} scored comparison cells over \vsevenScoredGames{} games
+under a preregistered protocol. Against the registered baseline, \fcheap{}, \sestina{} achieves a
+win-rate edge of \vsevenBtwoFcheap{} percentage points relative to parity (95\% CI
+$[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$) over \vsevenBtwoFcheapN{} games, with positive
+estimates on both holdout banks. Its comparison with an earlier development composite is unresolved:
+\vsevenBtwoComposite{} points (95\% CI $[\vsevenBtwoCompositeLo, \vsevenBtwoCompositeHi]$).
+Cross-play and rule-variant tests retain positive performance estimates, while the worst
+partner-substitution difference, \vsevenSoneMin{} points (95\% CI
+$[\vsevenOppFiveWithholderLo, \vsevenOppFiveWithholderHi]$), does not resolve the registered
+$\vsevenSoneThreshold{}$-point threshold. None of \vsevenBfourArmsWord{} tested adversarial searches
+achieves a positive edge against \sestina{} at the evaluated budgets.
 
-\sestina{} does not, however, measurably outperform a composite configuration assembled earlier in
-the same programme (\vsevenBtwoComposite{} pp, 95\% CI
-$[\vsevenBtwoCompositeLo, \vsevenBtwoCompositeHi]$), indicating that the architecture work which
-followed added no measurable strength. Over a shared \vsevenPanelMembers{}-member opponent panel
-\sestina{}'s worst cell is \vsevenWorstFrozen{}~pp
-$[\vsevenWorstFrozenLo, \vsevenWorstFrozenHi]$, which does not replicate in sign, and it is
-\vsevenRegretFrozenRank{}rd of four on minimax regret. Four candidate mechanisms failed to produce
-measurable improvement at this resolution. At the calibrated resolution of this evaluation the tested policy
-class appears locally flat, and we state what evidence a near-optimality claim would require.
+Four candidate modifications yield no demonstrated additional improvement under the tested
+conditions. Known cross-deal state persistence and the difference between scored and
+isolation-tested execution modes limit implementation-level conclusions. The results establish an
+improvement over the specified baseline, but do not establish near-optimality or an upper bound on
+exploitability.

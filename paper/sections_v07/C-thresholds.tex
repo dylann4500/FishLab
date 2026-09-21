@@ -1,11 +1,17 @@
-\section{The preregistered thresholds, verbatim}
+\section{Preregistered criteria and recorded verdicts}
 \label{app:thresholds}
 
-Reproduced from \filepath{docs/v07/PREREGISTRATION.md}, committed before any holdout bank had been
-played and before the sealed adversary half had been decoded. The verdicts are
-\S\ref{sec:results} and \S\ref{sec:results-nonconfirm}.
+The criteria below are taken from \filepath{docs/v07/PREREGISTRATION.md}, committed before any
+holdout bank had been played and before the sealed adversary half had been decoded. The verdict
+labels and thresholds are the protocol's own; the rule wording in the tables is condensed from the
+protocol, and the source document carries the exact text. Three things are kept distinct: the
+\emph{registered rule}, which is a quotation or close paraphrase of the protocol; the
+\emph{recorded verdict}, which applies that rule as written and is the verdict of the phase-5
+record; and the \emph{reading with uncertainty}, which is later commentary added in this revision
+and not part of the registration. The verdicts are reported in \S\ref{sec:results} and
+\S\ref{sec:results-nonconfirm}.
 
-\subsection*{The primary claim}
+\subsection*{Primary criterion}
 
 \sestina{} beats \fcheap{} on both primary holdout banks, pooled over \vsevenBtwoFcheapN{} games.
 
@@ -24,40 +30,59 @@ not an advancement & the pooled interval contains zero, or the sign does not rep
 \noindent
 The verdict labels above are the protocol's own. This paper does not use the word \emph{certified},
 which suggests verification by a third party, and reports the top outcome instead as what was
-actually satisfied (\S\ref{sec:design-protocol}). Result: the comparison
-\textbf{\vsevenPrimaryVerdict{}}.
+actually satisfied (\S\ref{sec:design-protocol}). Recorded verdict: the comparison
+\vsevenPrimaryVerdict{}. Reading with uncertainty: the rule is stated on the pooled lower bound and
+is resolved.
 
-\subsection*{The secondary claims}
+\subsection*{Secondary criteria}
 
 \begin{center}\tabfont
-\begin{tabularx}{\linewidth}{@{}l l L l@{}}
+\begin{tabularx}{\linewidth}{@{}l Q{0.75} Q{1.15} l Q{1.1}@{}}
 \toprule
-\# & Claim & Passes if & Result \\
+\# & Claim & Registered rule & Recorded & Reading with uncertainty \\
 \midrule
 S1 & no collapse under partner change & at least five of the eight changed-partner deltas positive,
-and the minimum not below $\vsevenSoneThreshold{}$ & \vsevenSoneVerdict{} \\
-S2 & not a private convention & the off-diagonal is within \vsevenStwoThreshold{} points of the diagonal & \vsevenStwoVerdict{} \\
-S3 & no fresh adversary exploits it & every arm's upper bound below its floor & PASS \\
-S4 & the gain is attributable & components sub-additive, no single drop exceeding the whole & PASS \\
-S5 & it survives the rule dialect & every row keeps its sign, none more than \vsevenSfiveTolerance{}~pp below default & \vsevenSfiveVerdict{} \\
-S6 & the worst case is not catastrophic & \sestina{}'s worst panel cell no worse than the deployed \vsix{} policy's & PASS \\
-S7 & the instrument is intact & the planted edges recover, the sub-floor rung does not, the cheats fail exactly their own tests & PASS \\
+and the minimum not below $\vsevenSoneThreshold{}$ (registered as ``about 1.5 cell half-widths'') &
+\vsevenSoneVerdict{} & point-estimate rule; the deciding row's interval
+$[\vsevenOppFiveWithholderLo, \vsevenOppFiveWithholderHi]$ crosses the threshold, so the verdict
+is not resolved against it \\
+S2 & not a private convention & the off-diagonal is within \vsevenStwoThreshold{} points of the
+diagonal & \vsevenStwoVerdict{} & point-estimate rule; no interval is computed for the contrast \\
+S3 & no fresh adversary exploits it & every arm's upper bound below its floor & PASS & upper-bound
+rule; resolved for the tested searches and budgets \\
+S4 & the gain is attributable & components sub-additive, no single drop exceeding the whole & PASS
+& point-estimate rule on the sum and the drops; the sub-additivity ratio's interval is
+$[\vsevenSubAdditivityLo, \vsevenSubAdditivityHi]$, and the location criterion of
+\S\ref{sec:results-location} does not replicate \\
+S5 & it survives the rule variants & every row keeps its sign, none more than
+\vsevenSfiveTolerance{}~pp below default & \vsevenSfiveVerdict{} & point-estimate rule on the
+excursions; every row replicates in sign \\
+S6 & the worst case is not catastrophic & \sestina{}'s worst panel cell no worse than the deployed
+\vsix{} policy's & PASS & point-estimate rule; the two worst-cell intervals do not overlap, so the
+comparison is resolved, although the worst cell itself is not replicated in sign \\
+S7 & the instrument is intact & the planted edges recover (registered as ``at or above
+\vsevenPrimaryFloor{} points''), the sub-floor rung does not, the cheats fail exactly their own
+tests & PASS & point-estimate rule as recorded; on the lower-bound reading the \texttt{0.08} rung is
+not recovered, and the sub-floor rung's upper bound exceeds the floor (\S\ref{sec:results-controls}) \\
 \bottomrule
 \end{tabularx}
 \end{center}
 
 The protocol's ``eight changed-partner rows'' counts the self-play row among them; \S\ref{sec:results-partners}
-reports \vsevenSonePositive{} of the \vsevenSoneRows{} genuinely changed rows. Both readings pass, and
-the phase-5 recording carries the ambiguity as deviation D9.
+reports \vsevenSonePositive{} of the \vsevenSoneRows{} changed rows, excluding self-play. Both row counts give
+the same recorded verdict, and the phase-5 recording carries the ambiguity as deviation D9. The
+\textsc{pass} entries for S3, S4, S6 and S7 are the phase-5 record's verdicts and are not computed
+by this paper's generator; S1, S2 and S5 are recomputed from the artifacts.
 
 A failure of S1, S2 or S6 would have been a substantive failure, and the paper would report
-\sestina{} as brittle in that named way. A failure of S7 would have been procedural and the evaluation would have
-stopped.
+\sestina{} as brittle in that named way. A failure of S7 would have been procedural and the
+evaluation would have stopped.
 
-\subsection*{What would mean v0.7 is not an advancement}
+\subsection*{Non-confirmation criteria}
 
-The seven conditions are answered in \S\ref{sec:results-seven}. Two are met or unresolved. The
-protocol's own closing provision is quoted in full, because this paper relies on it:
+The seven conditions are answered in \S\ref{sec:results-seven}, with the reading each uses. Two are
+met or unresolved. The protocol's own closing provision is quoted in full, because this paper relies
+on it:
 
 \begin{quote}\small
 ``And the honest all-negative path is a legitimate deliverable. If phase~5 returns `no advancement over

@@ -1,51 +1,63 @@
-\section{A threat model for a homogeneous deterministic team}
+\section{Adversary model}
 \label{sec:threat}
 
 Robustness claims are only meaningful against a stated adversary, and the adversary appropriate to
 this domain is unusual enough to define explicitly. The definition below was written before any v0.7
 measurement was taken, and it constrains how \S\ref{sec:results-adversarial} may be read.
 
-\paragraph{The unit is the team.} What is evaluated is the joint policy $\pi = (\pi_1,\pi_2,\pi_3)$
-of three identical agents. The principal adversary controls all three opposing seats. A one-seat
-deviation column is reported alongside it on the same deals, because a three-seat upgrade and a
-one-seat upgrade are different quantities that this corpus has previously conflated
-(\S\ref{sec:results-partners}).
+\paragraph{Evaluation unit.} What is evaluated is the joint policy $\pi = (\pi_1,\pi_2,\pi_3)$ of
+three identical agents. The utility is the team win rate of \S\ref{sec:evaluation-measure}, and
+parity is the benchmark: the rotation of \S\ref{sec:evaluation-duplicate} gives both teams every
+deal from both sides, so under the symmetric seating of the evaluated variant a team of three copies
+of the target has a 50\% win rate against itself, and a response's edge is measured relative to that.
+The principal adversary controls all three opposing seats. A one-seat deviation column is reported
+alongside it on the same deals, because a three-seat upgrade and a one-seat upgrade are different
+quantities that this corpus has previously conflated (\S\ref{sec:results-partners}).
 
-\paragraph{The adversary is white-box, with an explicit exclusion list.} It is given the target's
-source, its parameter vector, and unlimited offline access to it. It is not given the deal, the deal
-seed, any seat's hand, or the engine's confidence field. The exclusions are the point of the
-construction. Because the target team is three identical published deterministic agents, its
-coordination is common knowledge, which inverts the assumption in the team-correlation literature
-that the correlation device is private \cite{celli-gatti,farina-collusion}. The adversary class built
-to exploit that property is the transcript inverter of \S\ref{sec:results-whitebox}.
+\paragraph{Adversary information access.} The adversary is white-box, with an explicit exclusion
+list. It is given the target's source, its parameter vector, and unlimited offline access to it. Each
+adversary seat observes its own hand and the public record, as the rules require; it is not given
+the deal, the deal seed, any other seat's hand, or the engine's confidence field. The exclusions are
+the point of the construction. Because the target team is three identical published deterministic
+agents, its policy specification is common knowledge and it carries no private correlation signal,
+which differs from the team-game models in which a sampled correlation signal is private to the team
+\cite{celli-gatti,farina-collusion} (\S\ref{sec:game-why}). The adversary class built to exploit
+that property is the transcript inverter of \S\ref{sec:results-whitebox}.
 
-\paragraph{Homogeneity is exactly two prohibitions.} The team receives no shared secret pre-play seed,
-and no seat may use an illegal side channel, defined mechanically by the four tests of
-\S\ref{sec:evaluation-side} over all four engine decision types. Everything else a seat-conditioned
-policy can do is permitted.
+\paragraph{Team composition and channel restrictions.} The evaluated team is \emph{homogeneous} in
+the sense that its three seats run identical policy specifications. Separately, two channel
+prohibitions apply: the team receives no shared secret pre-play seed, and no seat may use an illegal
+side channel, defined mechanically by the four tests of \S\ref{sec:evaluation-side} over all four
+engine decision types. Everything else a seat-conditioned policy can do is permitted.
 
-\paragraph{Three correlation regimes, and which one is principal.} The three adversary seats may be
-fitted independently, may be three copies of one vector, or may share a pre-play signal secret from
-the target team. The first is the \emph{independent} regime, the second the \emph{synchronised}
-regime, and the third the \emph{ex-ante correlated} regime; the last is the only one whose result
-would bear on the target rather than on the search alone, and even there it remains a lower bound.
-It is the registered principal case. The synchronised regime is
-retained as the continuity column, because it is what earlier cycles of this corpus measured.
-\S\ref{sec:discussion-future} records which of the three this study actually reached.
+\paragraph{Adversary correlation regimes.} The three adversary seats may be fitted independently,
+may be three copies of one vector, or may share a pre-play signal secret from the target team. The
+first is the \emph{independent} regime, the second the \emph{synchronised} regime, and the third the
+\emph{ex-ante correlated} regime; the last is the only one whose result would bear on the target
+rather than on the search alone, and even there it remains a response within a class. It is the
+registered principal case. The synchronised regime is retained as the continuity column, because it
+is what earlier cycles of this corpus measured. \S\ref{sec:discussion-future} records which of the
+three this study actually reached.
 
-\paragraph{Every exploitability figure is a lower bound.} Each is reported as at least $x$, with the
-adversary class, the number of controlled seats, the correlation regime and the search budget
-attached. Computing the true value is intractable even white-box. The consequence is stated once and
-observed throughout: \textbf{a search that fails to find an exploit is evidence about the search, not
-a property of the target}. The v0.4 record in this corpus contains exactly that reading error, having
-reported a null result as a demonstration of robustness, and \S\ref{app:corrections} carries the
-correction rather than repeating it.
+\paragraph{Scope of response-value estimates.} Every adversarial figure in this paper is the
+observed \emph{adversarial response win-rate edge} of a particular fitted response against the
+target, reported with the adversary class, the number of controlled seats, the correlation regime
+and the search budget attached. A response's expected edge is no greater than the best-response
+value over any class containing it, so such a figure is informative about best-response value only
+as a lower bound, and only up to its sampling error: an observed point estimate is not itself a
+certified bound. The tested responses do not provide an upper bound on best-response value, and
+computing the true value is intractable even white-box. An estimated negative response edge is not
+evidence that a conventional non-negative exploitability quantity is negative. The consequence is
+stated once and observed throughout: a search that fails to find an exploit is evidence about the
+search, not a property of the target. The v0.4 record in this corpus contains exactly that reading
+error, having reported a null result as a demonstration of robustness, and \S\ref{app:corrections}
+carries the correction rather than repeating it.
 
-\paragraph{A class contributes only after calibration.} An adversary class is admitted to an
-exploitability statement only once it has passed a planted-edge calibration at or below the effect
-size being claimed (\S\ref{sec:evaluation-floor}).
+\paragraph{Adversary calibration.} An adversary class is admitted to an adversarial-response
+statement only once it has passed a planted-edge calibration at or below the effect size being
+claimed (\S\ref{sec:evaluation-floor}).
 
-\paragraph{What the definition does not license.} It does not license the claim that a policy passing
+\paragraph{Interpretation limits.} The definition does not license the claim that a policy passing
 every test is unexploitable, and it does not license reading the opponent panel's worst cell as an
 exploitability figure. The panel measures robustness across playstyles; the adversary search measures
 what a fitted responder achieves. They are different objects and this paper keeps them in different

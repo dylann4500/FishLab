@@ -1,16 +1,22 @@
-\section{Reproduction and availability}
+\section{Reproducibility and artifact availability}
 \label{app:repro}
 
 \subsection*{Availability}
 
 The engine, every experiment artifact, the protocol, the generator that produces this paper's
 numbers and the provenance checker that audits them are in the project repository,
-\filepath{https://github.com/dylann29/fish-optimization}. The evaluation of \S\ref{sec:results}
-ran at the commit whose current hash is \texttt{\vsevenBzeroCommit{}}. Two caveats attach to that
-hash and the subsections below give both: the repository's history was rewritten after the
-evaluation, and no single commit describes the tree for the whole run in any case.
+\filepath{https://github.com/dylann29/fish-optimization}; the release corresponding to this paper
+is the annotated tag \texttt{sestina-v1.0}. Three identities are kept separate below: the frozen
+policy configuration, which is the specification string and parameter vector of
+Appendix~\ref{app:parameters} together with the mirror digest \texttt{\vsevenMirrorDigest{}}; the
+evaluation binary, identified by its SHA-256; and the repository tree, identified by commits that
+changed during the run. The evaluation of \S\ref{sec:results} ran at the commit whose current
+short hash is \texttt{\vsevenBzeroCommit{}}; the full hashes of every commit named in this appendix
+resolve in the repository. Two caveats attach to that hash and the subsections below give both:
+the repository's history was rewritten after the evaluation, and no single commit describes the
+tree for the whole run in any case.
 
-\subsection*{A history rewrite, and what it did to the hashes}
+\subsection*{Repository-history changes}
 
 After the evaluation was complete, one artifact of the development phase, a per-decision search
 capture of \vsevenKfiveBytes{} bytes, exceeded the hosting limit and was excised from version-control
@@ -30,33 +36,38 @@ excised file is retained on disk and its digest recorded beside it in
 \texttt{\vsevenKfiveDigest{}\ldots}; it is regenerable from the capture harness and no measurement in
 this paper depends on it.
 
-The rewrite is also the clearest possible argument for the subsection that follows.
+\subsection*{Evaluation binary and source provenance}
 
-\subsection*{The run is identified by its binary, not by a commit}
-
-Five commits landed in the repository while the battery was running, so no single commit describes the
-tree for the whole of it, and a rewrite has since changed all of their hashes. Every one of the \vsevenScoredCells{} scored cells was played by
-\filepath{engine/fish7}, SHA-256 \expandafter\hexdigest\expandafter{\vsevenBinarySha}, \vsevenBinaryBytes{} bytes, and that
-binary was never rebuilt between the first bank digest and the last cell. The five later commits touch
-the interactive browser table and not the policy; \S\ref{app:corrections-self} records the executed
+Five commits landed in the repository while the battery was running, so no single commit describes
+the tree for the whole of it, and a rewrite has since changed all of their hashes. Every one of the
+\vsevenScoredCells{} scored cells was played by \filepath{engine/fish7}, SHA-256
+\expandafter\hexdigest\expandafter{\vsevenBinarySha}, \vsevenBinaryBytes{} bytes, and that binary
+was never rebuilt between the first bank digest and the last cell. The five later commits touch the
+interactive browser table and not the policy; \S\ref{app:corrections-self} records the executed
 check, rebuilding the engine from the tree as it stood at the end of the battery and recomputing the
-mirror digest, that establishes the frozen policy is unmoved by them.
+mirror digest, that establishes the frozen policy is unmoved by them for the tested mirror, which is
+evidence for the tested cases rather than a proof of global program equivalence.
 
-\subsection*{The battery}
+\subsection*{Computing environment}
 
-Table~\ref{tab:battery-repro} repeats Table~\ref{tab:battery}.
+The scored battery ran on one Apple M5 Pro desktop with \vsevenMachineCores{} logical cores under
+macOS, with every scored cell at \vsevenScoredThreads{} worker threads
+(Appendix~\ref{app:deviations}, D17) and the isolation audits at one; the throughput figure of
+\S\ref{sec:game-why} was taken on the same machine at \vsevenMirrorThreads{} threads. The engine
+was built with \texttt{clang++} at \texttt{-std=c++20 -O3 -march=native -funroll-loops
+-fno-math-errno}, the evaluation build adding \texttt{-DFISH\_NO\_SERVE}. The compiler version and
+whether the machine was otherwise loaded during the battery are not recorded, and the cost figures
+of \S\ref{sec:results-cost} are wall-clock ratios taken under those conditions.
 
-\begin{table}[!ht]\centering
-\caption{Every registered battery against what was measured. \emph{Registered} is the count the
-protocol names, not the count that ran: deviations D1 and D2 add a B5 reference cell and sixteen B9
-cells, because without them ``no single leave-one-out drop exceeds the whole'', ``the recovered size
+\subsection*{Experiment inventory}
+
+The registered batteries and the cells measured for each are given in Table~\ref{tab:battery}
+(\S\ref{sec:design-battery}); deviations D1 and D2 add a B5 reference cell and sixteen B9 cells,
+because without them ``no single leave-one-out drop exceeds the whole'', ``the recovered size
 tracks the planted size'' and ``the planted excess resolves to zero'' are not computable from the
-cells the protocol lists. No cell was dropped.}
-\label{tab:battery-repro}
-{\tabfont\input{tables_v07/battery}}
-\end{table}
+cells the protocol lists. No cell was dropped.
 
-\subsection*{Where the raw output is}
+\subsection*{Raw evaluation artifacts}
 
 Under \filepath{research/v07/results/}, digested in
 \filepath{research/v07/results/MANIFEST-P5.json}: \vsevenManifestRuns{} artifacts, of which
@@ -81,7 +92,7 @@ this document was generated.
 Every row carries its own argument vector, so any single cell can be re-run by hand from the artifact
 without reference to this document or to the driver that produced it.
 
-\subsection*{How the numbers in this document were produced}
+\subsection*{Numerical generation and provenance}
 
 \begin{enumerate}
 \item \filepath{engine/build_tables_v07.py}~\texttt{-{}-paper} reads the artifacts above and writes
@@ -111,10 +122,12 @@ reach a PDF built after the battery has been run. Generated on \vsevenBuildDate{
 
 \subsection*{Sample sizes}
 
-The project's power rule is a $95\%$ half-width of $98/\sqrt{N}$~pp at parity, computed by the
-harness and emitted with every cell. At \vsevenBtwoFcheapN{} games the primary claim's pooled half-width is
-\vsevenBtwoFcheapHalfWidth{}~pp; the
-frontier cells are sized so that the primary claim's half-width is small against the
-\vsevenPrimaryFloor{}-point reference bar rather than against the effect. Far-class panel members are
+The project's sample-size planning rule is a $95\%$ half-width of $98/\sqrt{N}$~pp at parity for
+$N$ independent games, computed by the harness and emitted with every cell
+(\S\ref{sec:evaluation-power}); it is a planning approximation, not a power calculation. At
+\vsevenBtwoFcheapN{} games the primary claim's pooled half-width is
+\vsevenBtwoFcheapHalfWidth{}~pp; the frontier cells are sized so that the primary claim's
+half-width is small against the \vsevenPrimaryFloor{}-point reference bar rather than against the
+effect. Far-class panel members are
 sized at a quarter of the near class deliberately: they are decided by \vsevenFarSpanLo{} to \vsevenFarSpanHi{}~pp
 and do not need the resolution.

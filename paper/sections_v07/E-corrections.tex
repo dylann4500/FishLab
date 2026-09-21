@@ -1,4 +1,4 @@
-\section{Corrections to the earlier record}
+\section{Corrections to prior reports}
 \label{app:corrections}
 
 Earlier work in this lineage contains measurement and implementation errors that later cycles found.
@@ -11,12 +11,12 @@ in multi-agent configurations, and the cost of the frontier's search was mischar
 orders of magnitude. Those discoveries are why the evaluation framework of \S\ref{sec:evaluation}
 exists in the form it does.
 
-\subsection{Corrections to the earlier lineage}
+\subsection{Corrections to earlier FishBot reports}
 \label{app:corrections-corpus}
 
 \begin{description}
 
-\item[The cost of the frontier's search, wrong in both directions.] The \vsix{} paper recorded the
+\item[Search-cost estimates.] The \vsix{} paper recorded the
   searching configuration at ``three orders of magnitude'' the blueprint, mixing an all-threads
   timing with a single-thread one; phase~1 of this cycle re-timed it on one basis at
   \vsevenPhaseOneCost$\times$. Both figures describe the
@@ -25,52 +25,57 @@ exists in the form it does.
   phase~3, and that correction was carried into the protocol. \textbf{This report corrects the correction}: measured on the shared panel at a fixed thread count,
   \fcheap{}, the configuration the \vsevenCostRecorded$\times$ describes, costs at least
   \vsevenCostFcheapTight$\times$ the blueprint, and \sestina{} at least
-  \vsevenCostFrozenTight$\times$ (\S\ref{sec:results-cost}). Every figure in that table is a lower
-  bound and none carries an interval. The record has now been wrong in both directions and the reason is the
-  same both times, a ratio quoted without the basis it was computed on.
+  \vsevenCostFrozenTight$\times$ (\S\ref{sec:results-cost}). Every figure in that table is an
+  observed whole-match slowdown, diluted by the opponent's cost, and none carries an interval. The
+  record has now been wrong in both directions and the reason is the same both times, a ratio quoted
+  without the basis it was computed on.
 
-\item[The corpus's exploitability figure is a lower bound, and has been read as more.] The v0.4 findings document reports that a policy fitted
+\item[Interpretation of adversarial-response results.] The v0.4 findings document reports that a policy fitted
   specifically against v0.4 fails to reach parity with it; the same study's own table records the
   response reaching $\vsevenVfourLbr\%$ with an interval spanning parity. The \vsix{} study corrected this. It is
-  repeated here because this cycle's own strongest result, \S\ref{sec:results-adversarial}, eight searches, all
+  repeated here because this cycle's own principal adversarial result, \S\ref{sec:results-adversarial}, eight searches, all
   losing, is a number of exactly the same kind, and the correction is what stops this paper making
   the same claim.
 
-\item[The declaration-allocation channel is worth zero, not two percentage points.] The
-  register ranked it second by priority, at \vsevenLonePriority{}. \S\ref{sec:development-alloc} closes it
-  at exactly zero over $\sim$\vsevenLoneDecls{} recorded declarations, shows its proposed fix is worse
-  than the object it would replace, and shows most of the residual error class is an information limit
-  rather than a defect.
+\item[Declaration-allocation comparison.] The register ranked it second by priority, at
+  \vsevenLonePriority{}, and estimated it at roughly two percentage points.
+  \S\ref{sec:development-alloc} reports that the two allocators selected the same allocation at every
+  one of $\sim$\vsevenLoneDecls{} recorded declarations (counted over cells that include re-runs of
+  the same seeds), that the exact-joint alternative performed worse on the declaration decision, and
+  that most of the residual error class is an information limit under the constraint model rather
+  than a defect; the tested mechanism therefore produced no difference, which is an empirical
+  finding rather than an identity.
 
-\item[The forced-endgame entry's own number was wrong.]
+\item[Forced-endgame improvement estimate.]
   Re-derived from this cycle's capture, closing the entire accuracy gap is worth
-  \vsevenLthirteenClose{}~pp, the register's figure corrected \emph{upward} by a factor
-  of two, and still a fiftieth of the detection floor. The entry is closed either way.
+  \vsevenLthirteenClose{}~pp at the measured incidence, the register's figure corrected
+  \emph{upward} by a factor of two, and still a fiftieth of the reference bar. The estimate is small
+  either way; \S\ref{sec:development-arithmetic} records that the route by which it could grow was
+  not tested.
 
-\item[An annotation in this project's own bibliography overstated its source.] The vetted entry for
+\item[Local-best-response citation correction.] The vetted entry for
   the local-best-response result annotated it as showing ``every ACPC 2016 entrant'' exploitable
   above the stated bound. The source says \emph{each evaluated bot}, and states that the
   competition's winning submission was not evaluated; it also describes the search as looking one
   action ahead, where the annotation said two. Both are corrected in
-  \S\ref{sec:related-search} and in the bibliography entry, whose header records the edit. This is
-  the same widening this paper's own adversarial passes kept finding in its prose, committed in a
-  place nobody re-reads.
+  \S\ref{sec:related-search} and in the bibliography entry, whose header records the edit.
 
-\item[The detection floor does not buy down with evaluation games.] Phase~1 measured
+\item[Detection calibration across evaluation budgets.] Phase~1 measured
   \vsevenFloorPhaseOne{} and predicted the floor would fall as the inverse square root of evaluation
-  games. At exactly four times the games it is \vsevenPrimaryFloor{}, and the sub-floor rung is still
-  undetected because the excess resolves \emph{to} zero rather than because the interval is wide. Below
-  roughly a point and a half the responder is empty, not unresolved. This report reproduces that on
-  holdout material (\S\ref{sec:results-controls}).
+  games. At exactly four times the games the smallest recovered rung was \vsevenPrimaryFloor{}, and
+  the next rung down remained unrecovered, with a phase-2 excess centred near zero rather than merely
+  wide. For that responder class and budget, a planted effect below about a point and a half was not
+  recovered; this does not establish that such effects are absent. \S\ref{sec:results-controls}
+  reports the corresponding controls on holdout material.
 
 \end{description}
 
-\subsection{Corrections this cycle makes to its own record}
+\subsection{Corrections to development and evaluation records}
 \label{app:corrections-self}
 
 
 \begin{description}
-\item[An artifact was excised from version-control history after the evaluation.] A per-decision
+\item[Repository-history rewrite.] A per-decision
   search capture from the development phase, \vsevenKfiveBytes{} bytes, exceeded the repository
   host's file-size limit and was removed from git history so the work could be published. The file is
   retained on disk with its SHA-256 recorded in a sidecar
@@ -81,7 +86,7 @@ exists in the form it does.
 \end{description}
 \begin{description}
 
-\item[A freeze-verification step could not fire, and its silence was not a pass.] The freeze checker reads its source-drift baseline out of the freeze artifact's own
+\item[Freeze-verification baseline.] The freeze checker reads its source-drift baseline out of the freeze artifact's own
   provenance field, and that artifact was rewritten twice after the freeze commit, each rewrite
   refreshing the baseline to the then-current tree. The check therefore compared the tree against a
   baseline taken from the tree, and the sources the protocol predicted would be listed as changed no
@@ -95,7 +100,7 @@ exists in the form it does.
   recomputed with the fresh binary. It is \texttt{\vsevenMirrorDigest{}}, identical to the frozen
   artifact and to the binary that played every cell.
 
-\item[A scored cell is not bit-reproducible for a searching arm.]
+\item[Scored-run reproducibility.]
   \label{app:corrections-reproducibility}
   Before any holdout material was spent, one training cell was checked to be bit-identical over
   \vsevenReproRuns{} runs across three thread counts, and it was
@@ -107,45 +112,45 @@ exists in the form it does.
   it, but the earlier claim should be read as ``reproducible at four hundred deals'', not
   ``reproducible''.
 
-\item[The scored-cell count was not the count the artifacts support.] The phase-5 recording stated
+\item[Experiment-count correction.] The phase-5 recording stated
   \vsevenScoredCellsRecorded{} scored match cells in three places; the figure was hand-typed in the
   reduction script rather than computed. Counting rows that carry a match object across every scored
-  battery gives \textbf{\vsevenScoredCells{}}. Nothing turned on it, it was the denominator of an
-  observation about a single action-limit hit, but a corpus whose standing rule is that no number
-  is hand-typed should not carry a hand-typed total. The generator for this paper computes it, and
+  battery gives \vsevenScoredCells{}, and the count was corrected from
+  \vsevenScoredCellsRecorded{} to \vsevenScoredCells{}. Nothing turned on it, it was the denominator
+  of an observation about a single action-limit hit. The generator for this paper computes it, and
   the phase-5 recording has since been corrected to agree.
 
-\item[The partner-regime table was published without its own intervals.]
+\item[Partner-comparison uncertainty.]
   \label{app:corrections-intervals}
   The phase-5 results document printed the partner deltas as bare point estimates with a replication
   flag. Every underlying cell carries a deal-clustered interval, and the delta arithmetic is fixed by
   the protocol, so the intervals were computable and had simply been compressed out of a markdown
   table. Table~\ref{tab:partners} carries them, and the phase-5 recording has since been corrected to
   carry them too, at which point the row that decides S1 turned out to have an interval crossing
-  its own threshold (\S\ref{sec:results-partners}). No verdict changes; a reader's ability to judge
-  the verdict does, which is the whole argument for printing intervals.
+  its own threshold (\S\ref{sec:results-partners}). The recorded verdict is unchanged; the added
+  intervals expose uncertainty not visible in the original point-estimate table.
 
-\item[The cross-play gap was printed under the reversed sign convention.] The phase-5 document reports the gap as \vsevenXpGapRecorded{}, which is diagonal minus
+\item[Cross-play sign convention.] The phase-5 document reports the gap as \vsevenXpGapRecorded{}, which is diagonal minus
   off-diagonal. The claim it settles asks whether the \emph{off}-diagonal collapses, so the informative direction is off-diagonal minus diagonal, which is \vsevenXpGap{}.
   \emph{Neither sign is resolved}: the magnitude is \vsevenXpGapAbs{}~pp against a per-cell
   half-width of \vsevenXpHalfWidth{} and a \vsevenStwoThreshold{}-point threshold, so no verdict
   moves and this paper reads no lift out of it either. What the correction is worth is only this:
   the sign as printed \emph{implies} a small collapse, and the data support no direction at all.
 
-\item[The vetted bibliography carried eight metadata errors, four of them author lists.] Every one of
-  the seventy-one references this paper cites has now been checked against its source rather
-  than against the earlier cycle's bibliography, which is where all of them were inherited from. Four
-  author lists were wrong: one entry carried the adjacent entry's five names where the paper it cites
-  has four, one printed nine names from a later paper by overlapping authors where the cited preprint
-  has seven, and one added an author the cited work does not have. The others were a repository start
-  year a year early, a page range, the title of a containing work, and a web article's site printed as
-  its author. All eight are corrected in this document's reference list and none of them touches a
-  claim in the text. The lesson is the one \S\ref{app:corrections-corpus} already draws about an
-  annotation in the same file: a bibliography that has been vetted once and copied forward is not the
-  same thing as a bibliography that has been checked.
+\item[Bibliographic metadata corrections.] Every one of the seventy-one references this paper
+  cites was checked against its source rather than against the earlier cycle's bibliography, which
+  is where all of them were inherited from, and eight carried a metadata error. Three author lists
+  were wrong: one entry carried the adjacent entry's five names where the paper it cites has four,
+  one printed nine names from a later paper by overlapping authors where the cited preprint has
+  seven, and one added an author the cited work does not have. The others were a repository start
+  year a year early, a page range, the title of a containing work, a web article's site printed as
+  its author, and a posting year. All eight are corrected in this document's reference list and none
+  of them touches a claim in the text. This revision additionally moved evaluative annotations out
+  of five entries and split two entries that referred to distinct documents; the reference list's
+  header records those edits.
 
-\item[The legacy residual's interval was computed over an inert cell.] The phase-5 document forms
-  the residual's half-width over five dialect cells with unit coefficients, one of which is the
+\item[Rule-variant residual uncertainty.] The phase-5 document forms
+  the residual's half-width over five rule-variant cells with unit coefficients, one of which is the
   \texttt{-{}-maxasks=360} row. That row is bit-identical to the default --- the same win rate and
   the same interval on both banks --- so it carries no variance, and its own document says so two
   lines later. Excluding it, and giving the default row the coefficient the two-component residual
@@ -159,7 +164,7 @@ exists in the form it does.
   Neither figure is a true 95\% interval, because all the cells share banks and deals and the
   ask-cap identity proves the correlation is large.
 
-\item[The sub-floor control's registered comparison named the wrong handicap rung.] The
+\item[Calibration-rung correspondence.] The
   preregistration introduces B9.3's sub-floor rung as ``\texttt{hstr=0.05}, the rung phase 2 measured
   at $+0.88$'' and directs the phase-5 excess to be read against phase 2's $-0.01$
   $[-0.45, +0.42]$. Phase 2 measured \texttt{hstr=0.05} at a planted cost of $+0.67$ and an excess of
@@ -170,7 +175,7 @@ exists in the form it does.
   either pairing --- but the margin it is compared against does, from seven tenths of a point to a
   little under half a point.
 
-\item[The live-ask gate's binding rate was the incumbent's, and its sample size a third cell's.] The
+\item[Live-ask filtering statistics.] The
   phase-2 mechanism characterisation captures the \emph{target} arm, so every rate in its table is
   measured on \vsix{}. Its rate column comes from a 4,000-deal mirror cell and its
   \texttt{n} column from the 3,000-deal treatment cell, so the pair
@@ -181,7 +186,7 @@ exists in the form it does.
   same diagnostic bank, which binds at \vsevenGateBindRate\% of \vsevenGateBindN{} ask decisions,
   half a point above the incumbent's rate.
 
-\item[A counter-example was quoted at twice its distinct size.] The second sample that refutes the
+\item[Duplicate forced-endgame records.] The second sample that refutes the
   one-live-half-suit universal (\S\ref{app:dialect}) is reported in its source as 118 of 120 forced
   declarations. That source's own preceding section establishes that a mirror run at
   \texttt{-{}-rotations=6} plays identical policies in both team orientations and so records every
@@ -191,17 +196,17 @@ exists in the form it does.
   earlier run quoted in the same sentence, which is why it is described there as records rather than
   as occasions.
 
-\item[A cost to an adversary was printed with no cell behind it.] The phase-2 document, closing the
+\item[Unsupported adversarial-cost estimate.] The phase-2 document, closing the
   forced-endgame induction route, states that the construction which raises the \emph{target's}
   incidence ``was measured at $-17$ points''. No cell in the results tree produces it: no recorded
   configuration string describes that construction, and the only measurement near $-17$ in the cycle
   is an unrelated belief ablation. What was measured is the other construction, a team that never
   declares voluntarily, which raises its own incidence and not its opponent's, at
   \vsevenLthirteenAdvCostLo{} to \vsevenLthirteenAdvCostHi{}~pp on two independent cells.
-  \S\ref{sec:development-arithmetic} now says that, and says that the route is closed for want of a
-  mechanism rather than by a price.
+  \S\ref{sec:development-arithmetic} now says that, and says that the route is untested rather
+  than closed by a price; the phase-2 document still carries the unsupported figure.
 
-\item[Two figures were attributed to the wrong document.] The
+\item[Source attribution and leaf-evaluation metrics.] The
   \vsevenPhaseOneCost$\times$ cost of the unrestricted search is phase~1 of this cycle's own timing,
   produced expressly to replace the \vsix{} paper's mixed-basis ``three orders of magnitude''; the
   protocol presented it as an inherited record that this cycle corrected. And the leaf evaluator's \vsevenKoneFold-fold gain in between-candidate
@@ -212,12 +217,13 @@ exists in the form it does.
 
 \end{description}
 
-\subsection{A note on comparability}
+\subsection{Cross-version comparability}
 \label{app:corrections-comparability}
 
-Two things about this cycle's evidence standard are not the corpus's, and a reader comparing across
-versions should have them. Every claim here is measured on material sealed before the configuration
-existed, under a protocol committed before any of it was played, with a stated failure condition, which no previous study in this corpus did. And every claim is replicated across two disjoint banks
-with the sign rule of \S\ref{sec:evaluation-intervals} applied, which is why
+Two things about this cycle's evidence standard differ from earlier cycles', and a reader comparing
+across versions should have them. Every claim here is measured on material sealed before the
+configuration existed, under a protocol committed before any of it was played, with a stated
+failure condition, which no previous study in this corpus did. And every claim is replicated across
+two disjoint banks with the sign rule of \S\ref{sec:evaluation-replication} applied, which is why
 \S\ref{sec:results-location} reports a non-replication that a pooled-interval convention would have
 reported as a pass.

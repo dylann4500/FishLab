@@ -1,10 +1,12 @@
-\section{The full panel}
+\section{Complete opponent-panel results}
 \label{app:panel}
 
-Every cell of the shared panel, four arms against \vsevenPanelMembers{} members, pooled over both
-primary banks. It is printed in full so that a reader can take the worst cell themselves rather than
-take \S\ref{sec:results-panel}'s word for which it is, and so that the minimax regret of
-Table~\ref{tab:regret} can be recomputed by hand.
+Every cell of the shared panel, four arms against \vsevenPanelMembers{} named members, pooled over
+both primary banks, printed in full to support inspection and recomputation of the panel summaries
+of \S\ref{sec:results-panel}, including the empirical minimax regret of Table~\ref{tab:regret}. The
+\vsevenPanelMembers{} named members are \vsevenPanelDistinct{} distinct policies: three sealed
+aliases duplicate members that also appear under their own names, and the duplicated cells were run
+as named and serve as a determinism check (Appendix~\ref{app:deviations}, D15).
 
 Class \texttt{near} is \vsevenDealsNear{} deals a bank, \texttt{far} \vsevenDealsFar{},
 \texttt{expensive} \vsevenDealsExpensive{}. A

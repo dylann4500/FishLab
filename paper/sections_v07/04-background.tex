@@ -1,4 +1,4 @@
-\section{Background: the evolution of FishBot}
+\section{FishBot development background}
 \label{sec:background}
 
 \sestina{} is the seventh configuration in a lineage, and several of its components and most of its
@@ -6,41 +6,38 @@ evaluation machinery exist because of what earlier versions found. This section 
 short. Its purpose is to explain why \sestina{} looks the way it does, not to re-report earlier
 studies; the detailed corrections those studies require are collected in Appendix~\ref{app:corrections}.
 
-\subsection{v0.2 to v0.4: engine, inference and policy foundations}
+\subsection{Engine, inference, and policy foundations (v0.2--v0.4)}
 \label{sec:background-early}
 
 The first versions established the domain and the inference. A count-conditioned, empirically tuned
-linear policy in a scripting-language simulator became a rules-exact C++ engine carrying an exact
-reference posterior, a faster deployed approximation, a twenty-feature ask score and a value-based
-declaration rule. The durable contribution of that period is the inference object of
-\S\ref{sec:inference}: an exactly computable observer-conditioned deal posterior, cheap enough to run
-in all six seats at once.
+linear policy in a scripting-language simulator became a C++ engine implementing the specified
+rules and carrying an exact constraint-conditioned reference distribution, a faster deployed
+approximation, a twenty-feature ask score and a value-based declaration rule. The durable
+contribution of that period is the inference object of \S\ref{sec:inference}: an exactly computable
+observer-conditioned constraint distribution over deals, cheap enough to run in all six seats at
+once.
 
-That period also established a habit of evaluation this paper spends considerable effort undoing.
-Cells were a few thousand games against a handful of opponents, ablations were unpaired, and
-conclusions were drawn from point estimates.
+Earlier evaluations used smaller samples, unpaired ablations, and point-estimate comparisons: cells
+were a few thousand games against a handful of opponents.
 
-\subsection{v0.5: a failure mode removed, and honestly reported as worth nothing}
+\subsection{Deadlock mitigation (v0.5)}
 \label{sec:background-vfive}
 
-v0.5 diagnosed a two-question deadlock in mirror play, in which two policies alternately ask each
-other for cards neither will surrender until the game ends in misdeclaration, and removed it. It then
-reported that removing it was worth almost nothing in win rate.
+FishBot \vfive{} addressed a mirror-play deadlock in which two agents repeatedly requested
+unavailable cards until a forced declaration ended the sequence. Removing this behaviour did not
+produce a statistically resolved win-rate improvement in the reported evaluation. The result
+motivated separate checks of behavioural validity and playing strength, as well as reassessment of
+the evaluation's precision.
 
-That report is the honest ancestor of this one, and it is where the project's central difficulty
-first became visible. A release that removes a genuine defect and gains no measurable strength is
-either at the ceiling of its policy class or is measuring badly, and those two diagnoses call for
-opposite responses.
-
-\subsection{v0.6: stronger play, and a measurement crisis}
+\subsection{Policy and evaluation revisions (v0.6)}
 \label{sec:background-vsix}
 
 The v0.6 cycle set out to recover several points of headroom that the accumulated design register
-described. It found almost none of it, and discovered in the process that much of the measurement
-machinery was unsound. Four results from that cycle bear directly on \sestina{}.
+described. It found little of it, and found in the process that much of the measurement machinery
+lacked the precision its conclusions required. Four results from that cycle bear directly on
+\sestina{}.
 
-\paragraph{Exchangeable ties are irreducible, so the tie-break is a coordination decision rather than
-a strength decision.} Measured in the \vfive{} mirror, the policy that cycle set out to diagnose, \vsixTieShareFive\% of
+\paragraph{Tied action scores.} Measured in the \vfive{} mirror, the policy that cycle set out to diagnose, \vsixTieShareFive\% of
 \emph{contested} ask decisions end with two or more candidates scoring bit-for-bit identically, and
 the winner is whichever the enumerator emitted first. \vsixTieSameSuitFive\% of those ties are two
 cards of one half-suit at one target, and the exact posterior \emph{separates} them in
@@ -53,8 +50,8 @@ register was not a defect but a property of the information set. What remains ad
 dependence on enumeration order itself, which is a correctness problem, and
 \S\ref{sec:agent-tiebreak} is how \sestina{} addresses it.
 
-\paragraph{The exact posterior is a worse predictor than the deployed approximation.} Scored as
-predictors on identical states in the \vfive{} mirror, the ranking is:
+\paragraph{Belief-model comparison.} Scored as predictors of card location on identical states in
+the \vfive{} mirror, the ranking is:
 
 \begin{center}\tabfont
 \begin{tabular}{lrr}
@@ -68,19 +65,23 @@ Approximation, certificate half of the prior deleted ($\theta = 0$) & \vsixBelie
 \end{tabular}
 \end{center}
 
-The exact object is the worst row, and it stays worst with the prior deleted outright as well
-($\theta = \varphi = 0$: \vsevenBeliefPriorlessNLL{} nats and \vsevenBeliefPriorlessHit\%), so
-most of the log-loss gap has no behavioural content at all, though most of the hit-rate gap does. The certificate half of the prior is the gap
-between the second and third rows; the prior as a whole is the gap from the
-$\theta = \varphi = 0$ figures to the third. Separately from the ordering, exactness in this game also forecloses
-behaviour, because the block construction of
-\S\ref{sec:inference} has no parameter through which an opponent's tendencies could enter. Exactness
-and behaviour-awareness are not available in the same object here. This closed an experiment three
-studies had listed as outstanding, and it established a methodological rule the project has applied
-since, namely that exact Bayesian inference is an assumption to be tested rather than a property to
-be assumed. \S\ref{sec:development-alloc} is the second occasion on which that rule paid.
+The exact constraint-based model has the highest log loss among the compared models, and it
+remains highest with the behavioural weighting deleted outright as well ($\theta = \varphi = 0$:
+\vsevenBeliefPriorlessNLL{} nats and \vsevenBeliefPriorlessHit\%), so most of the log-loss gap has
+no behavioural content, though most of the hit-rate gap does. The certificate half of the weighting
+is the gap between the second and third rows; the weighting as a whole is the gap from the
+$\theta = \varphi = 0$ figures to the third. In the implementation, the block construction of
+\S\ref{sec:inference} has no parameter through which an opponent's tendencies could enter; the
+behavioural weighting enters only through the deployed paths, as the initialiser of the Sinkhorn fit
+(\S\ref{sec:inference-prior}) and, in the search, as an importance weight on exact samples
+(\S\ref{sec:agent-search}). Whether an exact constraint computation could be combined with a
+behavioural model in one object is not addressed here. This closed an
+experiment three studies had listed as outstanding, and it established a methodological rule the
+project has applied since, namely that exact constraint-based inference is an assumption to be
+tested rather than a property to be assumed. \S\ref{sec:development-alloc} reports the second
+comparison of that kind.
 
-\paragraph{Determinized search suffers an optimiser's curse, and a paired guard removes it.} v0.6
+\paragraph{Search-selection bias.} v0.6
 built a search that samples full deals from the public posterior and plays each forward with all six
 players reconstructed at their own information sets, rather than made clairvoyant, which
 \S\ref{sec:game-why} explains would be degenerate. Chosen by an unguarded argmax over sampled means,
@@ -89,12 +90,11 @@ control that forces the same code to return the blueprint's own choice at identi
 sample size. The cause is the statistic rather than the search: one determinization's return is the
 final half-suit differential, whose spread is an order of magnitude larger than genuine differences
 between candidates, so the argmax selects on residual noise and does so more confidently the more
-candidates it is offered. A paired lower-confidence-bound deviation rule recovers all of it. The
-guarded search, which v0.6 measured and then deployed switched off, is a component of \sestina{}
-(\S\ref{sec:agent-search}).
+candidates it is offered. A paired lower-confidence-bound deviation rule removed the measured deficit in that
+experiment. The guarded search, which v0.6 measured and then deployed switched off, is a component
+of \sestina{} (\S\ref{sec:agent-search}).
 
-\paragraph{The evaluation could not resolve a one-point effect, and the optimiser could not move a
-policy.} Pooling every same-pair cell in the v0.6 battery gave \vsixHeadPooled\% with a naive $z$ of
+\paragraph{Evaluation resolution and optimiser design.} Pooling every same-pair cell in the v0.6 battery gave \vsixHeadPooled\% with a naive $z$ of
 \vsixHeadZ{}, a null that an earlier draft of that report published as one. Re-run at high power
 across \vsixBigFiveBanks{} disjoint banks, the same comparison is \vsixBigFive\% over
 \vsixBigFiveN{} games $[\vsixBigFiveLo, \vsixBigFiveHi]$, above parity on all \vsixBigFiveAbove{}
@@ -105,18 +105,18 @@ incapable of moving a policy at all, using one step size for thirty-four coordin
 a half orders of magnitude, an unpaired objective, and an objective documented as a worst case that
 was in fact a weighted mean.
 
-\subsection{What v0.6 handed to the v0.7 programme}
+\subsection{Development objectives}
 \label{sec:background-handoff}
 
-A policy roughly nine tenths of a point stronger than its predecessor; a design register most of
-whose entries had just been closed as worth nothing; a repaired optimiser; and an explicit diagnosis
-that at the budget the project had always used, the policy class looked flat without it being known
-whether the class \emph{is} flat or the instrument was still too coarse.
+The v0.6 cycle left a policy roughly nine tenths of a point stronger than its predecessor, a design
+register most of whose entries had not produced a resolved gain, a repaired optimiser, and the open
+question of whether, at the budget the project had used, the absence of resolved gains reflected
+the policy class or the precision of the instrument.
 
-The v0.7 programme was organised to answer that question in a way that could not be argued into a
-positive result. Five phases ran under separate briefs, each starting from a cleared context:
-characterise the instrument and establish what it can detect; search for adversaries in the open
-against the \vsix{} frontier rather than against the deployed policy; build and test candidate
-mechanisms; select and freeze exactly one configuration; and evaluate that configuration on sealed
-material under a protocol registered in advance. \S\ref{sec:development} reports the first three
-phases and \S\ref{sec:results} the last.
+The v0.6 results motivated five development stages: evaluation calibration, adversary generation,
+candidate-mechanism testing, configuration selection and freezing, and holdout evaluation under a
+preregistered protocol. \S\ref{sec:development} and \S\ref{sec:results} report the exploratory and
+holdout stages, respectively. The protocol separated configuration selection from final evaluation
+to reduce selection-related bias; the organisational details, including which briefs, software
+processes and information restrictions separated the stages, are in Appendix~\ref{app:repro} and
+the protocol document it cites.

@@ -1,50 +1,53 @@
 \section{Introduction}
 \label{sec:intro}
 
-Six-player Canadian Fish, also called Literature, is a team card game with an unusual combination of
-properties. Every action is public, so the entire hidden state is the initial deal and the posterior
-over that deal is exactly computable. The unit of play is a three-player team whose members cannot
-communicate. And because a deployed team consists of three identical deterministic agents, its
-coordination is common knowledge, which inverts the usual assumption in the team-correlation
-literature that a team's correlation device is private. The result is a domain in which inference can
-be made provably correct, so that any remaining loss is attributable to policy rather than to belief.
+Six-player Canadian Fish, also called Literature, is an imperfect-information game played by two
+teams of three. Players observe their own cards and the public action history, but not other
+players' hands. Because every card transfer is public, a candidate initial deal and the observed
+history determine subsequent card ownership. This structure permits exact enumeration of deals
+satisfying observer-specific game constraints, providing a reference calculation for
+constraint-based inference.
 
-Computational work on the six-player game appears to be extremely limited. In the searches conducted
-across this project's cycles we found no academic work on it, no public repository containing search,
-planning or a working learner for it, and no coverage in RLCard \cite{rlcard}
-(\S\ref{sec:related-fish}). The nearest published agent plays a four-player,
-48-card variant that does not raise the six-player allocation problem.
+Strategic action choices can convey information beyond legality constraints. We therefore
+distinguish the uniform constraint-conditioned distribution from a policy-aware posterior.
+\sestina{} uses an approximate belief model with behavioural weighting and combines it with a linear
+action policy and guarded search. The study evaluates this configuration against specified internal
+baselines, examines component contributions, and assesses sensitivity to partners, rule variants,
+and tested adversarial responses.
 
-This paper presents \textbf{\sestina{}}, the strongest agent produced in this project's FishBot
-lineage, and reports a rigorous evaluation of it. Earlier versions established the engine, the exact
-inference machinery and a sequence of progressively stronger policies, but their development also
-exposed serious evaluation problems: comparisons that could not resolve a one-point effect, an
-optimiser that could not move a policy, and at least two published conclusions that turned out to be
-artefacts of the measurement rather than properties of the agent (\S\ref{sec:background}).
-\sestina{} therefore asks a question that only becomes answerable once those failures are
-corrected: whether further measurable progress in this policy class is available at all.
+Computational work on the six-player game appears to be limited. In the literature searches
+conducted during this project's development cycles we found no academic work on it, no public
+repository containing search, planning or a working learner for it, and no coverage in RLCard
+\cite{rlcard} (\S\ref{sec:related-fish}); the scope of those searches is stated there. The nearest
+published agent plays a four-player, 48-card variant that does not raise the six-player allocation
+problem.
 
-\paragraph{A note on the name.} \sestina{} was developed and evaluated as \textbf{FishBot v0.7},
-the seventh cycle of the lineage, and was renamed at release; its predecessors keep the names they
-were published under. Every seed, deal bank, digest, directory and configuration string in the
-evidence base still carries a \texttt{v07} identifier, including the frozen configuration
+This paper presents \textbf{\sestina{}}, a configuration developed from FishBot \vsix{}, and
+evaluates it using the protocol described in \S\ref{sec:evaluation}. Earlier versions established
+the engine, the constraint-based inference machinery and a sequence of progressively stronger
+policies, but their development also exposed evaluation problems: comparisons that could not resolve
+a one-point effect, an optimiser that could not move a policy, and at least two published
+conclusions that turned out to be artefacts of the measurement rather than properties of the agent
+(\S\ref{sec:background}). The question this paper addresses is whether the tested modifications
+improve performance under the revised evaluation protocol.
+
+\paragraph{Version nomenclature.} \sestina{} was developed and evaluated under the identifier
+FishBot v0.7. The released agent retains the frozen configuration; source paths, experiment
+identifiers, seeds, deal banks, digests and configuration strings retain their original
+\texttt{v07} names for reproducibility, including the frozen configuration
 \texttt{v07:r12=25,\ldots} of \S\ref{sec:agent} and the sealed banks of \S\ref{sec:evaluation}.
-Those names are load-bearing: the banks were committed under them, the freeze artifact round-trips
-through them, and the digests in Appendix~\ref{app:repro} are digests of objects named that
-way. Renaming them after the fact would break the provenance chain this paper's claims rest on, so
-they are left exactly as they were sealed. Throughout, \emph{\sestina{}} names the agent and
-\emph{the v0.7 cycle} names the programme that produced and measured it. The name changed at
-release; nothing measured did.
+Throughout, \emph{\sestina{}} names the agent and \emph{the v0.7 cycle} names the programme that
+produced and measured it. Appendix~\ref{app:repro} gives the detailed mapping.
 
 \subsection{Research questions}
 \label{sec:intro-rq}
 
 \begin{description}
-\item[RQ1] Does \sestina{} achieve a replicated improvement over \fcheap{}, the cheapest
-  configuration genuinely on the \vsix{} frontier and the target registered in advance, measured on
-  material sealed before \sestina{} existed?
+\item[RQ1] Does \sestina{} achieve a replicated improvement over \fcheap{}, the registered
+  baseline (\S\ref{sec:development-frontier}), measured on material sealed before \sestina{}
+  existed?
 \item[RQ2] Does that improvement survive changes of partner, cross-play against independently trained
-  policies, alternative rule dialects, and adversarial responses fitted against it?
+  policies, alternative rule variants, and adversarial responses fitted against it?
 \item[RQ3] Which of \sestina{}'s changes account for the improvement, and which candidate
   mechanisms fail to produce measurable strength?
 \item[RQ4] What do the results imply about the headroom remaining in the current policy class?
@@ -53,57 +56,52 @@ release; nothing measured did.
 \S\ref{sec:results} answers RQ1 and RQ2 directly, \S\ref{sec:development} and
 \S\ref{sec:results-attribution} answer RQ3, and \S\ref{sec:discussion} takes up RQ4.
 
-\subsection{Three senses of ``strongest'', kept separate throughout}
+\subsection{Scope of comparative claims}
 \label{sec:intro-strength}
 
-This paper makes a comparative claim of a specific and limited kind, and the distinction matters
-enough to state before any number appears.
+This paper makes comparative claims of three different kinds, and they are kept separate throughout.
 
 \begin{description}
-\item[Lineage strength.] \sestina{} is the strongest configuration this project has produced,
-  measured against its own predecessors and against the frontier of configurations available at the
-  end of the \vsix{} cycle. This is what the paper establishes.
-\item[Robustness.] Whether that strength persists against a fixed opponent panel, under substituted
-  partners, across rule dialects, and against adversaries fitted to exploit it. This the paper
-  evaluates extensively, and reports mixed results.
-\item[Global standing.] Whether \sestina{} is the strongest Canadian Fish agent anyone has built.
-  \textbf{This the paper does not establish and does not claim.} The comparison class contains only
-  agents this project wrote, and every exploitability figure here is a lower bound produced by a
-  search rather than a bound on what a search could find.
+\item[Within-project comparisons.] \sestina{} is compared with its own predecessors and with the
+  \emph{\vsix{} frontier}, by which this paper means the set of \vsix{}-era configurations available
+  at the end of that cycle: the deployed non-searching policy and the searching configurations
+  \fcheap{} and \fmid{}, ordered by search cost (\S\ref{sec:development-frontier}). The paper
+  establishes an improvement over the registered baseline \fcheap{}. It does not establish that
+  \sestina{} is the strongest configuration in the lineage on every metric: its comparison with a
+  development-time composite is unresolved, and on empirical minimax regret over a shared panel it
+  ranks third of four (\S\ref{sec:results-panel}).
+\item[Robustness evaluation.] Whether the improvement persists against a fixed opponent panel, under
+  substituted partners, across rule variants, and against adversarial responses fitted to the
+  agent. The paper evaluates these and reports mixed results.
+\item[External comparisons.] Whether \sestina{} is the strongest Canadian Fish agent anyone has
+  built. The paper does not establish this and does not claim it. The comparison class contains only
+  agents this project wrote, and every adversarial-response figure here is the observed edge of a
+  particular search rather than a bound on what a search could find.
 \end{description}
 
-Accordingly the paper never describes \sestina{} as near-optimal, unexploitable, or the strongest
-known Fish-playing team. \S\ref{sec:discussion-future} states what evidence those claims would
-require, none of which currently exists.
+Accordingly the paper does not describe \sestina{} as near-optimal, unexploitable, or the
+strongest known Fish-playing team. \S\ref{sec:discussion-future} states what evidence those claims
+would require.
 
 \subsection{Contributions}
 \label{sec:intro-contributions}
 
 \begin{enumerate}
-\item \textbf{\sestina{}} (\S\ref{sec:agent}), the strongest configuration in the FishBot lineage,
-  described at the level of its inference, ask and declaration policy, coordination assumptions,
-  termination rule and test-time search.
+\item \textbf{Constraint-based inference} (\S\ref{sec:inference}): a half-suit factorisation and
+  count dynamic program for the normalisation constant, card-location marginals, and
+  declaration-allocation probabilities under the uniform feasible-deal model.
 
-\item \textbf{An exact observer-conditioned deal inference method} for six-player Canadian Fish
-  (\S\ref{sec:inference}), which factorises the constraint system by half-suit and joins the blocks
-  through a dynamic program over per-seat card counts, yielding the normalisation constant, per-card
-  marginals and named-allocation probabilities without sampling.
+\item \textbf{Agent specification} (\S\ref{sec:agent}): a reproducible configuration combining
+  approximate inference with behavioural weighting, linear action scoring, public-history
+  tie-breaking, half-suit contestation, stall detection, and guarded search.
 
-\item \textbf{An evaluation framework} (\S\ref{sec:evaluation}) built from duplicate deal blocks,
-  deal-clustered bootstrap intervals, power computed before a cell is run, replication across
-  disjoint banks as an advance-specified criterion, sealed holdout material with committed digests,
-  a soundness gate applied before any strength measurement, calibrated detection floors, and
-  mechanical side-channel controls with planted positive instances.
+\item \textbf{Evaluation design} (\S\ref{sec:evaluation}): duplicate-deal comparisons, held-out
+  deal banks, preregistered criteria, uncertainty estimation, adversarial-search calibration, and
+  information-access tests.
 
-\item \textbf{A comprehensive evaluation of \sestina{}} (\S\ref{sec:results}) covering frontier
-  comparisons, attribution of the gain to components, partner substitution, cross-play, rule
-  dialects, adversarial search including a white-box transcript-inversion adversary, negative
-  controls, and computational cost.
-
-\item \textbf{Negative and diagnostic results} (\S\ref{sec:development-rejected},
-  \S\ref{sec:discussion-limits}) showing that four plausible architectural mechanisms fail to produce
-  measurable improvement, and identifying a resolution barrier: none of the investigated
-  architectural mechanisms produced a replicated gain above the instrument's effective resolution at
-  the budgets used here, and the adversary-search detection floor does not fall as evaluation games
-  increase, so exploitability is limited by search power rather than sample size.
+\item \textbf{Empirical findings} (\S\ref{sec:results}, \S\ref{sec:development-rejected}): a
+  positive comparison with the registered baseline, an unresolved comparison with the development
+  composite, component ablations, sensitivity analyses with explicitly stated limitations, and four
+  candidate modifications that did not demonstrate an additional improvement under the tested
+  conditions.
 \end{enumerate}

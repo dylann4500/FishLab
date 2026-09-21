@@ -1,10 +1,11 @@
 \section{Six-player Canadian Fish}
 \label{sec:game}
 
-This section states the game completely, so that nothing later depends on outside material, and then
-says why the domain is scientifically interesting. Readers who know the game should still read
+This section specifies the evaluated game variant and then describes the computational and
+informational structure that motivates the study. Readers who know the game should still read
 \S\ref{sec:game-dialect}, because published descriptions differ on several consequential points and
-the rule set studied here is one explicit selection among them.
+the rule set studied here is one explicit selection among them. Appendix~\ref{app:dialect} lists
+the rule choices against the engine switches that change them.
 
 \subsection{Rules}
 \label{sec:game-rules}
@@ -20,76 +21,113 @@ Play proceeds by \textbf{asks}. On their turn a player names one opponent and on
 legal only if the named card lies in a half-suit that has not yet been claimed, the asker holds at
 least one \emph{other} card of that half-suit, the asker does \emph{not} hold the named card, and the
 target is an opponent who still holds at least one card. If the target holds the card they must
-surrender it and the asker keeps the turn; otherwise the turn passes to the target. The requirement
-that an asker already hold a card of the half-suit is what makes the game a game, because it turns
-every ask into a public declaration of partial ownership.
+surrender it and the asker keeps the turn; otherwise the turn passes to the target. The first turn
+belongs to the seat after a randomly chosen dealer. When the turn reaches a seat that holds no
+cards, that seat names a teammate who still holds cards to receive it; the engine substitutes the
+lowest-index such teammate if the named one is ineligible, and if no teammate holds cards the
+opposing team enters the forced endgame described in \S\ref{sec:game-dialect}. A seat whose turn it
+is and that has no legal ask must declare, and does so on the lowest-index unclaimed half-suit in
+which it holds a card. The requirement
+that an asker already hold a card of the half-suit makes each legal ask informative about the
+asker's holdings, because it turns every ask into a public declaration of partial ownership.
 
 A half-suit is claimed by a \textbf{declaration}. A declaring player names, for each of the six cards
 of a half-suit, which member of their \emph{own} team holds it. The claim is all-or-nothing: if every
 assignment is correct the declaring team scores the half-suit, and if any assignment is wrong the
-opposing team scores it. A declaration is legal only while the half-suit is unclaimed, and a seat with no
-legal ask left is compelled to declare, including a half-suit it holds entirely.
+opposing team scores it. A declaration is legal only while the half-suit is unclaimed. In the evaluated variant any seat
+may declare, in or out of turn and whether or not it holds cards, at any point between two public
+events; when several seats propose at the same point, the lowest seat index across both teams
+declares first and the others are polled again once that declaration has resolved. A declaration
+does not change whose turn it is.
 
-Everything is public. Every ask, its answer, every card transfer, every declaration and its outcome,
-and every player's card count are observed by all six players. Nothing is hidden except the initial
-deal.
+Actions, outcomes, transfers, declarations and hand sizes are public; the identities of the cards
+in a player's hand remain private unless a transfer or declaration reveals them. Every ask, its
+answer, every card transfer, every declaration and its outcome, and every player's card count are
+observed by all six players, so the only hidden information is the initial deal, and the public
+record determines every later card position given that deal.
 
-\subsection{The rule dialect studied}
+\subsection{Evaluated rule variant}
 \label{sec:game-dialect}
 
 Published descriptions of this game document mutually incompatible variants \cite{pagat}, so the rule
-set below is a selection rather than a canon. It matches the strategy corpus this line of work draws
-on \cite{develin} and the rules of record supplied by the project owner. Six of the eight contested choices Appendix~\ref{app:dialect} lists are engine
-switches, so their effect is measurable rather than assumed, and \S\ref{sec:results-dialects}
-measures the principal comparison over \vsevenDiaRowsWord{} dialect rows: the default and seven
-variations. The misdeclaration award is hardcoded and was not varied at all; the forced-endgame
-ladder has no flag of its own inside the scored harness and moves only inside the
-\texttt{-{}-legacy} bundle, which is why \S\ref{sec:results-dialects} can price it only as a
-residual. The consequential choices are a
+set below is one specified variant among the published rule sets. It matches the strategy corpus
+this line of work draws on \cite{develin} and the rule set adopted for this implementation. Six of
+the eight contested choices Appendix~\ref{app:dialect} lists are engine switches, so their effect
+can be measured, and \S\ref{sec:results-dialects} measures the principal comparison over
+\vsevenDiaRowsWord{} rule-variant rows: the default and seven variations. The misdeclaration award
+is hardcoded and was not varied; the forced-endgame ladder has no flag of its own inside the scored
+harness and moves only inside the \texttt{-{}-legacy} bundle, which is why
+\S\ref{sec:results-dialects} can estimate it only as a residual. The consequential choices are a
 54-card deck in nine half-suits with nine cards per player; declaration legal at any moment, in or out
 of turn, by a seat holding cards or not; a misdeclaration awarding the half-suit to the opposing team;
 lowest seat index first among simultaneous declarers; an eight-level willingness ladder in the
 \textbf{forced endgame} that arises when one whole team is cardless; and a 400-ask action cap whose
-residue is adjudicated neutrally by physical majority. No prearranged signalling conventions are
-available to any policy, and team communication is limited to the forced-endgame willingness bit and
-to the successor a cardless turn-holder names. Appendix~\ref{app:dialect} lists each choice against
-the switch that changes it.
+residue is adjudicated by physical majority. In the forced endgame the team that still holds cards
+must declare every remaining half-suit: the engine polls that team's seats down a ladder of
+correctness-probability thresholds, $0.995$, $0.98$, $0.95$, $0.90$, $0.80$, $0.65$ and $0.50$,
+followed by a compulsory level at which the first polled seat declares its best guess; at each
+level every unclaimed half-suit and every seat of the team is polled in index order, the first
+willing seat declares, and the sweep restarts from the top level for the next half-suit. At the
+action cap each unclaimed half-suit is awarded to the team physically holding more of its six
+cards, and a 3--3 split is awarded to the team holding the lowest-index card of the half-suit; every
+half-suit is awarded whole, so a nine-half-suit game cannot tie. In the 48-card, eight-half-suit
+variant of \S\ref{sec:results-dialects} each player is dealt eight cards and a 4--4 game is recorded
+by the harness as a win for the team seated at index~0; because every deal is played once in each
+seating, this is symmetric in expectation across the two configurations, but a tie is not scored as
+a half win. No prearranged signalling conventions are available to any policy, and team
+communication is limited to the forced-endgame willingness bit and to the successor a cardless
+turn-holder names. Appendix~\ref{app:dialect} lists each choice against the switch that changes it.
 
-Two rules are places where the engine is deliberately \emph{more} restrictive than the rules of
-record allow, and both close coordination channels a policy could otherwise exploit. Both were
-measured rather than argued about. When the turn reaches a cardless seat whose teammates both hold
-cards, the rules permit open negotiation over who receives it; the engine instead has the cardless
-seat choose unilaterally. That channel is empty: a genuine multi-candidate transfer decision arises
-\numTransferEvents{} times per game, and replacing the unilateral rule with a \emph{ground-truth}
-chooser on one team, paired on common deals, is worth $\numTransferDelta \pm \numTransferCI$
-half-suits per game over \numTransferGames{} paired games. A legal mechanism cannot beat the
-clairvoyant one, so that interval bounds the whole channel. Similarly, the engine arbitrates
-simultaneous declarations by lowest seat index rather than by stated confidence, because a confidence
-comparison would move a statistic of one seat's hand to five others. That refusal costs
-\numArbCost{}~pp of win rate pooled over \numArbGames{} games, and a clairvoyant arbitrator is worth
-only \numArbOracle{}~pp on the same design.
+Two rules are places where the engine is deliberately \emph{more} restrictive than the adopted
+rule set allows, and both close coordination channels a policy could otherwise exploit. We evaluated
+the two restrictions using the interventions described below. When the turn reaches a cardless seat
+whose teammates both hold cards, the rules permit open negotiation over who receives it; the engine
+instead has the cardless seat choose unilaterally. A genuine multi-candidate transfer decision
+arises \numTransferEvents{} times per game. Replacing the unilateral rule on one team with a
+chooser that, given the true deal, hands the turn to the teammate with the most immediately certain
+pulls, paired on common deals, changed the mean half-suit score by
+$\numTransferDelta \pm \numTransferCI$ half-suits per game (mean and 95\% half-width) over
+\numTransferGames{} paired \vfour{} mirror games, in which the two rules diverged in
+\numTransferDiverged\% of games. The tested intervention therefore produced no resolved change in
+mean half-suit score. This is an oracle-assisted diagnostic rather than a bound on every legal
+mechanism: the clairvoyant chooser is a greedy heuristic that does not optimise game value, so the
+interval prices the channel for that class of chooser, and it was measured on an earlier policy
+rather than on \sestina{}. Similarly, the engine arbitrates simultaneous declarations by lowest seat
+index rather than by stated confidence, because a confidence comparison would move a statistic of
+one seat's hand to five others. That restriction costs $+\numArbCost{}$~pp of win rate pooled over
+\numArbGames{} games on five seeds, and an arbitrator that, given the true deal, selects a correct
+declaration from those proposed is worth \numArbOracle{}~pp pooled over three of those seeds. Both
+figures bound the value of choosing among a fixed set of proposals; neither bounds a policy that
+changes what it proposes. A half-suit differential and a win-rate edge are different units and are
+not converted into one another here.
 
-\subsection{Why the domain is scientifically interesting}
+\subsection{Computational and informational structure}
 \label{sec:game-why}
 
-\paragraph{The hidden state is a single object, and its posterior is exact.}
+\paragraph{Hidden-state representation.}
 Because a card changes hands only through an observed ask, the only thing any player does not know is
 the initial deal, and the public record determines every subsequent card position given that deal. In
 many hidden-information games the object that must be filtered is the set of reachable
 \emph{histories}, for which constructing even one consistent history is FNP-complete in the worst
 case, with efficient enumeration available exactly when the public tree is sparse
-\cite{solinas-history}. Fish escapes the question entirely: there is exactly one object to
-reconstruct, and the constraints on it are logical rather than probabilistic. A player told ``I do not
-hold the seven of hearts'' knows it, permanently and with certainty.
+\cite{solinas-history}. The representation used here reduces hidden-state reconstruction to
+constraints on the initial deal: there is exactly one object to reconstruct, and the constraints the
+rules impose on it are logical rather than probabilistic. A player told ``I do not hold the seven of
+hearts'' knows it, permanently and with certainty. Throughout, a \emph{certificate} is such a hard
+constraint on card location derived from a public event.
 
-The research consequence is that Fish permits inference and policy to be \emph{separated}. In poker
-or bridge, a claim that a policy is weak can always be answered with the suggestion that its beliefs
-are wrong. Here the beliefs can be made provably correct, at which point every remaining loss is
-attributable to the policy. That separation is what makes this paper's negative results interpretable
-rather than merely discouraging. It also sets up the most counterintuitive finding in the lineage,
-reported in \S\ref{sec:background-vsix}: making the belief exact makes the policy worse.
+The research consequence is that Fish permits the constraint-based part of inference to be
+\emph{separated} from the policy. Exact enumeration of the deals consistent with the certificates
+(\S\ref{sec:inference}) provides a reference for the constraint-based inference computation. It
+does not remove uncertainty about the behavioural model used to interpret strategic actions: a
+strategically chosen ask can make some feasible deals more likely than others, and that weighting
+is a modelling choice the reference calculation does not make (\S\ref{sec:inference-prior}). The
+separation isolates, for this paper's negative results, the uncertainty that lies in the policy and
+the behavioural model rather than in the certificate arithmetic. It also motivates the belief-model
+comparison reported in \S\ref{sec:background-vsix}, in which the exact constraint-based model is a
+worse predictor of card location than the deployed approximation with behavioural weighting.
 
-\paragraph{The team is the unit, and the team cannot talk.}
+\paragraph{Decentralised team decision-making.}
 Three teammates share a payoff, hold different private information, and have no communication channel
 beyond their public actions. This is the decentralised control problem the common-information
 approach formalises, in which a notional coordinator who knows the common information issues
@@ -98,43 +136,55 @@ approach formalises, in which a notional coordinator who knows the common inform
 coordinator's information state is exactly the belief object the engine already maintains. The
 coordinator's problem is not solvable here, since a prescription maps every possible nine-card hand to
 an ask, so the reduction serves as a correctness lens rather than an algorithm. What it does yield
-cheaply is a property the cooperative-search literature has to work for \cite{lerer2020sparta}: any
-\emph{deterministic} procedure reading only public state and its own hand is automatically common
-knowledge among the three teammates, with no shared seed and no communication. The determinism qualifier is essential rather than incidental, and
-\S\ref{sec:agent-tiebreak} is where it becomes an engine switch.
+cheaply is a property the cooperative-search literature has to work for \cite{lerer2020sparta}: the
+mapping implemented by a \emph{deterministic} procedure reading only public state and its own hand
+is common knowledge among the three teammates, with no shared seed and no communication, although
+the action it produces at another seat is not, since that seat's hand is private. The determinism
+qualifier matters, and \S\ref{sec:agent-tiebreak} is where it becomes an engine switch.
 
-\paragraph{A published deterministic team inverts a standard assumption.}
-The team-correlation literature uniformly assumes that a team's correlation device is private and
-unknown to the opponent \cite{celli-gatti,farina-collusion,zhang-tbdag}. A team of three identical,
-deterministic, published agents inverts this: the device is common knowledge and an adversary may
-read it. \S\ref{sec:threat} takes that seriously as a threat model, and
-\S\ref{sec:results-adversarial} reports what an adversary that reads the target's policy and inverts
-its transcript actually achieves. In the literature and repositories we reviewed we found no prior
+\paragraph{Public policy specification.}
+In the extensive-form team-game models this paper cites, a team coordinates through an ex-ante
+correlation device: a joint strategy is sampled before play, the opponent may know the distribution
+it is sampled from, and the realised sample is private to the team
+\cite{celli-gatti,farina-collusion,zhang-tbdag}. A team of three identical, deterministic, published
+agents differs from that model in two respects: the policy mapping is public, and there is no
+private sampled signal. Knowledge of the policy does not reveal an action determined by a private
+hand, but it lets an opponent compute the distribution of a seat's action from the public record
+(\S\ref{sec:agent-coordination}). \S\ref{sec:threat} adopts that as the threat model, and
+\S\ref{sec:results-adversarial} reports what an adversary that reads the target's policy and
+inverts its transcript achieved. In the literature and repositories we reviewed we found no prior
 work covering this case.
 
-\paragraph{The domain is cheap, which is a methodological asset.}
+\paragraph{Computational cost.}
 A deal resolves in roughly a hundred public events, and on one \vsevenMirrorThreads{}-thread
-desktop the engine plays a six-seat mirror of the blueprint policy at \vsevenMirrorGamesPerSec{}
-complete games per second, with the deployed belief running in every seat; the evaluated
-configuration, which searches, costs at least \vsevenCostFrozenTight$\times$ the non-searching
-blueprint (\S\ref{sec:results-cost}). This is what makes
+desktop the engine plays a six-seat mirror of the \emph{blueprint} policy, the non-searching base
+policy that the test-time search of \S\ref{sec:agent-search} modifies, at
+\vsevenMirrorGamesPerSec{} complete games per second, with the deployed belief running in every
+seat; the evaluated configuration, which searches, shows an observed whole-match slowdown of
+\vsevenCostFrozenTight$\times$ relative to the non-searching blueprint (\S\ref{sec:results-cost}). This is what makes
 the evaluation programme of \S\ref{sec:evaluation} possible: \vsevenBtwoFcheapN{} paired games for a
 single headline comparison, two disjoint holdout banks for every claim, a \vsevenPanelMembers{}-member
 opponent panel scored identically for four configurations, and \vsevenBfourArmsWord{} independent
 adversarial searches all run on one desktop. In a domain where one evaluation cell costs
 GPU-hours, the version of this study that reports its own negative results could not have been
-afforded. The corresponding liability appears in \S\ref{sec:discussion-external}: cheap evaluation is
-not external evaluation.
+afforded. The corresponding liability appears in \S\ref{sec:discussion-external}: low simulation
+cost does not provide independent validation.
 
-\paragraph{What the domain does not offer.}
-Two disclaimers bear on how later results should be read. First, Fish's perfect-information game is
-degenerate rather than merely fused. A clairvoyant player names only cards the target holds, so never
-fails an ask, never loses the turn, and declares each half-suit as soon as their team holds all of it;
-almost every reachable position carries the same perfect-information value. Determinization, the
-standard recipe for hidden-hand card games \cite{levy,ginsberg-gib}, therefore collapses here to
-choosing the ask most likely to hit, blind to the information an ask leaks, the information a refusal
-supplies, and the option value of postponing a declaration. \S\ref{sec:related-determinization}
+\paragraph{Planning limitations.}
+Two limitations bear on how later results should be read. First, the perfect-information version of
+this game offers little to a clairvoyant planner. A player who sees every hand names only cards the
+target holds, so never fails an ask, never loses the turn, and declares each half-suit as soon as
+their team holds all of it; under such play the value of a position is determined by the current
+card distribution, so a clairvoyant rollout distinguishes little between the asks available at a
+decision. We have not characterised this formally, and the claim is about the evaluated variant
+under clairvoyant play rather than a theorem about the game. Determinization, the standard recipe
+for hidden-hand card games \cite{levy,ginsberg-gib}, therefore reduces here largely to choosing the
+ask most likely to hit, blind to the information an ask leaks, the information a refusal supplies,
+and the option value of postponing a declaration. \S\ref{sec:related-determinization}
 places this against the literature. Second, Fish has no passive continuation: a player must ask or
 declare, so there is no equivalent of the check-and-call rollout on which the standard cheap
 exploitability probe is built \cite{lisy2017lbr}. \S\ref{sec:discussion-future} names this as the
-largest single obstacle between this work and a defensible near-optimality claim.
+largest single obstacle between this work and a defensible near-optimality claim. Second, a
+deterministic procedure reading only the public state and its own hand can be evaluated by a
+teammate on any hypothesised hand; \S\ref{sec:agent-coordination} states the conditions under which
+that supports coordination without communication.

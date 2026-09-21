@@ -1,101 +1,103 @@
 \section{Discussion}
 \label{sec:discussion}
 
-\subsection{What \sestina{} improves}
+\subsection{Observed performance gains}
 \label{sec:discussion-improves}
 
-\sestina{} is the strongest configuration this project has produced. Against \fcheap{}, the
-cheapest configuration genuinely on the \vsix{} frontier and the target registered in advance, it
-gains \vsevenBtwoFcheapMag{}~pp of win-rate edge over \vsevenBtwoFcheapN{} games of material sealed
-before it existed, with the sign replicating on both banks and every advance-specified validity check
-satisfied. It gains \vsevenBtwoIncumbent{}~pp on the deployed \vsix{} policy and
+Against \fcheap{}, the registered baseline, \sestina{} gains \vsevenBtwoFcheap{}~pp of win-rate
+edge (95\% CI $[\vsevenBtwoFcheapLo, \vsevenBtwoFcheapHi]$) over \vsevenBtwoFcheapN{} games of
+material sealed before it existed, with positive estimates on both banks; the registered primary
+decision rule was satisfied, and the unresolved secondary criteria are listed in
+\S\ref{sec:results-seven}. It gains \vsevenBtwoIncumbent{}~pp on the deployed \vsix{} policy and
 \vsevenBtwoVfive{}~pp on v0.5.
 
-The advantage is not an artefact of self-play coordination, which is the failure mode the
-cooperative-play literature exists to warn about \cite{bard-hanabi,hu-otherplay}. A single seat's
-upgrade is worth \vsevenOneSeatFive{}~pp of the \vsevenSoneSelf{}~pp three-seat gain, so most of the
-value is individual rather than conventional; cross-play between three independently trained runs
-moves the result by \vsevenXpGapAbs{}~pp; and the advantage survives \vsevenDiaRowsWord{} rule dialects
-with a largest excursion of \vsevenDiaMaxExcursion{}~pp.
+The evidence is consistent with an advantage that is not an artefact of self-play coordination,
+which is the failure mode the cooperative-play literature warns about
+\cite{bard-hanabi,hu-otherplay}. A single seat's upgrade is worth \vsevenOneSeatFive{}~pp against
+the \vsevenSoneSelf{}~pp three-seat gain, a positive gain consistent with benefits beyond
+identical-agent coordination; cross-play between three independently trained runs moves the result
+by \vsevenXpGapAbs{}~pp on the point estimate; and the advantage retains a positive estimate under
+\vsevenDiaRowsWord{} rule variants with a largest excursion of \vsevenDiaMaxExcursion{}~pp.
 
-Answering RQ3, the gain is attributable primarily to one component, a half-suit contestation weight
-whose leave-one-out drop is \vsevenLooRtwelve{}~pp
-$[\vsevenLooRtwelveLo, \vsevenLooRtwelveHi]$, the largest of the five. The stronger statement, that
-this coordinate is where the gain lives, is not supported at this power
-(\S\ref{sec:results-attribution}). That component originated in a coordinate sweep during adversary generation rather than in
+On RQ3, the largest observed leave-one-out drop belongs to one component, a half-suit contestation
+weight, at \vsevenLooRtwelve{}~pp $[\vsevenLooRtwelveLo, \vsevenLooRtwelveHi]$. The stronger
+statement, that this coordinate is where the gain lives, is not supported at this precision
+(\S\ref{sec:results-attribution}), and the registered location criterion did not replicate across
+banks (\S\ref{sec:results-location}). That component originated in a coordinate sweep during adversary generation rather than in
 architecture work; its value was chosen as the argmax of a measured dose response, and the mechanism
 it turned out to express is not the one it was designed for (\S\ref{sec:agent-contest}). Its
 provenance matters for the next subsection.
 
-\subsection{What \sestina{} does not improve}
+\subsection{Null results and attribution limits}
 \label{sec:discussion-notimproves}
 
 Against \composite{}, \sestina{} gains \vsevenBtwoComposite{}~pp
 $[\vsevenBtwoCompositeLo, \vsevenBtwoCompositeHi]$, an interval containing zero
 (\S\ref{sec:results-composite}). The composite is not an external baseline; it was assembled during
 this cycle's own development, from the \vsix{} frontier's search, the contestation weight and one
-switch. So the correct account of this cycle's progress is that \textbf{the strength gain is real and
-was produced during adversary generation, and the architecture work that followed contributed no
-measurable strength on top of it}.
+switch. The account of this cycle's progress that the evidence supports is that the gain over
+\fcheap{} is replicated, that the components assembled during adversary generation account for the
+part of it the evaluation can resolve, and that the evaluation does not resolve an additional
+benefit from the modifications introduced afterwards.
 
-Three further results are consistent with that account and none is comfortable. The frozen
-configuration is \vsevenRegretFrozenRank{}rd of four on minimax regret over the shared panel. Its
-headline worst cell does not replicate in sign. And of the four quantities the registered selection
-check tabulates, the largest shortfall against an advance-stated training value falls on precisely
-the group of components the configuration was selected over.
+Three further results are consistent with that account. The frozen configuration is
+\vsevenRegretFrozenRank{}rd of four on empirical minimax regret over the shared panel. Its headline
+worst cell does not replicate in sign. And of the four quantities the registered selection check
+tabulates, the largest shortfall against an advance-stated training value falls on precisely the
+group of components the configuration was selected over.
 
-Four candidate mechanisms were tested and rejected (\S\ref{sec:development-rejected}), and each
-constrains a previously plausible direction rather than merely failing. The declaration-allocation
-channel, ranked second in the project's design register, is worth zero because the mechanism it
-posited does not exist: the sequential joint's first chain-rule factor is the marginal, so the two
-allocators agree at every recorded decision. A leaf evaluator improved \vsevenKoneFold{}-fold in the
-only statistic its consumer can use changes play by nothing, because the deviation rule that consumes
-it is nearly leaf-invariant, which is the abstraction pathology of \cite{waugh-abstraction} appearing
-in a new domain. Each of the three self-oriented per-decision objectives tested produced a worse policy at matched
+Four candidate mechanisms were tested and did not demonstrate an additional benefit
+(\S\ref{sec:development-rejected}); each result constrains a previously plausible direction under
+the tested conditions. The declaration-allocation channel, ranked second in the project's design
+register, produced no difference in the tested comparison, because the two allocators agreed at
+every recorded decision; the posited mechanism was not observed, which is an empirical finding about
+these implementations rather than an identity. A leaf evaluator improved \vsevenKoneFold{}-fold in
+sample in the only statistic its consumer can use did not produce a resolved change in play,
+because the deviation rule that consumes it is nearly leaf-invariant, a mismatch between surrogate
+metric and playing performance related to the abstraction pathology of \cite{waugh-abstraction}.
+Each of the three self-oriented per-decision objectives tested produced a worse policy at matched
 budget while moving its own proxy in the intended direction; the two channel-oriented fits lost
-because the ask and declaration channels trade against each other. And a learned re-ranker aimed at amortising test-time search loses outright deployed unrestricted
-at \vsevenKfiveUnrestricted{}~pp; restricted to the exchangeable tied set, nothing it learned
-survives a free public-history tie-break. Inside that tied set approximately \vsevenCurseTieShare\% of the
-search's own selection signal is winner's curse on its Monte Carlo draw, against approximately
-\vsevenCurseShare\% for the search as a whole.
+because the ask and declaration channels traded against each other in these fits. And a learned
+re-ranker aimed at amortising test-time search loses outright deployed unrestricted at
+\vsevenKfiveUnrestricted{}~pp; restricted to the exchangeable tied set, it did not demonstrate an
+advantage over a free public-history tie-break. Inside that tied set approximately
+\vsevenCurseTieShare\% of the search's own selection signal is winner's curse on its Monte Carlo
+draw, against approximately \vsevenCurseShare\% for the search as a whole.
 
-\subsection{Limits of the current policy class}
+\subsection{Scope of the policy-class findings}
 \label{sec:discussion-limits}
 
-Answering RQ4, the natural summary is that this policy class is flat, and that summary would overstate
-the evidence. What the evidence supports is narrower.
-
-\textbf{At the calibrated detection scale of this evaluation, the tested policy class appears locally
-flat: none of the investigated architectural mechanisms produced a replicated gain above the
-instrument's effective resolution.} The resolution is \vsevenPrimaryFloor{}~pp for a fitted responder
-and roughly one point for a scoreboard comparison at the budgets used here.
-
-That is not a claim that no further gains exist, and two specific gaps are worth naming. The
-evaluation resolves effects of about a point and does not resolve effects of a quarter of a point, so
-a family of small mechanisms that individually sit below the floor and compound is entirely
-consistent with everything reported here. Neither this cycle nor the last tested that hypothesis, and
-both said so. Separately, the detection floor does not fall as evaluation games increase
-(\S\ref{sec:evaluation-floor}), so the constraint is search power rather than sample size, and
-lowering it is a research problem rather than a compute problem.
+On RQ4, the tested candidate modifications did not demonstrate a replicated additional gain under
+the evaluated settings. This finding does not establish local optimality or uniform performance
+across the policy class. Improvements from untested modifications, different training procedures,
+larger search budgets, or combinations of small effects remain possible: the evaluation resolves
+effects of about a point and does not resolve effects of a quarter of a point, so a family of small
+mechanisms that individually sit below that resolution and compound is consistent with everything
+reported here, and neither this cycle nor the last tested that hypothesis. The precision of direct
+policy comparisons, which is a property of the cell sizes, should be distinguished from the
+sensitivity of the calibrated adversarial searches, which is a property of the responder classes
+and budgets and did not improve with evaluation games in the one comparison made
+(\S\ref{sec:evaluation-floor}).
 
 The one mechanism that did convert was found by sweeping a coordinate, not by designing an
 architecture. That is a weak signal about where remaining value lies, but it is the signal the data
 provide.
 
-\subsection{Exploitability, and what the adversarial results do and do not show}
+\subsection{Limits of adversarial evaluation}
 \label{sec:discussion-exploit}
 
 None of the \vsevenBfourArmsWord{} adversarial searches found a positive edge against \sestina{} at the
 tested budgets, in the tested classes, controlling all three opposing seats in the synchronised
-correlation regime. Every one of those qualifiers is load-carrying, and the result is a \emph{lower
-bound} on exploitability rather than an upper bound.
+correlation regime. The result is conditional on the specified response classes, budgets, and
+correlation regime, and it is a set of observed response edges rather than a bound on best-response
+value in either direction.
 
 A stronger response outside the tested classes, or the same classes at a larger budget, could give a
-larger figure. The white-box transcript inverter, which is the class this domain's threat model was
-written for, effectively searched \vsevenZeightLive{} live coordinates at \vsevenBfourGens{}
-generations of \vsevenBfourPop{}, against a \vsix{} model of the target rather than the target
-itself (\S\ref{sec:results-whitebox}). Its failure is evidence about that search. This is the precise
-reading error the v0.4 record in this corpus committed, having reported a null exploitability result
+larger figure. The white-box transcript inverter, which is the class this domain's adversary model
+was written for, effectively searched \vsevenZeightLive{} live coordinates at \vsevenBfourGens{}
+generations of \vsevenBfourPop{}, against a \vsix{} surrogate of the target rather than the target
+itself (\S\ref{sec:results-whitebox}). Its failure is evidence about that search. This is the
+reading error the v0.4 record in this corpus committed, having reported a null adversarial result
 as a demonstration of robustness, and naming it here is how this paper avoids repeating it.
 
 Converting any of this into a statement about \sestina{} rather than about the searches would
@@ -113,8 +115,8 @@ partner-substitution columns have the same limitation from the other side, since
 here is another bot.
 
 There is no human evaluation of any kind in this corpus. The project's standing practice is never to
-present a self-play configuration as the one a person would encounter, and that practice exists
-precisely because the substitute is not the thing.
+present a self-play configuration as the one a person would encounter, because bot-only evaluation
+does not establish performance with human players.
 
 Every number in this paper was produced by one engine, written by this project, audited by tests this
 project wrote. The strongest available substitute for external replication was used, in the form of
@@ -123,39 +125,46 @@ registered in advance, and it remains a substitute. In particular, there are no 
 six-player Fish agents to compare against, which is why \S\ref{sec:intro-strength} confines the
 paper's comparative claim to this project's own lineage.
 
-\subsection{Engineering and methodological limitations}
+\subsection{Implementation and evaluation limitations}
 \label{sec:discussion-engineering}
 
-\paragraph{A known engine defect is present in every number.} Agents are constructed once per worker
+\paragraph{Cross-deal state persistence.} Agents are constructed once per worker
 thread and reused across deals, and some per-agent state survives the inter-deal reset, reachable only
 under the search. The carrier was identified as the rollout engine, the specific field was not, and
 the repair was deliberately deferred because it changes the play of every searching configuration by
 about one deal in \vsevenSsixIncidence{} and applying it after freezing would defeat the purpose of
 freezing. \S\ref{sec:results-controls} measures it on holdout material:
-\vsevenSsixPlainNonzero{} of \vsevenSsixCells{} audited cells show a nonzero residual in the deployed
-mode, every one of them a searching configuration, and the zero-tolerance gate condition is clean.
+\vsevenSsixPlainNonzero{} of \vsevenSsixCells{} audited cells show a nonzero residual with reused
+agents on one thread, every one of them a searching configuration, and the zero-tolerance gate
+condition is clean. The residual's effect on a scored win rate is bounded only by incidental
+observations (\S\ref{sec:results-controls}), not by a control cell. The frozen results are
+preserved as measured; a separately identified corrected implementation with sensitivity reruns of
+the key comparisons is additional research, listed in \S\ref{sec:discussion-future}.
 
-\paragraph{The soundness gate certifies a mode no scored cell uses.} Its zero-tolerance form requires
-one thread and agents rebuilt per deal, and rebuilding agents per deal changes play. The residual is
-not removed from the deployed mode.
+\paragraph{Validation-mode mismatch.} The isolation tests' zero-tolerance form requires one thread
+and agents rebuilt per deal, and rebuilding agents per deal changes play. The scored cells ran with
+\vsevenScoredThreads{} worker threads and reused agents, a mode in which the strict isolation test
+was not run on holdout material, and the residual is not removed from it.
 
-\paragraph{Cross-play cannot detect an inherited convention.} The three independently trained runs of
+\paragraph{Shared training ancestry.} The three independently trained runs of
 \S\ref{sec:results-crossplay} all begin from or near the \vsix{} vector. A convention all three
 inherited from that common ancestor would appear on the diagonal and off it alike and would be
 invisible to the test. What the test rules out is a convention formed during each run's own fit.
 
-\paragraph{Four sealed banks were digest-verified and never played.} The fitting driver derives its
+\paragraph{Unused reserved deal banks.} The fitting driver derives its
 own per-generation deal stream from its seed rather than constructing the named bank's deals, so three
 banks reserved for fitting are verified and then unused as deals; a fourth is unused because the
 sealed panel members were scored on the two primary banks so that minimax regret is computed over one
 shared pair. The material accounting should be read as three evaluation banks played plus a derived
 fitting stream.
 
-\paragraph{One dialect row measures nothing.} The ask-cap row is bit-identical to the default, so the
-legacy residual it feeds is arithmetically legacy minus two effective components rather than three,
-with an interval \vsevenLegacyResidualRatio{} times the size of the residual itself.
+\paragraph{Inactive action-cap intervention.} The ask-cap row is bit-identical to the default, so the
+cap change produced no observed behavioural effect in this sample, and the legacy residual it feeds
+is arithmetically legacy minus two effective components rather than three, with a propagated
+interval \vsevenLegacyResidualRatio{} times the size of the residual itself and not a valid 95\%
+interval (\S\ref{sec:results-dialects}).
 
-\paragraph{Termination is empirical rather than proved.} No configuration here reaches the action cap
+\paragraph{Termination limitations.} No configuration here reaches the action cap
 in any scored cell but one, in \vsevenLimitCellGames{} games, and the stall detector's separation
 between ordinary play and deadlock is a measurement over \vsevenStallMirrorGames{} mirror games. What
 is not proved is that the stall rule together with the stopping rule terminates on every reachable
@@ -168,38 +177,42 @@ Two claims a future release might wish to make, that a Fish agent is near-optima
 strongest known, are unsupported by anything here. Both are reachable in principle, and the evidence
 each requires is specific enough to enumerate.
 
-\paragraph{An upper bound on exploitability.} Every exploitability figure in this corpus is a lower
-bound produced by a search. A near-optimality claim requires a bound in the other direction, showing
-that no adversary in a stated class can exceed some $\varepsilon$. None exists here for any class, and
-producing one even for a restricted class would convert every exploitability sentence in this corpus
-from a statement about searches into a statement about the agent.
+\paragraph{Exploitability upper bounds.} Every adversarial figure in this corpus is the observed
+edge of a particular response found by a search. A near-optimality claim requires a bound in the
+other direction, showing that no adversary in a stated class can exceed some $\varepsilon$. None
+exists here for any class, and producing one even for a restricted class would convert every
+adversarial sentence in this corpus from a statement about searches into a statement about the
+agent.
 
-\paragraph{A team analogue of local best response, and the rollout policy it needs.} The standard
+\paragraph{Team local-best-response methods.} The standard
 cheap exploitability probe rests on a passive continuation \cite{lisy2017lbr}. Fish has none, since a
 player must ask or declare (\S\ref{sec:game-why}). Until a defensible rollout policy for that role is
 named and calibrated the probe cannot be ported, and the literature's own caution that choosing a
 value function is the difficult part applies directly \cite{brown2018depthlimited}.
 
-\paragraph{A genuinely correlated adversary.} The threat model names three correlation regimes and
+\paragraph{Ex-ante correlated adversaries.} The adversary model names three correlation regimes and
 makes the ex-ante correlated one the principal case. What has been built and measured is the
-synchronised regime, plus one correlated fit reaching \vsevenCorrelatedFit{}~pp against a class floor
-of \vsevenCorrelatedFloor{}, which is nothing. Whether such a responder is buildable for a game of
-this size is open, and the honest position is that the principal regime has fallen back to a weaker
-one.
+synchronised regime, plus one correlated fit reaching \vsevenCorrelatedFit{}~pp, below that class's
+\vsevenCorrelatedFloor{}-point calibration threshold. Whether such a responder is buildable for a
+game of this size is open; the principal regime has in practice fallen back to a weaker one.
 
-\paragraph{Whether small effects compound.} This is the one hypothesis both this cycle and the
-previous one explicitly declined to test. Resolving a point on the scoreboard requires roughly
-\vsevenScoreboardGames{} games per cell, and a quarter of a point sixteen times that, while the
-per-decision estimator of \S\ref{sec:development-perdecision} resolves the same one-point effect in
-\vsevenPerDecisionGamesLo{} to \vsevenPerDecisionGamesHi{}. That estimator is confirmed and unused,
-because fitting against it fails. Using it as an estimator while continuing to fit against the
-scoreboard is the obvious untried experiment.
+\paragraph{Composition of small improvements.} This is the one hypothesis both this cycle and the
+previous one explicitly declined to test. A one-point planning half-width on the scoreboard
+requires roughly \vsevenScoreboardGames{} games per cell, and a quarter of a point sixteen times
+that, while the per-decision estimator of \S\ref{sec:development-perdecision} reaches a comparable
+planning half-width for a one-point-equivalent effect in \vsevenPerDecisionGamesLo{} to
+\vsevenPerDecisionGamesHi{} games under the design register's conversion factors. That estimator is
+supported as an estimator and unused, because fitting against it failed. Using it as an estimator
+while continuing to fit against the scoreboard is the obvious untried experiment. A joint bootstrap
+of between-cell contrasts, which would require re-running cells with per-deal capture
+(\S\ref{sec:evaluation-intervals}), belongs with it.
 
-\paragraph{External opponents and human play.} A comparative claim beyond this lineage requires at
+\paragraph{External-agent and human evaluation.} A comparative claim beyond this lineage requires at
 least one independently authored opponent and, for any claim about play against people, a
 duplicate-style human battery with enough deals to resolve a point. Neither exists, and the six-seat
 duplicate design for the latter has not been settled.
 
-\paragraph{Repairing the cross-deal residual.} The defect of \S\ref{sec:discussion-engineering} should
-be repaired and everything it moves re-measured, before rather than after any subsequent
-configuration is frozen.
+\paragraph{Cross-deal state reset.} The defect of \S\ref{sec:discussion-engineering} should be
+repaired in a separately identified implementation and the key comparisons re-measured as
+sensitivity reruns, before rather than after any subsequent configuration is frozen; the frozen
+results reported here are preserved as measured.

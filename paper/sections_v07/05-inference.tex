@@ -1,15 +1,16 @@
-\section{Exact observer-conditioned deal inference}
+\section{Exact constraint-conditioned deal inference}
 \label{sec:inference}
 
 Every agent in this lineage rests on an inference object that this section defines formally. The
-method is an exact enumeration carried out through a factorised dynamic program. It is not an
-analytic closed-form expression, and the paper avoids that phrase.
+method uses exact enumeration through a factorised dynamic program. The object it computes is the
+uniform distribution over deals satisfying the acting player's hand information and the hard
+constraints induced by the public history; \S\ref{sec:inference-prior} distinguishes that object
+from a policy-aware posterior and describes the approximation the agent deploys.
 
 \subsection{Notation}
 \label{sec:inference-notation}
 
-Table~\ref{tab:notation} fixes the symbols used here and in \S\ref{sec:agent}. A reader may prefer to
-skim it and return.
+Table~\ref{tab:notation} fixes the symbols used here and in \S\ref{sec:agent}.
 
 \begin{table}[!t]
 \centering
@@ -25,6 +26,7 @@ $N=6$, $M=9$, $|H|=6$ & seats, half-suits, cards per half-suit; the deck is $M|H
 $s$ & the acting seat; $\mathcal{T}_s$ its two teammates, $\mathcal{O}_s$ its three opponents \\
 $D$ & the hidden state: the initial deal, an assignment of all 54 cards to seats, nine each \\
 $\mathcal{I}_s^t$ & seat $s$'s information set after $t$ public events \\
+$\mathcal{C}_s^t$ & the hard constraints (C1)--(C5) seat $s$ has accumulated after $t$ events \\
 $\mathcal{P}_t$ & the running hash of the public event stream \\
 $\mathrm{own}_t(c)$, $H(c)$ & the seat holding card $c$; the half-suit containing $c$ \\
 $\mathcal{H}_t$ & the half-suits not yet claimed \\
@@ -35,9 +37,11 @@ $U_t$, $n_p$ & the unresolved cards; the unresolved cards seat $p$ holds \\
 $B_h$, $\mathcal{F}_h$ & the block of half-suit $h$; its assignments satisfying every certificate \\
 $\sigma(\alpha)$, $T_h(\mathbf{v})$ & an assignment's per-seat count signature; the block count table \\
 $F_k$, $G_k$ & the forward and backward partial convolutions of the count join \\
-$Z$, $\mu(c,p)$ & the number of consistent deals; the exact posterior marginal \\
-$\hat\mu(c,p)$ & the deployed approximation to $\mu(c,p)$ \\
-$\theta$, $\varphi$ & the two policy-prior parameters of \eqref{eq:prior} \\
+$q_s^t(D)$, $Z$ & the constraint-conditioned distribution of \eqref{eq:posterior}; the number of
+  consistent deals \\
+$\mu(c,p)$ & the exact marginal of $q_s^t$: the probability that seat $p$ holds card $c$ \\
+$\hat\mu(c,p)$ & the deployed approximation to $\mu(c,p)$, with behavioural weighting \\
+$\theta$, $\varphi$ & the two behavioural-weighting parameters of \eqref{eq:prior} \\
 \midrule
 \multicolumn{2}{@{}l}{\itshape Acting} \\
 $\mathcal{A}_t$, $a=(c,q)$ & the legal ask set; an ask naming card $c$ and opponent $q$ \\
@@ -46,8 +50,10 @@ $\phi(a)$, $w$, $u(a)$ & the ask feature vector, its fitted weights, and the res
 $\lambda$, $\beta$ & the linear and value scale parameters of \eqref{eq:askscore} \\
 $M_H$, $q_H$ & opponent-held mass and residual ambiguity in half-suit $H$, in \eqref{eq:contest} \\
 $\mathcal{E}_t$, $\varepsilon$ & the bit-for-bit tied candidate set and its tolerance \\
-$\pi_{\mathrm{alloc}}$, $\pi_{\mathrm{team}}$ & probability a named allocation is exactly correct;
-  that the team owns a half-suit outright \\
+$\pi_{\mathrm{alloc}}$, $\pi_{\mathrm{team}}$ & under $q_s^t$: the probability a named allocation
+  is exactly correct; that the team owns a half-suit outright \\
+$\hat\pi_{\mathrm{alloc}}$, $\hat\pi_{\mathrm{team}}$ & the deployed approximations to those two
+  quantities (\S\ref{sec:agent-declare}) \\
 $\delta$, $\tau$ & the declaration value margin and the forced-endgame threshold \\
 $\chi_t$, $\nu_t$, $K$ & the deduction-state digest, the no-progress counter, its threshold \\
 $\Phi_t$ & the potential function of the termination argument in \S\ref{sec:agent-stall} \\
@@ -57,14 +63,17 @@ $\kappa$, $\eta$ & the search's deviation threshold and its blueprint blend, $\e
 \end{tabularx}
 \end{table}
 
-\subsection{The engine, and the barrier between rules and policy}
+\subsection{Engine architecture and information access}
 \label{sec:inference-engine}
 
 The engine is a single-header C++20 core. A hand is one 64-bit word over the 54 card indices
 $c = 6h + i$ for half-suit $h$ and offset $i$, so hand arithmetic is bit arithmetic. Random streams
-are counter-based and keyed by the triple (seed, seat, purpose), which gives the property everything
-else depends on: a deal and its entire play reproduce from the seed alone. The duplicate-block design
-of \S\ref{sec:evaluation-duplicate} rests on that property and on nothing else.
+are counter-based and keyed by the triple (seed, seat, purpose). This gives the property the
+duplicate-block design of \S\ref{sec:evaluation-duplicate} requires: a deal is reproducible from
+its seed, and the play of a deal between deterministic agents reproduces from the seed and the
+agents' configurations. Complete reproducibility of a scored run is a stronger property, and
+\S\ref{sec:agent-coordination} and Appendix~\ref{app:corrections-self} record where searching
+agents fall short of it.
 
 An acting policy never receives the game state. It receives its own knowledge object, its own hand
 and the public event stream. There is no reference from a policy to the deal, to another seat's hand
@@ -73,7 +82,7 @@ the side-channel audit of \S\ref{sec:evaluation-side} to be read as a test of th
 that cannot reach the deal cannot read it, so any decision the audit fails to reproduce from public
 information indicates state carried across deals rather than information taken from the referee.
 
-\subsection{What a seat knows, as constraints on the deal}
+\subsection{Observer-specific deal constraints}
 \label{sec:inference-constraints}
 
 Because a card changes hands only through an observed ask, the public record determines
@@ -83,7 +92,10 @@ $|\mathcal{D}| = 45!/(9!)^5 \approx 1.9 \times 10^{28}$.
 
 Each public event imposes a \emph{hard} constraint, meaning a logical restriction on $\mathcal{D}$
 rather than a probabilistic tilt. The engine maintains them as a per-card candidate set
-$\mathcal{M}_t(c)$, initialised to all six seats and only ever shrunk:
+$\mathcal{M}_t(c)$, initialised to all six seats. For every card that remains unresolved the set
+only shrinks, $\mathcal{M}_{t+1}(c) \subseteq \mathcal{M}_t(c)$; a card whose holder becomes public
+through a transfer leaves the unresolved set $U_t$ with its holder recorded, so the monotonicity
+statement is about unresolved cards:
 
 \begin{description}
 \item[(C1) Own hand.] For each $c$ in seat $s$'s hand, $\mathcal{M}(c) \leftarrow \{s\}$; for every
@@ -100,24 +112,32 @@ $\mathcal{M}_t(c)$, initialised to all six seats and only ever shrunk:
   constraint that is not a simple exclusion.
 \end{description}
 
-Conditioned on $\mathcal{I}_s^t$, all consistent deals are equally likely, so the posterior is
-uniform on the feasible set:
+Write $\mathcal{C}_s^t$ for the constraints seat $s$ has accumulated. The object this section
+computes is the uniform distribution over the deals that satisfy them:
 \begin{equation}
-  \Pr[D \mid \mathcal{I}_s^t] \;=\; \frac{\ind\!\left[D \models \mathcal{I}_s^t\right]}{Z},
+  q_s^t(D) \;=\; \frac{\ind\!\left[D \models \mathcal{C}_s^t\right]}{Z},
   \qquad
-  Z \;=\; \bigl|\{D \in \mathcal{D} : D \models \mathcal{I}_s^t\}\bigr|.
+  Z \;=\; \bigl|\{D' \in \mathcal{D} : D' \models \mathcal{C}_s^t\}\bigr|.
   \label{eq:posterior}
 \end{equation}
-The modelling content is entirely in which constraints are imposed. Nothing here refers to how anyone
-plays, which is the property \S\ref{sec:inference-prior} then gives up deliberately.
+This distribution is exact for the stated constraint model. It is not, in general, the posterior
+$\Pr[D \mid \mathcal{I}_s^t]$: a uniform prior over initial deals does not imply a uniform posterior
+after strategically chosen actions, because different feasible deals can make the observed action
+sequence differently likely under the players' policies. A policy-aware posterior would weight each
+feasible deal by the likelihood of the observed actions under a specified behavioural model, which
+is the computation the transcript-inversion adversary of \S\ref{sec:results-whitebox} approximates
+and \eqref{eq:coord} states. The modelling content of \eqref{eq:posterior} is entirely in which
+constraints are imposed; nothing in it refers to how anyone plays. \S\ref{sec:inference-prior}
+describes the behavioural weighting the deployed approximation adds.
 
-\subsection{Factorisation by half-suit, joined by a count dynamic program}
+\subsection{Half-suit factorisation and count dynamic programming}
 \label{sec:inference-factor}
 
 Computing $Z$ by enumerating $\mathcal{D}$ is infeasible, and a constraint system of this shape
-generally induces a permanent-like count, the object the literature approximates by
-inclusion--exclusion \cite{ryser}, sign-vector formulae \cite{glynn}, Markov chains \cite{jsv},
-matrix scaling \cite{lsw} or sequential importance sampling \cite{chen-sis}.
+generally induces a permanent-like count. For such counts the literature supplies exact formulae
+that are exponential in the general case, inclusion--exclusion \cite{ryser} and the sign-vector
+formula \cite{glynn}, and approximation algorithms, Markov chains \cite{jsv}, matrix scaling
+\cite{lsw} and sequential importance sampling \cite{chen-sis}.
 
 Fish avoids that, because every constraint except (C2) is confined to a single half-suit. Constraints
 (C3), (C4) and (C5) all speak about one card or one half-suit; only the per-seat capacities $n_p$
@@ -132,7 +152,7 @@ assignment as the vector
   \sigma(\alpha) \;=\; \bigl(|\alpha^{-1}(0)|,\;\dots,\;|\alpha^{-1}(5)|\bigr) \in \mathbb{Z}_{\ge 0}^{6}.
 \]
 
-\paragraph{Stage 1: block enumeration.} For each half-suit independently, enumerate $\mathcal{F}_h$
+\paragraph{Block enumeration.} For each half-suit independently, enumerate $\mathcal{F}_h$
 and accumulate a table indexed by count signature,
 \begin{equation}
   T_h(\mathbf{v}) \;=\; \bigl|\{\alpha \in \mathcal{F}_h : \sigma(\alpha) = \mathbf{v}\}\bigr|,
@@ -144,22 +164,29 @@ and accumulate a table indexed by count signature,
 A half-suit holds six cards and resolved ones are removed, so $|B_h| \le 6$ and the enumeration is
 small.
 
-\paragraph{Stage 2: the count join.} Constraint (C2) says the signatures must sum to the vector of
-per-seat capacities $\mathbf{n} = (n_0,\dots,n_5)$. Order the blocks arbitrarily and define the partial convolution. A half-suit carrying no live (C5)
-disjunction factorises further into one independent unit per card, so the implementation runs one
-layer per unit rather than one per half-suit; the recursion below is the same object either way.
+\paragraph{Count convolution.} Constraint (C2) says the signatures must sum to the vector of
+per-seat capacities $\mathbf{n} = (n_0,\dots,n_5)$. Order the blocks arbitrarily as $h_1, \dots,
+h_M$ and define the partial convolution. A half-suit carrying no live (C5) disjunction factorises
+further into one independent unit per card, so the implementation runs one layer per unit rather
+than one per half-suit; the recursion below is the same object either way.
 \begin{equation}
-  F_0(\mathbf{0}) = 1, \qquad
+  F_0(\mathbf{v}) = \ind[\mathbf{v} = \mathbf{0}], \qquad
   F_k(\mathbf{v}) \;=\; \sum_{\mathbf{u}} F_{k-1}(\mathbf{v}-\mathbf{u})\, T_{h_k}(\mathbf{u}),
   \label{eq:dp}
 \end{equation}
-so that
+with every table taken as zero outside the box $\mathbf{0} \le \mathbf{v} \le \mathbf{n}$
+(componentwise), so that
 \begin{equation}
   Z \;=\; F_M(\mathbf{n}).
   \label{eq:Z}
 \end{equation}
-Running the same recursion backwards gives suffix tables $G_k$, and the marginals follow by
-substituting one block's card-resolved table for its plain one:
+By induction on $k$, $F_k(\mathbf{v})$ counts the joint assignments of the first $k$ blocks that
+satisfy their own certificates and have total signature $\mathbf{v}$; since the blocks partition
+$U_t$ and (C2) is the only constraint that couples them, $F_M(\mathbf{n})$ counts exactly the
+assignments satisfying (C1)--(C5), which is $Z$. Running the same recursion backwards, with
+$G_{M+1}(\mathbf{v}) = \ind[\mathbf{v} = \mathbf{0}]$ and $G_k(\mathbf{v}) = \sum_{\mathbf{u}}
+T_{h_k}(\mathbf{u})\, G_{k+1}(\mathbf{v}-\mathbf{u})$, gives suffix tables $G_k$, and the marginals
+follow by substituting one block's card-resolved table for its plain one:
 \begin{equation}
   \mu(c,p) \;=\; \frac{1}{Z}\sum_{\mathbf{u},\,\mathbf{v}}
   F_{k-1}(\mathbf{v})\; T_{h_k}^{c \to p}(\mathbf{u})\; G_{k+1}(\mathbf{n}-\mathbf{v}-\mathbf{u}),
@@ -169,10 +196,17 @@ substituting one block's card-resolved table for its plain one:
 
 Three quantities the policy needs are \emph{defined} by this machinery, and
 \S\ref{sec:inference-prior} records that the deployed configuration substitutes a cheaper
-approximation for each of them. The per-card marginals are \eqref{eq:marg}. The probability that team
-$\mathcal{T}$ owns half-suit $h$ outright, $\pi_{\mathrm{team}}(h)$, is \eqref{eq:marg} restricted to
-block assignments whose image lies in $\mathcal{T}_s \cup \{s\}$. And the probability of a fully named allocation,
-which is exactly what a declaration asserts, is
+approximation for each of them. The per-card marginals are \eqref{eq:marg}. The probability under
+$q_s^t$ that the acting team owns half-suit $h$ outright is the total weight of the block
+assignments whose image lies in the team,
+\begin{equation}
+  \pi_{\mathrm{team}}(h) \;=\; \frac{1}{Z}
+  \sum_{\substack{\alpha \in \mathcal{F}_h\\ \alpha(B_h) \subseteq \mathcal{T}_s \cup \{s\}}}
+  \;\sum_{\mathbf{v}} F_{k-1}(\mathbf{v})\; G_{k+1}\bigl(\mathbf{n}-\mathbf{v}-\sigma(\alpha)\bigr),
+  \qquad h = h_k.
+  \label{eq:team}
+\end{equation}
+And the probability of a fully named allocation, which is exactly what a declaration asserts, is
 \begin{equation}
   \pi_{\mathrm{alloc}}(h, \alpha^\star) \;=\;
   \frac{\ind\!\left[\alpha^\star \in \mathcal{F}_h\right]}{Z}
@@ -187,17 +221,29 @@ certificates, so feasibility is checked explicitly. No sampling is involved in a
 
 \paragraph{Cost.} The signature space is bounded by the capacities, each block table has at most
 $6^{|B_h|}$ entries before pruning, and the join is $M$ convolutions over that space. An exact
-rebuild costs \vsixCountCost{}~ms, which is why this project has been able to treat inference as
-solved and spend its cycles on policy.
+rebuild was timed at a mean of \vsixCountCost{}~ms in the \vsix{} cycle's measurement, taken over
+the exact-program builds at contested ask decisions in 150 mirror self-play games on the desktop
+described in Appendix~\ref{app:repro}; the cost is strongly state-dependent and the figure is a
+mixed-regime mean. The counts are exact as a formulation; the implementation evaluates the block
+tables in single precision and the convolutions, $Z$ and the marginals in double precision with no
+rescaling, so the values are floating-point evaluations of exact integer quantities, and $Z$ at deal
+time exceeds the range in which a double represents integers exactly. The verified calculation is the constraint-conditioned count and
+its marginals; it is not a policy-aware posterior, and the project's decision to spend its cycles on
+policy rests on the former being cheap rather than on inference being solved in the latter sense.
 
-\subsection{The deployed approximation, and the policy prior it adds}
+\subsection{Approximate inference and behavioural weighting}
 \label{sec:inference-prior}
 
-Equation~\eqref{eq:posterior} is exact \emph{under a uniform prior over constraint-consistent deals}.
-It contains no model of behaviour, because the construction above consumes the deduction state alone
-and has no parameter through which an opponent's tendencies could enter.
+Equation~\eqref{eq:posterior} is exact \emph{for the constraint model}: it is the uniform
+distribution over constraint-consistent deals. It contains no model of behaviour, because the
+construction above consumes the deduction state alone and has no parameter through which an
+opponent's tendencies could enter.
 
-The path the agent deploys adds two such parameters and gives up exactness for them. It replaces
+The path the agent deploys adds two such parameters and gives up exactness for them. The
+history-dependent weighting it introduces is called the \emph{policy prior} in the code and in
+earlier reports; this paper calls it a behavioural weighting model, since it is a reweighting of the
+constraint-consistent deals by the observed ask history rather than a prior in the Bayesian sense.
+It replaces
 the count join by iterative proportional fitting, better known here as Sinkhorn scaling, on the
 $|U_t| \times 6$ matrix of admissible card--seat pairs. Initialise
 \begin{equation}
@@ -231,13 +277,17 @@ requires already holding one. It is a soft version of the (C5) certificate, in t
 inference line \cite{solinas-supervised,rebstock-inference,buro-kermit} but far simpler, with two
 parameters and no learned opponent model.
 
-\S\ref{sec:background-vsix} reports the consequence, which is the most counterintuitive result in the
-lineage: scored as predictors on identical states, $\hat\mu$ beats $\mu$. Exactness in this game is
-purchased by discarding \eqref{eq:prior}, and \eqref{eq:prior} is worth more than exactness. That is
-why the paper treats ``exact Bayesian inference'' as an assumption to test rather than a property to
-assume, and \S\ref{sec:development-alloc} is the second occasion on which the rule paid.
+\S\ref{sec:background-vsix} reports the model comparison: scored as predictors of card location on
+identical states, $\hat\mu$ has lower log loss and a higher argmax hit rate than $\mu$. In this
+implementation, exactness for the constraint model and behavioural weighting are in different
+objects: the block program carries no behavioural parameter, and the deployed paths add the
+weighting either as the initialiser of the Sinkhorn fit or, in the search, as an importance weight
+on exact samples (\S\ref{sec:agent-search}). In the comparison, the weighting contributed more
+predictive accuracy than exactness did. That is why the
+paper treats exact constraint-based inference as an assumption to test rather than a property to
+assume; \S\ref{sec:development-alloc} reports a second comparison of the same kind.
 
-\subsection{Verification}
+\subsection{Implementation verification}
 \label{sec:inference-verify}
 
 Three checks run over the engine, and all three ran as preconditions of the evaluation in
@@ -250,12 +300,18 @@ Three checks run over the engine, and all three ran as preconditions of the eval
   \vsevenVerifyViolations{} violations in \vsevenVerifyChecks{} checks, and the preceding cycle
   \vsixAuditViolations{} in \vsixAuditChecks{}.
 \item[Cross-engine agreement.] The block dynamic program, an independent card-counting path and an
-  exact sampler must agree on \eqref{eq:marg}. The self-test reports \vsevenSelftestChecks{} checks
-  passing, with block-versus-card agreement at the limit of double precision.
+  exact rejection sampler must agree on \eqref{eq:marg}. The self-test reports
+  \vsevenSelftestChecks{} checks passing, a check being one (card, observer, event) row. Its
+  tolerances are $10^{-9}$ for block-versus-card-program agreement, which is checked on states with
+  no live (C5) disjunction and holds there at the limit of double precision, and $0.05$ for
+  block-versus-rejection-sampling agreement on states with live disjunctions, which is Monte Carlo
+  precision at the sample sizes the test draws. A separate brute-force oracle checks $Z$, the
+  marginals, and the team and allocation probabilities against exhaustive enumeration on small
+  states to $10^{-9}$.
 \item[Identity control.] The current policy, carrying its predecessor's parameter vector with every
   new mechanism disabled, must produce a transcript identical to its predecessor's under md5. It does
-  (\vsixIdentity{}). Without this an ablation is not an ablation, because a measured difference could
-  be an artefact of refactoring.
+  (\vsixIdentity{}). This control checks whether refactoring changes behaviour before the new
+  components are enabled, so that a measured ablation difference is not an artefact of refactoring.
 \end{description}
 
 Two defects these checks found are recorded here because both changed previously published numbers,

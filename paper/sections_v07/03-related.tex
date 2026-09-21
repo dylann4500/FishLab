@@ -1,36 +1,40 @@
 \section{Related work}
 \label{sec:related}
 
-This section covers the work this study builds on and the classes of work it deliberately declines.
-Absence is a design decision here, not an omission, and it is recorded as one.
+We review computational work on Canadian Fish and related methods for hidden-state inference,
+imperfect-information search, team coordination, and agent evaluation. For each group, we
+distinguish methods used in this study from alternatives requiring assumptions or computational
+resources not adopted here.
 
-\subsection{Fish and Literature}
+\subsection{Prior work on Canadian Fish}
 \label{sec:related-fish}
 
 The published material on this game is human and informal, and neither of its two substantial
 sources is quantitative or describes a program. McLeod's Pagat entry \cite{pagat} is the canonical
-rules source and records several points on which dialects differ; ours is specified in
+rules source and records several points on which published variants differ; ours is specified in
 \S\ref{sec:game-dialect}. Develin's chapter \cite{develin} is the most detailed strategy writing we
-located, describes the same dialect, and supplies two observations this design uses: an ask teaches
+located, describes the same variant, and supplies two observations this design uses: an ask teaches
 the opponents as much as it teaches a teammate, and a player is better off not declaring a half-suit
 it holds entirely, since holding one carries no risk. The second is a tactic and not a rule: the
 engine imposes no such condition, and \S\ref{sec:game-rules} states what it does impose. Secondary strategy pages \cite{dorsa,strategy-site,wikiliterature} restate blackballing,
 asking the asker, and an endgame delegation heuristic; they are evidence about how the game is
 played and talked about, not sources of quantitative claims.
 
-\paragraph{Computational prior art remains close to absent.} Searches across this project's cycles
-found no academic work on this game, no public repository containing search, planning or a working
-learner for it, and no coverage in RLCard \cite{rlcard}. The one agent located, Somani's
-\texttt{literature} \cite{somani,somani-server}, plays the four-player, 48-card variant, which does
-not raise the six-player allocation problem, and publishes no strength numbers; a closed-source
-mobile application advertises bots with no stated methodology \cite{playstore}. Every novelty
-statement in this paper therefore takes the form ``we found no prior published work that \ldots{}''
-and should be read against that scope. One recent item is worth naming because a shared testbed is the kind of external calibration this
-line of work lacks: Valet packages twenty-one traditional imperfect-information card games in a
-common description language with measured branching factors and durations
-\cite{goadrich2026valet}. No comparison against it is attempted here.
+\paragraph{Computational prior work.} Literature searches conducted during this project's
+development cycles, covering academic indexes, public code repositories and the RLCard toolkit
+\cite{rlcard}, found no academic work on the six-player game and no public repository containing
+search, planning or a working learner for it. The one agent located, Somani's \texttt{literature}
+\cite{somani,somani-server}, plays the four-player, 48-card variant, which does not raise the
+six-player allocation problem, and publishes no strength numbers; a closed-source mobile
+application advertises bots with no stated methodology \cite{playstore}. Every novelty statement in
+this paper therefore takes the form ``we found no prior published work that \ldots{}'' and is a
+statement about those searches rather than a demonstrated absence. The Valet testbed
+\cite{goadrich2026valet} packages twenty-one traditional imperfect-information card games in a
+common description language with measured branching factors and durations; a shared testbed of
+that kind would supply the external calibration this line of work lacks, but no comparison against
+it is attempted here.
 
-\subsection{Determinization, and why double-dummy analysis fails here}
+\subsection{Determinization and perfect-information analysis}
 \label{sec:related-determinization}
 
 Determinization, or perfect-information Monte Carlo (sample hidden cards consistently with the
@@ -50,9 +54,11 @@ knowledge-based paranoia search reasons about the worst case over deduced-consis
 than the average, reporting over 1{,}000 points on the extended Seeger scale in Skat
 \cite{edelkamp2021paranoia}.
 
-Fish breaks the method for a reason none of that literature addresses, and
-\S\ref{sec:game-why} states it: the perfect-information game is degenerate rather than merely
-fused, so $\alpha\mu$'s repair of unsoundness does not rescue the construction.
+The evaluated variant presents an additional limitation for clairvoyant rollout evaluation, stated
+in \S\ref{sec:game-why}: under clairvoyant play the available asks are scarcely distinguished in
+value, so repairing strategy fusion and non-locality, as $\alpha\mu$ does, would not by itself make
+a clairvoyant rollout informative here. We have not tested $\alpha\mu$ or its relatives on this
+game, and the statement is about the evaluated variant rather than about those methods.
 
 What this corpus adds is that the binding problem is not the abstract failure but \emph{the
 statistic}. One determinization's value is the final half-suit differential, whose spread is an
@@ -60,9 +66,10 @@ order of magnitude larger than the differences between the leading candidates, s
 sampled means selects on residual noise, and does so more confidently the more candidates it is
 offered. That is the optimiser's curse rather than strategy fusion, and \S\ref{sec:background-vsix}
 reports it measured at \vsixCurseGap{}~pp by a control that forces the same code to return the
-blueprint's own pick. The transferable claim from that result is the guard, not the search.
+blueprint's own pick. These experiments motivate the guarded action-selection rule in
+\S\ref{sec:agent-search}.
 
-\subsection{Search in imperfect-information and cooperative games}
+\subsection{Search under imperfect information}
 \label{sec:related-search}
 
 States in an imperfect-information game do not have well-defined values, so depth-limited search
@@ -80,9 +87,9 @@ knowledge rather than the full common-knowledge closure, and prove that the naiv
 to the live-ask gate this policy family ships, which is a knowledge-limited pruning rule, and it is
 why the side-channel and pathology gates of \S\ref{sec:evaluation-gate} were built before any
 search work rather than after it. Subgame solving in adversarial team games builds a gadget over the
-team belief DAG and runs in polynomial time given a best-response oracle \emph{when the blueprint is
-sparse} \cite{zhang2022teamsubgame}; a Fish blueprint is not sparse, so that escape hatch does not
-open here.
+team belief DAG and runs in polynomial time given a best-response oracle under a sparsity condition
+on the blueprint \cite{zhang2022teamsubgame}; the cited sparsity condition is not established for
+the blueprint used here, and we did not attempt the construction.
 
 In cooperative games the constraint transfers verbatim. SPARTA improves a blueprint purely at test
 time and distinguishes single-agent search, which assumes every other agent strictly follows the
@@ -94,15 +101,18 @@ improvement guarantee is void. Fish satisfies the requirement cheaply, for the r
 \S\ref{sec:background-vsix} turns into an engine switch.
 
 The full-solver line \cite{moravcik2017deepstack,brown2020rebel,schmid2023sog} established that
-test-time re-solving over public belief states is principled rather than a hack. The algorithms are
-declined here, because each requires iterating or learning over a closure whose cardinality at deal
-time is $45!/(9!)^5 \approx 1.9 \times 10^{28}$ deals from one seat. Update equivalence recasts
-search as replicating a last-iterate-convergent update locally, needing no public-information
-enumeration \cite{sokota2024updateequivalence}; its improvement guarantee is for common-payoff
-games, which Fish is not. Learned Belief Search \cite{hu2021lbs} is redundant here, because this
-game's exact belief is already computed and oracle-validated. Online planning by policy fine-tuning
-\cite{fickinger2021rlfinetuning} requires gradient updates at decision time and does not transfer to
-a CPU-only engine with no network. The depth-limited counter-strategy line
+test-time re-solving over public belief states is supported by the formal models and assumptions in
+those studies. We do not implement these algorithms, because each requires iterating or learning
+over a closure whose cardinality at deal time is $45!/(9!)^5 \approx 1.9 \times 10^{28}$ deals from
+one seat. Update equivalence recasts search as replicating a last-iterate-convergent update locally,
+needing no public-information enumeration, and reports substantially lower search time than
+public-belief-state search in Hanabi \cite{sokota2024updateequivalence}; its improvement guarantee
+is stated for common-payoff games, which Fish is not. Learned Belief Search \cite{hu2021lbs} learns
+a belief model for settings in which the exact belief is unavailable; we do not use it because the
+constraint-conditioned belief is computed exactly here and the behavioural weighting is deliberately
+simple, not because a learned belief could not add information. Online planning by policy
+fine-tuning \cite{fickinger2021rlfinetuning} requires gradient updates at decision time and was not
+attempted in this CPU-only engine with no network. The depth-limited counter-strategy line
 \cite{milec2021cdr,milec2025abd} carries one warning this study honours, robust-response methods
 do not compose with limited-look-ahead solving off the shelf, and the learned-model and
 gadget-refinement work \cite{kubicek2025lamir,kubicek2026refinements} is recorded for its
@@ -114,13 +124,15 @@ The result that a search of this kind can \emph{increase} exploitability is Zhan
 \cite{zhang2021subgamesolvingwithoutck}. Where the other work above carries a guarantee at all, its
 conditions and this game's fit to them are recorded above, method by method. What none of them
 supports is reading a win rate as a bound on exploitability, which is why this paper measures the two
-separately. Local best response gives a cheap lower bound: a small greedy search
-looking one action ahead and assuming checks thereafter showed each of the 2016 competition entrants
-it evaluated to be more than 3{,}180\,mBB/h exploitable \cite{lisy2017lbr}, the competition's
-winning submission was not among them, and the authors say why. Its two documented pitfalls are carried into
-\S\ref{sec:results-adversarial}, restricting where the response may begin deviating understates
-exploitability, and a negative score proves nothing, and every exploitability figure in this
-paper is a lower bound within its response class.
+separately. Local best response gives an approximate lower bound on best-response value: a small greedy
+search looking one action ahead and assuming checks thereafter showed each of the 2016 competition
+entrants it evaluated to be more than 3{,}180\,mBB/h exploitable \cite{lisy2017lbr}, the
+competition's winning submission was not among them, and the authors say why. Its two documented
+pitfalls are carried into \S\ref{sec:results-adversarial}: restricting where the response may begin
+deviating understates exploitability, and a negative score proves nothing. Accordingly every
+adversarial-response figure in this paper is reported as the observed win-rate edge of a particular
+response within its class, which is a lower bound on the best-response value over that class only up
+to sampling error, and never as an upper bound.
 
 \subsection{Policy-aware inference}
 \label{sec:related-inference}
@@ -132,25 +144,27 @@ engine Kermit on its own \cite{buro-kermit}. The policy prior of \S\ref{sec:infe
 same idea in a much simpler form: a fitted soft reweighting of the rules posterior, with two
 parameters and no learned opponent model.
 
-This is the only literature that has measured the same trade-off, and it is where
-\S\ref{sec:background-vsix}'s central negative result belongs. What is new there is the margin and
-its direction: in this game the exact conditional posterior is computable exactly by a tractable
-factorised dynamic program and is cheap,
-so the usual excuse for approximating does not apply, and yet substituting the exact posterior
-into an otherwise identical policy \emph{loses}, on two independent seed banks.
+This is the literature that has measured the same trade-off, and it is where
+\S\ref{sec:background-vsix}'s belief-model comparison belongs. The finding there is that in this
+game the constraint-conditioned distribution is computable exactly by a tractable factorised
+dynamic program and is cheap, so in this implementation computational cost is not the only
+motivation for approximation, and yet substituting the exact constraint-conditioned distribution
+into an otherwise identical policy loses to the approximation with behavioural weighting, on two
+independent seed banks.
 
-Two adjacent lines are named, one of them with a single member this study uses. Belief modelling in cooperative games, the Bayesian
-Action Decoder's public-belief formulation \cite{foerster2019bad} and its factorised-prescription
-successor \cite{sokota2021capi}, is aimed at games whose exact belief is intractable, which is the
-opposite of the situation here. And of the exact-counting machinery this study does not need in order to
-approximate, Ryser's inclusion--exclusion formula \cite{ryser}, Glynn's sign-vector formula
-\cite{glynn}, the Jerrum--Sinclair--Vigoda chain \cite{jsv}, matrix scaling \cite{lsw} and
-sequential importance sampling \cite{chen-sis}, the block structure of \S\ref{sec:inference}
-removes the necessity for all five and four go unused. Matrix scaling is the exception: the deployed
-path replaces the exact count join with a Sinkhorn iteration of exactly that kind, not because the
-exact count is unaffordable but to buy the two policy-prior parameters
-(\S\ref{sec:inference-prior}). No learned belief model appears anywhere in this corpus, and that is a
-stated non-goal rather than an oversight.
+Two adjacent lines are named. Belief modelling in cooperative games, the Bayesian Action Decoder's
+public-belief formulation \cite{foerster2019bad} and its factorised-prescription successor
+\cite{sokota2021capi}, is aimed at games whose exact belief is intractable, which is not the
+situation here. The permanent-like counts that a constraint system of this shape generally induces
+are the subject of exact formulae, Ryser's inclusion--exclusion formula \cite{ryser} and Glynn's
+sign-vector formula \cite{glynn}, and of approximation algorithms, the Jerrum--Sinclair--Vigoda
+chain \cite{jsv}, matrix scaling \cite{lsw} and sequential importance sampling \cite{chen-sis}; the
+block structure of \S\ref{sec:inference} makes the exact count tractable directly, so none of the
+five is needed for it. Matrix scaling appears in the deployed path for a different reason: the
+approximate belief replaces the exact count join with a Sinkhorn iteration of that kind, not because
+the exact count is unaffordable but to incorporate the two behavioural weighting parameters
+(\S\ref{sec:inference-prior}). No learned belief model appears anywhere in this corpus; that is a
+stated non-goal of the project.
 
 \subsection{Team games and common information}
 \label{sec:related-team}
@@ -162,8 +176,8 @@ concept for a Fish team is a team-maxmin equilibrium with correlation \cite{cell
 to extensive-form correlation by Farina and coauthors \cite{farina-collusion} and made computable
 through the team belief DAG and the two-player conversion \cite{zhang-tbdag,carminati-tpi}, with
 subsequent work on hidden-role settings \cite{carminati2024hiddenrole}. None of it is computed here.
-The deeper reason a Fish team resists the DAG is that its meta-player fails A-loss recall, for
-exactly one reason: each seat privately observes nine cards its teammates do not.
+We have not established whether a Fish team satisfies the recall conditions those constructions
+require; the evident obstacle is that each seat privately observes nine cards its teammates do not.
 
 The cooperative-play line is cited for its evaluation discipline rather than its algorithms. Hanabi
 was proposed as a benchmark precisely because self-play scores overstate coordination
@@ -181,18 +195,19 @@ receiver's hand, and in Fish no player sees any other player's hand. The same le
 \subsection{Evaluation methodology}
 \label{sec:related-eval}
 
-The evaluation framework of \S\ref{sec:evaluation} draws on a literature usually treated as
-plumbing. Every cell in this paper is a paired duplicate rather than an independent sample, on the model of
-duplicate bridge and of the Annual Computer Poker Competition's duplicate matches and common seeds
-\cite{acpc}, whose protocols are also the model for a fixed opponent panel scored identically for
-every arm. The estimator-side alternatives, DIVAT \cite{zinkevich-divat} and AIVAT
+The evaluation framework of \S\ref{sec:evaluation} draws on duplicate-match and
+variance-reduction methods. Every cell in this paper is a paired duplicate rather than an
+independent sample, on the model of duplicate bridge and of the Annual Computer Poker Competition's
+duplicate matches and common seeds \cite{acpc}, whose protocols are also the model for a fixed
+opponent panel scored identically for every arm. The estimator-side alternatives, DIVAT \cite{zinkevich-divat} and AIVAT
 \cite{burch-aivat}, subtract a learned or hand-built value function from a single sample instead;
 neither is used here, and the pairing is what makes the design competitive with them without
 introducing a fitted object. Abstraction pathology
 \cite{waugh-abstraction} is the standing warning that a model can be improved on its own metric and
-made worse in play, which \S\ref{sec:development-leaf} reproduces exactly. Re-evaluation of agent
+made worse in play; \S\ref{sec:development-leaf} illustrates a related mismatch between a surrogate
+metric and playing performance. Re-evaluation of agent
 populations \cite{balduzzi-reeval} and the rating literature
-\cite{coulom-whr,herbrich-trueskill,nelo} inform why this paper reports a worst case and a minimax
+\cite{coulom-whr,herbrich-trueskill,nelo,nelo-fishtest} inform why this paper reports a worst case and a minimax
 regret over a shared panel rather than a single rating number. Recent work on gold-standard
 evaluation practice \cite{kelidari2026goldstandard} is consistent with the preregistration and
 sealing discipline of \S\ref{sec:evaluation-seal}, which this project adopted independently.

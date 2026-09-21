@@ -1,17 +1,18 @@
 \section{Experimental design}
 \label{sec:design}
 
-Figure~\ref{fig:protocol} is the shape of what follows: what was developed on training material,
-what was frozen, and what was measured against sealed material.
+Figure~\ref{fig:protocol} summarises development, configuration freezing, and holdout evaluation:
+what was developed on training material, what was frozen, and what was measured against sealed
+material.
 
-\subsection{Configurations compared}
+\subsection{Evaluated configurations}
 \label{sec:design-configs}
 
-Table~\ref{tab:configs} is worth reading before any result, because the paper's central nuance
-depends on the distinction between two of its rows. \sestina{} is compared against \fcheap{}, a
-configuration that existed before this cycle, and improves on it. It is also compared against
-\composite{}, which was assembled \emph{during} this cycle by the adversary-generation phase, and
-does not measurably improve on it. Those are different claims about different objects and
+Table~\ref{tab:configs} defines the evaluated configurations. The paper's central distinction
+depends on two of its rows. \sestina{} is compared against \fcheap{}, a configuration that existed
+before this cycle, and improves on it. It is also compared against \composite{}, which was
+assembled \emph{during} this cycle by the adversary-generation phase, and that comparison is not
+statistically resolved. Those are different claims about different objects and
 \S\ref{sec:results-composite} keeps them apart.
 
 \begin{table}[!ht]
@@ -23,19 +24,20 @@ frozen for holdout evaluation.}
 \tabfont
 \begin{tabularx}{\linewidth}{@{}l L l L@{}}
 \toprule
-Name & What it is & Origin & Role in this paper \\
+Name & Definition & Origin & Role in this paper \\
 \midrule
 \sestina{} & the evaluated configuration of \S\ref{sec:agent} & frozen in this cycle &
 the subject; evaluated on sealed holdout material \\
 v0.6 deployed & the previous release, search disabled & pre-existing &
 lineage baseline and reference opponent for ablations \\
-\fcheap{} & cheapest configuration genuinely on the v0.6 frontier & pre-existing &
-\textbf{the registered primary comparison target} \\
+\fcheap{} & the v0.6 policy with its endgame search enabled at the search settings \sestina{}
+uses; the least expensive searching member of the v0.6 frontier & pre-existing &
+the registered primary comparison target \\
 \fmid{} & a more expensive frontier configuration & pre-existing &
 secondary frontier comparison \\
 \composite{} & v0.6 frontier search, plus the contestation weight, plus one switch &
-assembled in development phase 2 & the strongest configuration available before the architecture
-work; the comparison of \S\ref{sec:results-composite} \\
+assembled in development phase 2 & the configuration assembled before the architecture work; the
+comparison of \S\ref{sec:results-composite} \\
 v0.5, v0.4, v0.3 & earlier lineage releases & pre-existing & lineage baselines and panel members \\
 scripted archetypes & thirteen hand-built playstyles, including deception archetypes & pre-existing &
 opponent panel members \\
@@ -76,7 +78,7 @@ opponent panel members, decoded only at evaluation \\
 % Both notes hang from the same depth, so their first lines align.  The sealed
 % note begins to the right of the barrier and never crosses it.
 \node[note,fishgray,text width=68mm,anchor=north] (train) at (4.7415,-1.45)
-  {\textbf{training material}: banks 7030001--7030004, unsealed adversary half.\\
+  {\textbf{training material}: the four training banks and the unsealed adversary half.\\
    Everything left of the barrier may see this material.};
 \node[note,fishgreen,text width=33mm,anchor=north west] (hold) at (11.5335,-1.45)
   {\textbf{sealed material}: banks committed by digest, adversary half encrypted, decoded only here.};
@@ -84,14 +86,16 @@ opponent panel members, decoded only at evaluation \\
 \draw[fishgreen,dotted] (13.084,-1.09) -- (13.084,-1.41);
 \end{tikzpicture}
 \caption{The development and evaluation protocol. Configurations were generated, scored and selected
-using training material only. Exactly one configuration was then frozen, and evaluated against
-material whose digests had been committed before any candidate existed, under a protocol registered in
-advance (\S\ref{sec:evaluation-seal}). The seal is enforced by the engine rather than by convention:
-a run naming a sealed seed fails unless an explicit variable is set, which was set once and recorded.}
+using training material only: the training banks 7030001--7030004 and the unsealed half of the
+adversary population. Exactly one configuration was then frozen, and evaluated against material
+whose digests had been committed before any candidate existed, under a protocol registered in
+advance (\S\ref{sec:evaluation-seal}). The seal is enforced by the engine's match runner: a scored
+run naming a sealed seed fails unless an explicit variable is set, which was set once and recorded;
+Appendix~\ref{app:deviations} (D6) lists the diagnostic and fitting commands that are not gated.}
 \label{fig:protocol}
 \end{figure}
 
-\subsection{Material, and the checks performed before any measurement}
+\subsection{Evaluation data and integrity checks}
 \label{sec:design-material}
 
 All \vsevenBanks{} bank digests reproduce, at \vsevenBankDeals{} deals each (Table~\ref{tab:banks}). The sealed adversary half
@@ -123,10 +127,11 @@ The homogeneity controls of \S\ref{sec:evaluation-side} calibrate as specified: 
 fails exactly the tests named for it and no others, identically on both banks, over
 \vsevenSideCells{} cells (Table~\ref{tab:sidechannel}).
 
-\subsection{The soundness gate}
+\subsection{Behavioural validation results}
 \label{sec:design-gate}
 
-\sestina{} passes all \vsevenGateRulesWord{} rules of Table~\ref{tab:gate}: \vsevenGateDeadAsks\% provably dead asks against a
+\sestina{} passes all \vsevenGateRulesWord{} rules of Table~\ref{tab:gate}: \vsevenGateDeadAsks\%
+provably unsuccessful asks against a
 0.10\% bar, longest dead run \vsevenGateLongestDead{}, mirror tail maximum \vsevenGateTailMax{} with
 99th percentile \vsevenGateTailPnn{}, and \vsevenGateSsix{} seat-isolation mismatches over
 \vsevenGateSsixNodes{} audited decisions. Reported but not gated: \vsevenGateEvents{} events per game,
@@ -141,29 +146,32 @@ a configuration constructed to be rejected.}
 {\tabfont\input{tables_v07/gate}}
 \end{table}
 
-\subsection{The registered protocol}
+\subsection{Preregistered evaluation protocol}
 \label{sec:design-protocol}
 
 The protocol fixed, before any holdout deal was played: the primary comparison target (\fcheap{},
 for the reason in \S\ref{sec:development-frontier}); the primary decision rule; seven secondary
 claims each with its own threshold; and seven conditions that would constitute non-confirmation.
-Appendix~\ref{app:thresholds} reproduces them.
+Appendix~\ref{app:thresholds} reproduces them with their recorded verdicts and an
+uncertainty-aware reading of each.
 
-The primary decision rule is worth stating in the body, because the paper avoids the word
-\emph{certified} in favour of naming what was actually satisfied. The registered rule was that the
-comparison against \fcheap{} would be regarded as a confirmed advance if the pooled edge had a lower
-bound above \vsevenPrimaryFloor{}~pp, \emph{and} the sign replicated on both banks, \emph{and} the
-configuration passed the soundness gate. A pooled edge positive with a lower bound below
-\vsevenPrimaryFloor{} but above zero, with the sign replicating, would be recorded as a measured but
-unconfirmed advance; an interval containing zero, a sign that did not replicate, or a gate failure
-would be recorded as no advance.
+The primary decision rule is stated here because the paper names what was satisfied rather than
+using the protocol's label \emph{certified}. The registered rule was that the comparison against
+\fcheap{} would be regarded as a confirmed advance if the pooled edge had a lower bound above
+\vsevenPrimaryFloor{}~pp, \emph{and} the sign replicated on both banks, \emph{and} the
+configuration passed the behavioural gate. The \vsevenPrimaryFloor{}~pp threshold is the phase-2
+calibration floor of the principal responder class, adopted by the protocol as a pre-committed
+reference bar for a directly measured paired difference (\S\ref{sec:evaluation-floor}). A pooled
+edge positive with a lower bound below \vsevenPrimaryFloor{} but above zero, with the sign
+replicating, would be recorded as a measured but unconfirmed advance; an interval containing zero,
+a sign that did not replicate, or a gate failure would be recorded as no advance.
 
 The protocol also fixed in advance the sentence to be used if the partner-regime comparison retained
 a particular ordering, so that its direction could not be chosen after the fact, and recorded that on
 training material that comparison ran \emph{against} \sestina{}. \S\ref{sec:results-partners}
 reports the outcome and uses the registered wording.
 
-\subsection{The battery}
+\subsection{Experiment inventory}
 \label{sec:design-battery}
 
 \vsevenScoredCells{} scored cells over \vsevenScoredGames{} games (Table~\ref{tab:battery}). No registered cell was dropped;

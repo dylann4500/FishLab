@@ -48,7 +48,16 @@
 % entries, so that a long identifier can break across a line; the rendered
 % identifier is unchanged, and this is the only sense in which an arXiv field is
 % not byte-identical to the vetted source.
-% Those four are the whole of the non-selection editing.
+% Those four are the whole of the non-selection editing, up to the editorial
+% revision of September 2026, which made five further edits, all recorded in
+% Appendix E: the date range of pagat now runs to its last-updated year;
+% evaluative annotations were removed from brown2018depthlimited,
+% sokota2024updateequivalence, kubicek2025lamir, schmid2023sog and hu2022sed
+% (the venue note on kubicek2025lamir became a plain venue field, and the
+% preprint-title note on schmid2023sog was kept as bibliographic data); acpc
+% no longer bundles the competition rules, which the prose describes; and nelo
+% was split into its two documents, nelo and nelo-fishtest, the second of which
+% carries no URL because none was recorded in the vetted source.
 %
 % Dropped as uncited: \texttt{fishbot03}, \texttt{fishbot04}, \texttt{fishbot05}.
 % The first three are this project's own earlier technical reports; their
@@ -63,7 +72,7 @@
 \setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}
 
 \bibitem{pagat}
-J. McLeod, ``Literature,'' \emph{Pagat}, 2006--2025, last updated 1 July 2026.\\
+J. McLeod, ``Literature,'' \emph{Pagat}, 2006--2026, last updated 1 July 2026.\\
 \url{https://www.pagat.com/quartet/literature.html}
 
 \bibitem{develin}
@@ -174,9 +183,7 @@ Imperfect Information Games: Algorithms and Complexity,'' \emph{NeurIPS 2023},
 \bibitem{brown2018depthlimited}
 N. Brown, T. Sandholm, and B. Amos, ``Depth-Limited Solving for
 Imperfect-Information Games,'' \emph{NeurIPS 2018}, 2018; arXiv:1805.\allowbreak 08195.
-Master-level heads-up no-limit hold'em on a 4-core CPU and 16 GB, via
-multi-valued states. The soundness argument is for two-player zero-sum games and
-is not inherited by the team game studied here.
+
 \bibitem{zhang2021subgamesolvingwithoutck}
 B. H. Zhang and T. Sandholm, ``Subgame Solving without Common Knowledge,''
 \emph{NeurIPS 2021}, 2021; arXiv:2106.\allowbreak 06068.\\
@@ -191,8 +198,7 @@ T. Sandholm, ``Subgame Solving in Adversarial Team Games,'' \emph{NeurIPS 2022},
 \bibitem{sokota2024updateequivalence}
 S. Sokota, G. Farina, D. J. Wu, H. Hu, K. A. Wang, J. Z. Kolter, and N. Brown,
 ``The Update-Equivalence Framework for Decision-Time Planning,'' \emph{ICLR
-2024}, 2024; arXiv:2304.\allowbreak 13138. Mirror-descent search at two orders of magnitude
-less search time than public-belief-state search in Hanabi.\\
+2024}, 2024; arXiv:2304.\allowbreak 13138.\\
 \url{https://openreview.net/forum?id=JXGph215fL}
 
 \bibitem{lerer2020sparta}
@@ -218,8 +224,7 @@ Counter Strategies in Large Imperfect Information Games,'' arXiv:2501.\allowbrea
 2025.
 \bibitem{kubicek2025lamir}
 O. Kub\'i\v{c}ek and V. Lis\'y, ``Look-ahead Reasoning with a Learned Model in
-Imperfect Information Games,'' arXiv:2510.\allowbreak 05048, 2025; ICLR 2026 per the arXiv
-PDF header.
+Imperfect Information Games,'' \emph{ICLR 2026}, 2026; arXiv:2510.\allowbreak 05048, 2025.
 \bibitem{kubicek2026refinements}
 O. Kub\'i\v{c}ek, V. Lis\'y, and T. Sandholm, ``Equilibrium Refinements Improve
 Subgame Solving in Imperfect-Information Games,'' arXiv:2601.\allowbreak 17131, 2026.
@@ -236,7 +241,7 @@ M. Schmid, M. Morav\v{c}\'ik, N. Burch, R. Kadlec, J. Davidson, K. Waugh,
 N. Bard, F. Timbers, M. Lanctot, G. Z. Holland, E. Davoodi, A. Christianson, and
 M. Bowling, ``Student of Games: A Unified Learning Algorithm for Both Perfect
 and Imperfect Information Games,'' \emph{Science Advances} 9(46), 2023;
-arXiv:2112.\allowbreak 03178. Circulated 2021--2022 as ``Player of Games.''
+arXiv:2112.\allowbreak 03178 (preprint title ``Player of Games'').
 
 \bibitem{moravcik2017deepstack}
 M. Morav\v{c}\'ik, M. Schmid, N. Burch, V. Lis\'y, D. Morrill, N. Bard,
@@ -280,7 +285,7 @@ Approximate Policy Iteration,'' \emph{AAAI 2021}, 2021; arXiv:2101.\allowbreak 0
 \bibitem{hu2022sed}
 H. Hu, S. Sokota, D. J. Wu, A. Bakhtin, A. Lupu, B. Cui, and J. N. Foerster,
 ``Self-Explaining Deviations for Coordination,'' \emph{NeurIPS 2022}, 2022;
-arXiv:2207.\allowbreak 12322. IMPROVISED; the first algorithmic Hanabi finesse plays.\\
+arXiv:2207.\allowbreak 12322.\\
 \url{https://proceedings.neurips.cc/paper_files/paper/2022/hash/faa6276ea12d7afeb3e42b210c86f688-Abstract-Conference.html}
 
 \bibitem{cox-hanabi}
@@ -380,8 +385,7 @@ Statistical Association} 100(469):109--120, 2005.
 
 \bibitem{acpc}
 N. Bard, J. Hawkin, J. Rubin, and M. Zinkevich, ``The Annual Computer Poker
-Competition,'' \emph{AI Magazine} 34(2):112--118, 2013; and the competition
-rules describing duplicate matches and common seeds.
+Competition,'' \emph{AI Magazine} 34(2):112--118, 2013.
 
 \bibitem{zinkevich-divat}
 M. Zinkevich, M. Bowling, N. Bard, M. Kan, and D. Billings, ``Optimal Unbiased
@@ -411,9 +415,12 @@ Skill Rating System,'' \emph{Advances in Neural Information Processing Systems}
 19, 2006.
 
 \bibitem{nelo}
-M. Van den Bergh, ``Comments on Normalized Elo,'' Fishtest technical note; and
-Stockfish contributors, ``Statistical Methods and Algorithms in Fishtest.''\\
+M. Van den Bergh, ``Comments on Normalized Elo,'' Fishtest technical note.\\
 \url{https://cantate.be/Fishtest/normalized_elo_practical.pdf}
+
+\bibitem{nelo-fishtest}
+Stockfish contributors, ``Statistical Methods and Algorithms in Fishtest,'' Fishtest project
+documentation.
 
 \bibitem{kelidari2026goldstandard}
 N. Kelidari, M. Haghi, and M. Salmani, ``A Gold-Standard Study of What Makes a

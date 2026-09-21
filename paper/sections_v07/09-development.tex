@@ -1,103 +1,115 @@
-\section{Developing \sestina{}}
+\section{Exploratory development}
 \label{sec:development}
 
 This section reports the development phases: what the instrument was shown to be capable of
-detecting, what an open adversary search found, and which candidate mechanisms were tested and
-rejected. All measurements here are on \emph{training} material and are exploratory in the sense of
+detecting, what an open adversary search found, and which candidate mechanisms were tested. All
+measurements here are on \emph{training} material and are exploratory in the sense of
 \S\ref{sec:evaluation-multiplicity}. None supports the paper's primary claim, and every pooled
-interval reported in this section has a lower bound below the detection floor of
-\vsevenPrimaryFloor{}~pp, so each is a measured effect rather than a confirmed one.
+interval reported in this section has a lower bound below the registered
+\vsevenPrimaryFloor{}~pp reference bar, so each is a measured effect rather than a confirmed one.
 
-\subsection{The v0.6 frontier, and the choice of comparison target}
+\subsection{Baseline selection}
 \label{sec:development-frontier}
 
 \vsix{} deployed its policy with test-time search disabled, while also having measured that search
-working. The configurations available at the end of that cycle therefore form a \emph{frontier}
-rather than a point, running from the deployed blueprint to progressively more expensive searching
-configurations.
+working. The configurations available at the end of that cycle therefore form what this paper
+calls the \emph{\vsix{} frontier}: the set comprising the deployed non-searching policy and the
+searching configurations \fcheap{} and \fmid{}, ordered by search cost. The term denotes that set
+of evaluated configurations, not a measured Pareto frontier in cost and performance; no dominance
+criterion was applied.
 
-This distinction drove the most consequential methodological choice in the programme. Beating the
-deployed policy is the easy comparison, and several unfitted single-switch deviations of it already
-do. \textbf{The comparison target was therefore fixed as \fcheap{}}, the cheapest configuration that
-is genuinely on the frontier, and \S\ref{sec:design-protocol} records that the choice was registered
-in advance. Table~\ref{tab:configs} defines every configuration this paper compares.
+This distinction drove the most consequential methodological choice in the programme. Several
+available configurations already exceeded the deployed policy, including unfitted single-switch
+deviations of it, which motivated a searching configuration as the primary baseline. The
+comparison target was fixed as \fcheap{}: the \vsix{} policy with its endgame-truncated search
+enabled at the same search settings \sestina{} uses, and the least expensive searching member of
+the frontier. \S\ref{sec:design-protocol} records that the choice was registered in advance.
+Table~\ref{tab:configs} defines every configuration this paper compares.
 
-\subsection{What the instrument can detect}
+\subsection{Detection calibration}
 \label{sec:development-instrument}
 
-The detection-floor procedure of \S\ref{sec:evaluation-floor} was built and calibrated in this
-phase, which measured the floor at \vsevenFloorPhaseOne{}~pp and predicted that it would fall as
-(evaluation games)$^{-1/2}$. The phase of \S\ref{sec:development-adversaries} re-measured the same
-rung at four times the games and got \vsevenPrimaryFloor{}~pp, refuting the prediction; that is the
-first of the two findings \S\ref{sec:evaluation-floor} reports, the second being that floors are
-family-specific, with the declaration channel's at \vsevenDeclFloor{}~pp. Two further results shape
-later sections.
+The calibration procedure of \S\ref{sec:evaluation-floor} was built in this phase, which measured
+the principal responder class's floor at \vsevenFloorPhaseOne{}~pp and predicted that it would fall
+as (evaluation games)$^{-1/2}$. The phase of \S\ref{sec:development-adversaries} re-measured the
+same handicap ladder at four times the games: the smallest recovered rung was then the
+\vsevenPrimaryFloor{}~pp rung, and the next rung down remained unrecovered, so the prediction was
+not borne out within the ladder's resolution. That is the first of the two findings
+\S\ref{sec:evaluation-floor} reports, the second being that floors are family-specific, with the
+declaration channel's at \vsevenDeclFloor{}~pp. Two further results shape later sections.
 
-\paragraph{Transcript inversion contracts the posterior, and is not an attack.} Because the target
+\paragraph{Transcript-inversion diagnostics.} Because the target
 team is deterministic and published, an adversary can invert its transcript, asking for each observed
 ask which deals would have produced it and contracting the posterior accordingly. Measured, this
 contracts the deal posterior by approximately \vsevenBitsPerAsk{} bits per observed ask beyond the
 certificates the rules already supply. Converting those bits into play is worth
 \vsevenInversionUnfitted{}~pp unfitted against the deployed policy.
 
-It is nonetheless not an exploit. The excess tracks planted-edge size to within
-$\pm$\vsevenInversionTrack{}~pp on all eight rungs of the calibration ladder, which is the signature
-of a general strength gain rather than an exploitation instrument. And no linear handicap adds more
-than \vsevenHandicapBits{} bits per ask, so within this policy family there is no readability
-handicap available for a stochastic policy to purchase. A brief that proposed a stochastic policy
-conditional on the inverter succeeding was therefore closed on its antecedent.
+The gain was not target-specific. The excess tracks planted-edge size to within
+$\pm$\vsevenInversionTrack{}~pp on all eight rungs of the calibration ladder, which is consistent
+with a general strength gain rather than with a response that depends on a particular weakness of
+the target; a broadly stronger policy can still be a valid profitable response, so this is a
+statement about specificity rather than about exploitability. And no linear handicap adds more
+than \vsevenHandicapBits{} bits per ask, so within this policy family no readability handicap was
+found for a stochastic policy to remove. A proposed stochastic policy conditional on the inverter
+succeeding was therefore not pursued.
 
-\paragraph{A cost figure the record had wrong.} The \vsix{} paper priced the searching configuration
+\paragraph{Revised search-cost estimates.} The \vsix{} paper priced the searching configuration
 at ``three orders of magnitude'' the blueprint, a ratio that mixed an all-threads timing with a
 single-thread one. Re-timed here on one basis, it is \vsevenPhaseOneCost$\times$. But that figure
 describes the \emph{unrestricted} search, which is not the frontier point anything was measured at,
 and phase~3 re-measured the endgame-restricted operating point at approximately
 \vsevenCostRecorded$\times$. \S\ref{sec:results-cost} corrects that correction in turn.
 
-\subsection{Open adversary generation against the frontier}
+\subsection{Adversary generation against baseline configurations}
 \label{sec:development-adversaries}
 
-The constraint on this phase was that the searches must not share a bias, since fifteen runs of one
-search constitute one run. Every exploiter search in the corpus before it had been the same search: a
-cross-entropy fit of a linear vector maximising win rate from one seed against one target. This phase
-constructed six adversary classes in the synchronised regime, plus one fitted search in the
-ex-ante-correlated regime, and measured channel ceilings before fitting anything against them.
+The constraint on this phase was that the searches must not share a bias, since repeated restarts
+of one method do not provide methodological diversity. Every exploiter search in the corpus before it
+had been the same search: a cross-entropy fit of a linear vector maximising win rate from one seed
+against one target. This phase constructed six adversary classes in the synchronised regime, plus
+one fitted search in the ex-ante-correlated regime, and measured channel ceilings before fitting
+anything against them.
 
-\paragraph{The principal finding is negative.}
-Nothing constructed exploited the \vsix{} frontier beyond
-the detection floor. The best measured exploitability of the deployed policy remains an in-class
+\paragraph{Adversarial-search outcome.}
+Nothing constructed produced a resolved adversarial edge against the \vsix{} frontier beyond the
+class floor. The largest adversarial response edge found against the deployed policy is an in-class
 figure of \vsevenBestExploit{}~pp $[\vsevenBestExploitLo, \vsevenBestExploitHi]$ over
 \vsevenBestExploitN{} games, which is below the class floor of \vsevenPrimaryFloor{}. Seven
-independently fitted searches confirmed it and none cleared its class floor.
+independently fitted searches gave the same picture and none cleared its class floor.
 
-Every configuration that beat the deployed policy by more than the floor proved on measurement to be
-a better policy rather than an exploit: the target's own test-time search at
-\vsevenSearchAsExploit{}~pp, and a single out-of-class coordinate at \vsevenOneSwitchArm{}~pp whose
-gain survives against opponents sharing none of the target's machinery. The second of those is the
-contestation weight of \S\ref{sec:agent-contest}; \S\ref{sec:results-attribution} measures on
-holdout what it contributes and finds it the largest of the five components \sestina{} carries,
+Every configuration that beat the deployed policy by more than the floor proved on measurement not
+to be target-specific: the target's own test-time search at \vsevenSearchAsExploit{}~pp, and a
+single out-of-class coordinate at \vsevenOneSwitchArm{}~pp whose gain survives against opponents
+sharing none of the target's machinery. The second of those is the contestation weight of
+\S\ref{sec:agent-contest}; \S\ref{sec:results-attribution} measures on holdout what it contributes
+and finds it the largest observed leave-one-out drop among the five components \sestina{} carries,
 rather than the whole of the gain.
 
 Two further results from this phase bear on \sestina{}'s design. The declaration-urgency channel
 that the phase expected to be its headline has a measured ceiling of \vsevenUrgencyCeiling{}~pp
-$[\vsevenUrgencyCeilingLo, \vsevenUrgencyCeilingHi]$ and is dead as an attack, but the same channel is
-worth \vsevenUrgencyWorthLo{} to \vsevenUrgencyWorthHi{}~pp to a configuration that simply disables
-it: the adversary owns the smaller half of a two-point defect in the target. And the event-count
-cliff of \S\ref{sec:agent-urgency} is unreachable by any adversary, while a configuration that removes
-the counter inherits a self-play game-length tail of \vsevenCliffTail{} events, which is the
-obligation \S\ref{sec:agent-stall} discharges.
+$[\vsevenUrgencyCeilingLo, \vsevenUrgencyCeilingHi]$ and did not yield a resolved adversarial
+advantage at the tested budget, but the same channel is worth \vsevenUrgencyWorthLo{} to
+\vsevenUrgencyWorthHi{}~pp to a configuration that simply disables it: the adversary owns the
+smaller half of a two-point defect in the target. And the event-count cliff of
+\S\ref{sec:agent-urgency} was not reached by any adversary in the tested searches, while a
+configuration that removes the counter inherits a self-play game-length tail of \vsevenCliffTail{}
+events, which is the obligation \S\ref{sec:agent-stall} discharges.
 
-\subsection{Candidate mechanisms that were tested and rejected}
+\subsection{Candidate-mechanism evaluation}
 \label{sec:development-rejected}
 
-Five candidate mechanisms were developed in isolated branches, gated before being scored, and checked against the side-channel definition by the
-harness of \S\ref{sec:evaluation-side} rather
-than by inspection. \textbf{One survived}, and it is the configuration change described in
-\S\ref{sec:agent} rather than an architecture. The four that were rejected are reported here, each
-with the measurement that rejected it, because each closes a standing hypothesis in the project's
-design register and because a closed direction does not depreciate.
+Candidate modifications were evaluated on development data before configuration freezing. Five
+were developed in isolated branches, gated before being scored, and checked against the
+side-channel definition by the harness of \S\ref{sec:evaluation-side} rather than by inspection.
+One was retained, and it is the configuration change described in \S\ref{sec:agent} rather than an
+architecture. Four did not demonstrate an additional performance benefit under the tested settings:
+alternative declaration allocation, learned leaf evaluation, per-decision training objectives, and
+learned action ranking. The following subsections report their measured outcomes and limitations.
+These results concern the tested implementations and budgets, not all methods in the corresponding
+classes.
 
-\subsubsection{The declaration-allocation channel is worth zero}
+\subsubsection{Declaration-allocation comparison}
 \label{sec:development-alloc}
 
 The design register's second-ranked hypothesis, at priority \vsevenLonePriority{}, held that
@@ -105,38 +117,47 @@ The design register's second-ranked hypothesis, at priority \vsevenLonePriority{
 Its proposed mechanism was that the deployed allocator, a product of per-card marginals, selects a
 different allocation from the joint posterior's argmax often enough to matter.
 
-It does not. Over approximately \vsevenLoneDecls{} recorded voluntary declarations, across two banks
-and both urgency settings, the joint argmax and the marginal-product argmax select the same allocation
-at every one, with the joint score holding a strict opinion on
-\vsevenLoneStrictLo\% to \vsevenLoneStrictHi\% of genuinely ambiguous cases. The reason is algebraic
-rather than statistical: the sequential joint's first chain-rule factor \emph{is} the marginal, and
-the renormalisation that follows reweights the survivors without reordering them.
+The measurement did not support that mechanism. Over approximately \vsevenLoneDecls{} recorded
+voluntary declarations, across two banks and both urgency settings, and counted over capture cells
+that include re-runs of the same seeds, the sequential approximate joint's argmax and the
+marginal-product argmax selected the same allocation at every one, with the joint score holding a
+strict opinion on \vsevenLoneStrictLo\% to \vsevenLoneStrictHi\% of ambiguous cases.
+This agreement is empirical: the two procedures are not equivalent in general, since the six cards
+of a half-suit are coupled through the capacity constraint, and no argument that the sequential
+conditioning preserves the marginal-product ranking is supplied.
 
-Two further measurements close the direction rather than merely the mechanism. First, the exact joint
-maximiser is a worse decision rule than the deployed approximation on the declaration decision itself:
-paired, it corrects \vsevenJointFixed{} declarations and breaks \vsevenJointBroken{}, a net
-\vsevenJointWorseNet{}~pp, which converts to approximately \vsevenJointWorseWin{}~pp of win rate. This
-is the second independent instance of the methodological rule from \S\ref{sec:background-vsix} paying
-off. Second, \vsevenJointFlatLo\% to \vsevenJointFlatHi\% of the error class occupies flat-posterior
-states in which the exact object is provably a coin flip, so most of the apparent headroom is an
-information limit rather than a policy defect.
+Two further measurements bear on the direction rather than only the mechanism. First, the exact
+constraint-joint maximiser \eqref{eq:bestalloc} performed worse than the deployed approximation on
+the declaration decision itself: replayed on one capture cell of \vsevenJointCellDecls{} voluntary
+declarations, it corrects \vsevenJointFixed{} declarations and breaks \vsevenJointBroken{}, a net
+\vsevenJointWorseNet{}~pp of declaration accuracy on that cell. At the design register's fitted
+conversion of about \vsevenDeclToWinConv{} win-rate points per point of declaration accuracy
+(range \vsevenDeclToWinConvLo{} to \vsevenDeclToWinConvHi{} across banks), this corresponds to
+approximately \vsevenJointWorseWin{}~pp of win rate; that figure is inferred from the
+declaration-level difference, not measured as a game outcome. This is the second comparison of the
+kind \S\ref{sec:background-vsix} reports. Second, \vsevenJointFlatLo\% to \vsevenJointFlatHi\% of
+the error class occupies states in which the exact constraint-conditioned distribution assigns the
+competing allocations equal probability, so most of the apparent headroom is an information limit
+under that model rather than a policy defect.
 
 The channel is also largely downstream of a defect that \sestina{} removes for other reasons.
-Disabling the urgency escalation eliminates \vsevenLoneUrgencyShare\% of the entire allocation-error
-class and drops the oracle ceiling for a perfect allocator from \vsevenLoneCeilingBefore{} to
-\vsevenLoneCeilingAfter{}~pp, which is below the detection floor. The consequence is a composition
-constraint this paper observes: a declaration-channel gain and the urgency-off gain may never be
-added, because they are the same defect counted twice.
+Disabling the urgency escalation eliminates \vsevenLoneUrgencyShare\% of the entire
+allocation-error class and drops the oracle ceiling for a perfect allocator from
+\vsevenLoneCeilingBefore{} to \vsevenLoneCeilingAfter{}~pp, which is below the reference bar. The
+consequence is a composition constraint this paper observes: a declaration-channel gain and the
+urgency-off gain should not be added, because they overlap in the same error class.
 
-\subsubsection{A leaf evaluator fitted 74 times better buys nothing}
+\subsubsection{Learned leaf evaluation}
 \label{sec:development-leaf}
 
 An inherited hypothesis held that the test-time search cannot be judged until its leaf evaluator is
 rebuilt, the deployed one being algebraically close to a rescaling of the hit probability. A leaf was
 fitted for the purpose, and the statistic that matters, between-candidate $R^2$, which is the only
 component the paired deviation rule can consume, improved from \vsevenKoneRsqBefore{} to
-\vsevenKoneRsqAfter{} in sample, a \vsevenKoneFold-fold gain, and from \vsevenKoneRsqOosBefore{} to
-\vsevenKoneRsqOosAfter{} out of sample, so the direction replicates and the multiple does not. The
+\vsevenKoneRsqAfter{} in sample and from \vsevenKoneRsqOosBefore{} to \vsevenKoneRsqOosAfter{} out
+of sample; the in-sample ratio is \vsevenKoneFold-fold, the out-of-sample ratio is much smaller,
+and the absolute $R^2$ remains modest in both, so the direction replicates and the multiple does
+not. The
 fit was scored over approximately \vsevenKoneLeaves{} leaves across two search regimes and three
 banks.
 
@@ -145,10 +166,11 @@ losing on both banks individually. The diagnosis is conversion failure rather th
 rule's deviation rate is \vsevenKoneChangeLo{} for the deployed material leaf,
 \vsevenKoneChangeMid{} for the fitted one and \vsevenKoneChangeHi{} for a third arm that merely
 rescales the material leaf's constant, so at the deployed shrinkage the deviation rule is nearly
-leaf-invariant. A better
-leaf is not the available lever. This reproduces, in a new domain, the abstraction pathology the
-poker literature documents \cite{waugh-abstraction}: a model improved on its own metric can leave
-play unchanged or worse.
+leaf-invariant. The tested leaf replacement did not improve playing strength under the deployed
+selection rule. This illustrates a mismatch between a surrogate metric and playing performance
+related to the abstraction pathology the poker literature documents \cite{waugh-abstraction}, in
+which a model improved on its own metric can leave play unchanged or worse; no formal mapping
+between the two settings is claimed.
 
 The inherited hypothesis was discharged separately and by re-measurement rather than by the new
 evaluator. The single underpowered cell on which it rested, one \vsevenFullGameOldN{}-game cell at
@@ -160,29 +182,36 @@ Phase 1's \vsevenTruncatedEndgame{}~pp refuted the conditional in the endgame re
 \texttt{depth=12} with \texttt{maxq=26}; it was this full-game cell that left it binding for
 full-game search.
 
-\subsubsection{Fitting against a per-decision objective produces a worse policy}
+\subsubsection{Per-decision training objectives}
 \label{sec:development-perdecision}
 
 A further hypothesis held that a per-decision objective is necessary because the scoreboard is too
-noisy to resolve small effects. Its precision claim is confirmed and its fitting form is rejected,
-and the two halves are independent.
+noisy to resolve small effects. Its precision claim is supported and its fitting form is not, and
+the two halves are independent.
 
-The design effect of deal clustering was measured for the first time in this cycle, and a
-one-point-equivalent effect resolves in \vsevenPerDecisionGamesLo{} to \vsevenPerDecisionGamesHi{}
-games on the declaration channel and \vsevenAllocGamesLo{} to \vsevenAllocGamesHi{} on the
-allocation-error channel, against \vsevenScoreboardGames{} on the scoreboard, confirming the
-precision claim at \vsevenDesignEffectLo{} to \vsevenDesignEffectHi{} times.
+The design effect of deal clustering was measured for the first time in this cycle. A
+one-point-equivalent effect reaches a planning half-width of its own size in
+\vsevenPerDecisionGamesLo{} to \vsevenPerDecisionGamesHi{} games on the declaration channel and
+\vsevenAllocGamesLo{} to \vsevenAllocGamesHi{} on the allocation-error channel, against
+\vsevenScoreboardGames{} on the scoreboard, a ratio of \vsevenDesignEffectLo{} to
+\vsevenDesignEffectHi{} times. That ratio compares planning sample sizes for different outcome
+channels, linked by the design register's assumed conversion factors between per-decision accuracy
+and win rate; the per-decision figures apply the measured clustering design effect and the
+scoreboard figure is the independent-game approximation of \S\ref{sec:evaluation-power}, so the
+ratio is a planning comparison rather than a measured precision gain on one estimand.
 
 But all three self-oriented per-decision objectives, fitted at matched budget against a per-game
 control, produced worse policies: \vsevenKfourSelfDecl{}, \vsevenKfourSelfAsk{} and
-\vsevenKfourSelfAlloc{}~pp, each replicated in sign and two of them clearing the floor as confirmed
-negatives. Each fit moved its own proxy in the intended direction and lost anyway. The
-declaration-oriented fit purchased \vsevenKfourTradeGain{}~pp of declaration accuracy by paying
-\vsevenKfourTradeCost{}~pp of ask accuracy, and the ask-oriented fit did the reverse. The two
-per-decision channels trade against each other, so a fitter holding \vsevenCoordinates{} coordinates
-buys one out of the other. The estimator is worth keeping and the objective is not.
+\vsevenKfourSelfAlloc{}~pp, each replicated in sign and two of them with intervals beyond the
+reference bar. Each fit moved its own proxy in the intended direction and lost anyway. The
+declaration-oriented fit increased declaration accuracy by \vsevenKfourTradeGain{}~pp while
+reducing ask accuracy by \vsevenKfourTradeCost{}~pp, and the ask-oriented fit did the reverse. The
+two per-decision channels exhibited a trade-off in these fits, so a fitter holding
+\vsevenCoordinates{} coordinates improved one at the expense of the other. The results motivate
+further study of the estimator without establishing the tested proxy as a suitable training
+objective.
 
-\subsubsection{Nothing learned survives a free random tie-break}
+\subsubsection{Learned action ranking and tie-breaking}
 \label{sec:development-tie}
 
 In the \vsix{} mirror \vsevenTieContested\% of contested ask decisions tie bit-for-bit, and the
@@ -195,11 +224,12 @@ $[\vsevenKfiveUnrestrictedLo, \vsevenKfiveUnrestrictedHi]$. Restricting it to th
 added switch on the same fitted weight vector, and it is there that the tie-group question gets
 answered.
 
-Restricted, against the deployed policy it scores \vsevenKfiveTieOnly{}~pp, indistinguishable from
-the free public-history tie-break's \vsevenKfiveFreeTie{}~pp; head to head against that free tie-break at
-\vsevenPhaseThreeCell{} games it is \vsevenKfiveHeadToHead{}~pp $\pm$ \vsevenKfivePm{}, replicated.
-Nothing learned survives the free tie-break, and the correct control for any mechanism operating
-inside the tied set is the decorrelated policy rather than the deployed one.
+Restricted, against the deployed policy it scores \vsevenKfiveTieOnly{}~pp, not statistically
+resolved from the free public-history tie-break's \vsevenKfiveFreeTie{}~pp; head to head against
+that free tie-break at \vsevenPhaseThreeCell{} games it is \vsevenKfiveHeadToHead{}~pp $\pm$
+\vsevenKfivePm{} (95\% half-width), replicated in sign. The restricted learned ranker did not
+demonstrate an advantage over public-history tie-breaking, and the appropriate control for any
+mechanism operating inside the tied set is the decorrelated policy rather than the deployed one.
 
 The same instrumentation explains why. Setting every candidate's true advantage to exactly zero and
 feeding the capture's real standard errors through the engine's real deviation rule reproduces the
@@ -208,19 +238,21 @@ never fitted to. The search's per-decision selection signal is approximately \vs
 winner's curse on its own Monte Carlo draw, and approximately \vsevenCurseTieShare\% within the tied
 set, where the rule applies no shrinkage at all.
 
-\subsubsection{Two directions closed on arithmetic}
+\subsubsection{Forced-endgame improvement estimates}
 \label{sec:development-arithmetic}
 
-Closing the entire forced-endgame accuracy gap, re-derived from this cycle's own capture, is worth
-\vsevenLthirteenClose{}~pp, which is the register's own figure corrected upward by a factor of two and
-still a fiftieth of the detection floor. The single route by which it could have returned is an
-adversary driving the target's incidence upward, and the one construction measured does not do that:
-a team that never declares voluntarily raises its \emph{own} forced-endgame rate, not its opponent's,
-and pays \vsevenLthirteenAdvCostLo{} to \vsevenLthirteenAdvCostHi{}~pp for it. No construction that
-raises the target's incidence was measured, so the route is closed by the absence of a mechanism
-rather than by a price.
+Closing the entire forced-endgame accuracy gap at the measured incidence, re-derived from this
+cycle's own capture, is estimated at \vsevenLthirteenClose{}~pp, which is the register's own figure
+corrected upward by a factor of two and still a fiftieth of the reference bar. That estimate holds
+for the incidence observed in the measured play. The route by which the estimate could grow is an
+adversary driving the target's incidence upward, and the one construction measured does not do
+that: a team that never declares voluntarily raises its \emph{own} forced-endgame rate, not its
+opponent's, and pays \vsevenLthirteenAdvCostLo{} to \vsevenLthirteenAdvCostHi{}~pp for it. No
+evaluated intervention increased the target's forced-endgame incidence, so this route remains
+untested rather than closed (Appendix~\ref{app:corrections-self} records the earlier report's
+unsupported figure for it).
 
-\subsection{Selection and freezing}
+\subsection{Configuration selection and freezing}
 \label{sec:development-freeze}
 
 \vsevenSelK{} configurations were scored against the deployed policy during development. One was
